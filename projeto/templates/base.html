@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <title>Projeto BD2 - {% block title %}{% endblock %}</title>
+</head>
+<body class="text-gray-700">
+    <nav class="flex px-16 py-4 justify-between items-center bg-gray-100 shadow-md mb-8">
+        <h3 class="font-bold text-2xl">BD2 Projeto</h3>
+        {% if user.is_authenticated %}
+            <div class="flex gap-2 items-center">
+                <div class="rounded-full bg-gray-200 relative w-12 h-12 overflow-hidden">
+                    <img src="https://avatars.githubusercontent.com/u/38139389?v=4" class="w-full h-full">
+                </div>
+                <p class="font-medium">{{ user.username }}</p>
+                <i class="ph ph-caret-down cursor-pointer"></i>
+            </div>
+        {% else %}
+            <a href="{% url 'login' %}" class="py-2 px-4 font-medium rounded-lg bg-white hover:bg-gray-200 transition-colors">Login</a>
+        {% endif %}
+    </nav>
+    <div class="container mx-auto flex flex-col items-center px-4">
+        {% block content %}
+        {% endblock %}
+    </div>
+</body>
+</html>
