@@ -79,8 +79,13 @@ WSGI_APPLICATION = 'ProjetoFinal.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'HOST': 'localhost',
+        'PORT': '15432',
+        'NAME': 'projeto',
+        'DATABASE': 'aluno4',
+        'USER': 'aluno4',
+        'PASSWORD': 'Aluno4#5733',
     }
 }
 

@@ -1,0 +1,5 @@
+django-crispy-forms
+crispy_tailwind
+psycopg
+psycopg2
+pip-tools
