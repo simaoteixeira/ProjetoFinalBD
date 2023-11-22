@@ -79,11 +79,10 @@ WSGI_APPLICATION = 'ProjetoFinal.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'HOST': 'localhost',
         'PORT': '15432',
-        'NAME': 'projeto',
-        'DATABASE': 'aluno4',
+        'NAME': 'aluno4',
         'USER': 'aluno4',
         'PASSWORD': 'Aluno4#5733',
     }
