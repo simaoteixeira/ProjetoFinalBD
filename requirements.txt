@@ -17,7 +17,11 @@ colorama==0.4.6
 crispy-tailwind==0.5.0
     # via -r requirements.in
 django==4.2.7
-    # via django-crispy-forms
+    # via
+    #   django-components
+    #   django-crispy-forms
+django-components==0.29
+    # via -r requirements.in
 django-crispy-forms==2.1
     # via
     #   -r requirements.in
