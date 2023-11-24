@@ -5,52 +5,61 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+          .button {
+            @apply py-2 px-4 rounded-lg bg-white hover:bg-gray-200 transition-colors border border-gray-300 shadow-sm flex items-center gap-2 leading-6 font-medium [&>i]:text-gray-600 [&>i]:text-2xl;
+          }
+        }
+    </style>
     <title>Projeto BD2 - {% block title %}{% endblock %}</title>
 </head>
 <body class="text-gray-700 flex">
-    <aside
-        class="w-72 h-screen bg-white shadow-md py-8 flex flex-col gap-8 text-gray-600"
-    >
-        <i class="ph-fill ph-list text-4xl font-bold ml-8"></i>
-        <div class="flex flex-col gap-2">
-            {% component "NavSection" title="Compras" sectionSelected=navSection navSection='compras' icon="shopping-cart" %}
-            {% if navSubSection and navSection == 'compras' %}
-                <div class="flex flex-col gap-2 ml-8">
-                    {% component "NavSubsection" title="Pedidos de compra" subSectionSelected=navSubSection navSubSection='pedidosCompra' icon="shopping-cart" %}
-                    {% component "NavSubsection" title="Faturas" subSectionSelected=navSubSection navSubSection='faturas' icon="scroll" %}
-                    {% component "NavSubsection" title="Fornecedores" subSectionSelected=navSubSection navSubSection='fornecedores' icon="truck" %}
-                    {% component "NavSubsection" title="Receções de material" subSectionSelected=navSubSection navSubSection='rececaoMaterial' icon="warehouse" %}
-                </div>
-            {% endif %}
-            {% component "NavSection" title="Inventario" sectionSelected=navSection navSection='inventario' icon="warehouse" %}
-            {% if navSubSection and navSection == 'inventario' %}
-                <div class="flex flex-col gap-2 ml-8">
-                    {% component "NavSubsection" title="Movimentos" subSectionSelected=navSubSection navSubSection='movimentos' icon="arrows-left-right" %}
-                    {% component "NavSubsection" title="Armazens" subSectionSelected=navSubSection navSubSection='armazens' icon="warehouse" %}
-                    {% component "NavSubsection" title="Produtos" subSectionSelected=navSubSection navSubSection='produtos' icon="archive" %}
-                    {% component "NavSubsection" title="Componentes" subSectionSelected=navSubSection navSubSection='componentes' icon="cpu" %}
-                </div>
-            {% endif %}
-            {% component "NavSection" title="Produção" sectionSelected=navSection navSection='producao' icon="package" %}
-            {% if navSubSection and navSection == 'producao' %}
-                <div class="flex flex-col gap-2 ml-8">
-                    {% component "NavSubsection" title="Ordens de Produção" subSectionSelected=navSubSection navSubSection='ordensProducao' icon="shopping-cart" %}
-                    {% component "NavSubsection" title="Mão de Obra" subSectionSelected=navSubSection navSubSection='maoObra' icon="hand-coins" %}
-                </div>
-            {% endif %}
-            {% component "NavSection" title="Vendas" sectionSelected=navSection navSection='vendas' icon="currency-dollar" %}
-            {% if navSubSection and navSection == 'vendas' %}
-                <div class="flex flex-col gap-2 ml-8">
-                    {% component "NavSubsection" title="Encomendas Cliente" subSectionSelected=navSubSection navSubSection='encomendas' icon="package" %}
-                    {% component "NavSubsection" title="Guias de Remessa" subSectionSelected=navSubSection navSubSection='guiasRemessa' icon="hand-coins" %}
-                    {% component "NavSubsection" title="Clientes" subSectionSelected=navSubSection navSubSection='clientes' icon="users-three" %}
-                    {% component "NavSubsection" title="Faturas Cliente" subSectionSelected=navSubSection navSubSection='faturasCliente' icon="scroll" %}
-                </div>
-            {% endif %}
-        </div>
-    </aside>
+    {% if user.is_authenticated %}
+        <aside
+            class="w-80 h-screen bg-white shadow-md py-8 flex flex-col gap-8 text-gray-600"
+        >
+            <i class="ph-fill ph-list text-4xl font-bold ml-8"></i>
+            <div class="flex flex-col gap-2">
+                {% component "NavSection" title="Compras" sectionSelected=navSection navSection='compras' icon="shopping-cart" %}
+                {% if navSubSection and navSection == 'compras' %}
+                    <div class="flex flex-col gap-2 ml-8">
+                        {% component "NavSubsection" title="Pedidos de compra" subSectionSelected=navSubSection navSubSection='pedidosCompra' icon="shopping-cart" %}
+                        {% component "NavSubsection" title="Faturas" subSectionSelected=navSubSection navSubSection='faturas' icon="scroll" %}
+                        {% component "NavSubsection" title="Fornecedores" subSectionSelected=navSubSection navSubSection='fornecedores' icon="truck" %}
+                        {% component "NavSubsection" title="Receções de material" subSectionSelected=navSubSection navSubSection='rececaoMaterial' icon="warehouse" %}
+                    </div>
+                {% endif %}
+                {% component "NavSection" title="Inventario" sectionSelected=navSection navSection='inventario' icon="warehouse" %}
+                {% if navSubSection and navSection == 'inventario' %}
+                    <div class="flex flex-col gap-2 ml-8">
+                        {% component "NavSubsection" title="Movimentos" subSectionSelected=navSubSection navSubSection='movimentos' icon="arrows-left-right" %}
+                        {% component "NavSubsection" title="Armazens" subSectionSelected=navSubSection navSubSection='armazens' icon="warehouse" %}
+                        {% component "NavSubsection" title="Produtos" subSectionSelected=navSubSection navSubSection='produtos' icon="archive" %}
+                        {% component "NavSubsection" title="Componentes" subSectionSelected=navSubSection navSubSection='componentes' icon="cpu" %}
+                    </div>
+                {% endif %}
+                {% component "NavSection" title="Produção" sectionSelected=navSection navSection='producao' icon="package" %}
+                {% if navSubSection and navSection == 'producao' %}
+                    <div class="flex flex-col gap-2 ml-8">
+                        {% component "NavSubsection" title="Ordens de Produção" subSectionSelected=navSubSection navSubSection='ordensProducao' icon="shopping-cart" %}
+                        {% component "NavSubsection" title="Mão de Obra" subSectionSelected=navSubSection navSubSection='maoObra' icon="hand-coins" %}
+                    </div>
+                {% endif %}
+                {% component "NavSection" title="Vendas" sectionSelected=navSection navSection='vendas' icon="currency-dollar" %}
+                {% if navSubSection and navSection == 'vendas' %}
+                    <div class="flex flex-col gap-2 ml-8">
+                        {% component "NavSubsection" title="Encomendas Cliente" subSectionSelected=navSubSection navSubSection='encomendas' icon="package" %}
+                        {% component "NavSubsection" title="Guias de Remessa" subSectionSelected=navSubSection navSubSection='guiasRemessa' icon="hand-coins" %}
+                        {% component "NavSubsection" title="Clientes" subSectionSelected=navSubSection navSubSection='clientes' icon="users-three" %}
+                        {% component "NavSubsection" title="Faturas Cliente" subSectionSelected=navSubSection navSubSection='faturasCliente' icon="scroll" %}
+                    </div>
+                {% endif %}
+            </div>
+        </aside>
+    {% endif %}
     <div class="w-full h-screen">
-        <nav class="flex px-16 py-4 justify-between items-center bg-gray-100 shadow-md mb-8">
+        <nav class="flex px-16 py-4 justify-between items-center bg-gray-100 shadow-md">
             <h3 class="font-bold text-2xl">BD2 Projeto</h3>
             {% if user.is_authenticated %}
                 <div class="flex gap-2 items-center">
@@ -66,7 +75,7 @@
                 <a href="{% url 'login' %}" class="py-2 px-4 font-medium rounded-lg bg-white hover:bg-gray-200 transition-colors">Login</a>
             {% endif %}
         </nav>
-        <main class="container mx-auto flex flex-col items-center px-4">
+        <main class="flex flex-col overflow-auto py-8 pl-8 pr-4 gap-4">
             {% block content %}
             {% endblock %}
         </main>
