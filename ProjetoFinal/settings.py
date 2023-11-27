@@ -39,7 +39,8 @@ INSTALLED_APPS = [
     'crispy_forms',
     'crispy_tailwind',
     "django_components",
-    "django_components.safer_staticfiles"
+    "django_components.safer_staticfiles",
+    'django_tables2'
 ]
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = "tailwind"
