@@ -1,0 +1,6 @@
+<div class="border border-gray-300 p-4 flex gap-2 rounded-lg items-center w-full max-w-md">
+    {% if icon %}
+        <i class="ph-bold ph-{{ icon }}"></i>
+    {% endif %}
+    <input class="w-full outline-none text-sm leading-tight" type="text" placeholder="{{ placeholder }}" name="{{ inputName }}">
+</div>

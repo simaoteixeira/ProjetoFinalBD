@@ -15,6 +15,11 @@
             <span>Registar Pedido de Compra</span>
         </button>
     </div>
-    <p>Table</p>
+    <form method="get" class="p-4 bg-white border border-gray-300 rounded-lg flex justify-between items-center">
+        {% component "Input" icon="magnifying-glass" placeholder="Pesquisa pelo nome..." inputName="username_search" %}
+        <button type="submit" class="button text-base">
+            Pesquisar
+        </button>
+    </form>
     {% render_table table %}
 {% endblock %}

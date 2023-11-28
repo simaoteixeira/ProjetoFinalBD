@@ -7,14 +7,28 @@
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <style type="text/tailwindcss">
         @layer utilities {
-          .button {
-            @apply py-2 px-4 rounded-lg bg-white hover:bg-gray-200 transition-colors border border-gray-300 shadow-sm flex items-center gap-2 leading-6 font-medium [&>i]:text-gray-600 [&>i]:text-2xl;
-          }
+            .button {
+                @apply py-2 px-4 rounded-lg bg-white hover:bg-gray-200 transition-all border border-gray-300 shadow-sm flex items-center justify-center gap-2 leading-6 font-medium [&>i]:text-gray-600 [&>i]:text-2xl;
+            }
+            
+            .table {
+                @apply w-full border-collapse border-2 border-gray-300 rounded-lg overflow-hidden bg-white shadow-sm;
+            }
+
+            .table th {
+                @apply pt-4 px-4 font-medium text-left text-xs text-gray-500 uppercase border-b border-gray-300;
+            }
+
+            .table td {
+                @apply py-4 px-4 text-base text-gray-700 font-medium;
+            }
+
+            
         }
     </style>
     <title>Projeto BD2 - {% block title %}{% endblock %}</title>
 </head>
-<body class="text-gray-700 flex">
+<body class="text-gray-700 flex bg-gray-200">
     {% if user.is_authenticated %}
         <aside
             class="w-80 h-screen bg-white shadow-md py-8 flex flex-col gap-8 text-gray-600"

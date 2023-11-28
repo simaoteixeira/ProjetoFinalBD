@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% load render_table from django_tables2 %}
+
+{% block title %}Pedidos de Compra{% endblock %}
+
+{% block content %}
+    <h1 class="font-extrabold text-4xl leading-10">Pedido de Compra</h1>
+    <div class="flex gap-4 items-center">
+        <div class="bg-white p-6 border border-gray-300 flex flex-col gap-2 rounded-lg">
+            <i class="ph-fill ph-truck text-5xl"></i>
+            <p class="text-xl leading-6 font-semibold text-gray-900 whitespace-nowrap">Fornecedor XPTO</p>
+        </div>
+        <div class="bg-white p-6 w-full h-[8.125rem] border border-gray-300 flex gap-8 items-center justify-center rounded-lg">
+            <div class="flex flex-col items-center gap-2">
+                <span class="text-sm leading-5 font-medium">Registado a</span>
+                <p class="text-xl leading-6 font-semibold text-gray-900">09/11/2023</p>
+            </div>
+            <i class="ph-bold ph-arrow-right text-4xl"></i>
+            <div class="flex flex-col items-center gap-2">
+                <span class="text-sm leading-5 font-medium">Entrega prevista a<span>
+                <p class="text-xl leading-6 font-semibold text-green-500">13/11/2023</p>
+            </div>
+        </div>
+    </div>
+    <div>
+        <span class="text-sm leading-5 font-medium mb-2">Componentes</span>
+        <p>Tabela de componentes</p>
+    </div>
+    <form class="flex flex-col gap-2">
+        <span class="text-sm leading-5 font-medium">Observações</span>
+        <textarea class="w-full bg-white text-gray-900 border border-gray-300 rounded-lg p-4 outline-none focus:border-2" name="observations" rows="5"></textarea>
+        <button type="submit" class="button w-fit self-end">
+            Adicionar Observações
+        </button>
+    </form>
+{% endblock %}
