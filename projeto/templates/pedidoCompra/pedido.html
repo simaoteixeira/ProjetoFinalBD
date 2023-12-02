@@ -27,8 +27,7 @@
         <p>Tabela de componentes</p>
     </div>
     <form class="flex flex-col gap-2">
-        <span class="text-sm leading-5 font-medium">Observações</span>
-        <textarea class="w-full bg-white text-gray-900 border border-gray-300 rounded-lg p-4 outline-none focus:border-2" name="observations" rows="5"></textarea>
+        {% component "TextArea" name="observations" label="Observações" %}
         <button type="submit" class="button w-fit self-end">
             Adicionar Observações
         </button>

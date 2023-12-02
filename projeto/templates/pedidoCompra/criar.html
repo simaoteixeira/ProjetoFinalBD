@@ -5,13 +5,96 @@
 
 {% block content %}
     <h1 class="font-extrabold text-4xl leading-10">Registar Pedido de Compra</h1>
-    <form>
+    <form class="flex flex-col gap-4">
         {% csrf_token %}
         <div class="flex items-center gap-4">
-            <div>
-                
+            <div class="w-full">
+                <span class="mb-2">Fornecedor</span>
+                <button class="button w-full !justify-start">
+                    <i class="ph-fill ph-truck"></i>
+                    Selecionar o fornecedor
+                </button>
+            </div>
+            <div class="w-full">
+                <span class="mb-2">Data de Entrega Possivel</span>
+                {% component "Input" type="date" placeholder="Seleciona uma data" inputName="date" %}
             </div>
         </div>
+        <div class="table-container">
+            <table class="table">                
+                <thead>
+                    <tr>
+                        <th>Id Produto</th>
+                        <th>Designação</th>
+                        <th>Quantidade</th>
+                        <th>Valor Unitario (€)</th>
+                        <th>Total Unit.</th>
+                        <th>% IVA</th>
+                        <th>IVA</th>
+                        <th>% Desc</th>
+                        <th>Total</th>
+                        <th> </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>25a7</td>
+                        <td>Processador Ryzen 7</td>
+                        <td class="w-28">
+                            {% component "Input" type="number" inputName="quantity-25a7" placeholder="0" %}
+                        </td>
+                        <td>
+                            {% component "Input" type="number" inputName="unit_value-25a7" placeholder="0" %}
+                        </td>
+                        <td>
+                            5 721 €
+                        </td>
+                        <td  class="w-24">
+                            {% component "Input" type="number" inputName="IVA-25a7" placeholder="0" %}
+                        </td>
+                        <td>
+                            1315,83 €
+                        </td>
+                        <td  class="w-24">
+                            {% component "Input" type="number" inputName="discount-25a7" placeholder="0" %}
+                        </td>
+                        <td>
+                            0 €
+                        </td>
+                        <td>
+                            7 036,83€
+                        </td>
+                        <td>
+                            <i class="ph-bold ph-x text-red-500 text-xl"></i>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="12">
+                            <button class="button w-full">
+                                <i class="ph-bold ph-plus"></i>
+                                Adicionar Componente
+                            </button>
+                        </td>
+                    </tr>
+                    <tr class="bg-gray-100 rounded-lg py-1">
+                        <td colspan="4">
+                            Valor Total
+                        </td>
+                        <td colspan="2">
+                            5.721 €
+                        </td>
+                        <td colspan="2">
+                            1.315,83 €
+                        </td>
+                        <td>0 €</td>
+                        <td colspan="2">
+                            7.036,83€
+                        </td>
+                    </tr>
+                </tbody>
+            </table>   
+        </div>
+        {% component "TextArea" name="observations" label="Observações" %}
         <button class="button !bg-green-500 text-white w-full hover:opacity-80">
             <i class="ph-fill ph-check-circle !text-white"></i>
             Finalizar Registo
