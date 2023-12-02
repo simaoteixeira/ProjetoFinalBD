@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% load render_table from django_tables2 %}
+
+{% block title %}Mão de Obra{% endblock %}
+
+{% block content %}
+    <h1 class="font-extrabold text-4xl leading-10">Tipos de Mão de Obra</h1>
+    <div class="flex items-center justify-end">
+        <a href="{% url "criarMaoObra" %}" class="button">
+            <i class="ph-bold ph-plus text-xl"></i>
+            <span>Criar Tipo</span>
+        </a>
+    </div>
+    {% render_table table %}
+{% endblock %}
