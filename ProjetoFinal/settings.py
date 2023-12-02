@@ -91,13 +91,20 @@ WSGI_APPLICATION = 'ProjetoFinal.wsgi.application'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 DATABASES = {
+    #'default': {
+    #    'ENGINE': 'django.db.backends.postgresql_psycopg2',
+    #    'HOST': 'localhost',
+    #    'PORT': '15432',
+    #    'NAME': 'aluno4',
+    #    'USER': 'aluno4',
+    #    'PASSWORD': 'Aluno4#5733',
+    #}
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'HOST': 'localhost',
-        'PORT': '15432',
-        'NAME': 'aluno4',
-        'USER': 'aluno4',
-        'PASSWORD': 'Aluno4#5733',
+        'NAME': 'bd2',
+        'USER': 'postgres',
+        'PASSWORD': 'admin',
     }
 }
 

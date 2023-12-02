@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block title %}Criar Fornecedor{% endblock %}
+
+{% block content %}
+    <h1 class="font-extrabold text-4xl leading-10">Criar Fornecedor</h1>
+    <form class="flex flex-col gap-4 mt-4">
+        <div class="flex items-center gap-4">
+        <div class="w-full">
+            <span class="mb-2">Nome</span>
+            {% component "Input" placeholder="Nome" inputName="name" %}
+        </div>
+        <div class="w-full">
+            <span class="mb-2">NIF</span>
+            {% component "Input" placeholder="XXXXXXXXX" inputName="nif" %}
+        </div>
+        </div>
+        <div class="flex items-center gap-4">
+            <div class="w-full">
+                <span class="mb-2">Telefone</span>
+                {% component "Input" placeholder="XXXXXXXXX" inputName="phone" %}
+            </div>
+            <div class="w-full">
+                <span class="mb-2">Email</span>
+                {% component "Input" type="email" placeholder="exemplo@mail.com" inputName="email" %}
+            </div>
+        </div>
+        <div class="w-full">
+            <span class="mb-2">Morada</span>
+            <div class="flex items-center gap-4">
+                <div class="w-full">
+                    {% component "Input" placeholder="Rua" inputName="street" %}
+                </div>
+                <div class="w-52">
+                    {% component "Input" placeholder="Cidade" inputName="city" %}
+                </div>
+                <div class="w-44">
+                    {% component "Input" placeholder="XXXX-XXX" inputName="postal_code" %}
+                </div>
+            </div>
+        </div>
+        <button type="submit" class="button !bg-green-500 text-white w-full hover:opacity-80 mt-8">
+            <i class="ph-fill ph-check-circle !text-white"></i>
+            Criar Fornecedor
+        </button>
+    </form>
+{% endblock %}

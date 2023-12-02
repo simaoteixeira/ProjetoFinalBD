@@ -1,14 +1,15 @@
 {% extends 'base.html' %}
+{% load render_table from django_tables2 %}
 
 {% block title %}Fornecedores{% endblock %}
 
 {% block content %}
     <h1 class="font-extrabold text-4xl leading-10">Fornecedores</h1>
     <div class="flex items-center justify-end">
-        <button class="button">
+        <a href="{% url "criarFornecedor" %}" class="button">
             <i class="ph-bold ph-plus text-xl"></i>
             <span>Criar Fornecedor</span>
-        </button>
+        </a>
     </div>
-    <p>Table</p>
+    {% render_table table %}
 {% endblock %}

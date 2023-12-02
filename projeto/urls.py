@@ -9,6 +9,7 @@ urlpatterns = [
     path('compras/criar', PedidoCompraView.create, name='criarPedidoCompra'),
     path('compras/faturas', FaturasView.home, name='faturas'),
     path('compras/fornecedores', FornecedoresView.home, name='fornecedores'),
+    path('compras/fornecedores/criar', FornecedoresView.create, name='criarFornecedor'),
     path('compras/recessao', RecessaoMaterialView.home, name='recessao'),
     path('registo', RegisterView.register, name='registo'),
 ]
