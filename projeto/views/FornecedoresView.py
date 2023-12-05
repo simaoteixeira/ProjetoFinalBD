@@ -1,8 +1,10 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 
+from projeto.forms.SuppliersForm import SuppliersForm
 from projeto.models import Suppliers
 from projeto.tables.SuppliersTable import SuppliersTable
+from projeto.utils import getErrorsObject
 
 
 @login_required(login_url='/login')
@@ -18,24 +20,27 @@ def home(request):
 
     return render(request, 'fornecedores/index.html', context)
 
+
 @login_required(login_url='/login')
 def create(request):
-    if request.method == 'POST':
-        supplier = Suppliers()
-        supplier.name = request.POST.get('name')
-        supplier.nif = request.POST.get('nif')
-        supplier.address = request.POST.get('street')
-        supplier.postal_code = request.POST.get('postal_code')
-        supplier.locality = request.POST.get('city')
-        supplier.phone = request.POST.get('phone')
-        supplier.email = request.POST.get('email')
-        #supplier.save()
-
-        return redirect('/fornecedores')
+    form = SuppliersForm(request.POST or None)
 
     context = {
+        'form': form,
         'navSection': 'compras',
         'navSubSection': 'fornecedores',
     }
+
+    if request.method == 'POST':
+        if form.is_valid():
+            print('valid')
+            print(form.cleaned_data)
+
+            return redirect('/compras/fornecedores')
+        else:
+            print('invalid')
+            errors = getErrorsObject(form.errors.get_context())
+
+            context['errors'] = errors
 
     return render(request, 'fornecedores/criar.html', context)

@@ -2,5 +2,8 @@
     {% if icon %}
         <i class="ph-bold ph-{{ icon }}"></i>
     {% endif %}
-    <input class="w-full outline-none leading-7" type="{{ type }}" min="0" placeholder="{{ placeholder }}" name="{{ inputName }}">
+    <input class="w-full outline-none leading-7" type="{{ type }}" min="0" placeholder="{{ placeholder }}" name="{{ inputName }}" id="{{ id }}" value="{% if value %}{{ value }}{% endif %}">
 </div>
+{% if error %}
+    <span class="mt-1 ml-2 text-red-500">{{ error }}</span>
+{% endif %}

@@ -4,38 +4,39 @@
 
 {% block content %}
     <h1 class="font-extrabold text-4xl leading-10">Criar Fornecedor</h1>
-    <form class="flex flex-col gap-4 mt-4">
-        <div class="flex items-center gap-4">
+    <form method="post" class="flex flex-col gap-4 mt-4">
+        {% csrf_token %}
+        <div class="flex gap-4">
         <div class="w-full">
             <span class="mb-2">Nome</span>
-            {% component "Input" placeholder="Nome" inputName="name" %}
+            {% component "Input" placeholder="Nome" inputName="name" id="name" value=form.name.value error=errors.name %}
         </div>
         <div class="w-full">
             <span class="mb-2">NIF</span>
-            {% component "Input" placeholder="XXXXXXXXX" inputName="nif" %}
+            {% component "Input" placeholder="XXXXXXXXX" inputName="nif" id="nif" value=form.nif.value error=errors.nif %}
         </div>
         </div>
         <div class="flex items-center gap-4">
             <div class="w-full">
                 <span class="mb-2">Telefone</span>
-                {% component "Input" placeholder="XXXXXXXXX" inputName="phone" %}
+                {% component "Input" placeholder="XXXXXXXXX" inputName="phone" id="phone" value=form.phone.value error=errors.phone %}
             </div>
             <div class="w-full">
                 <span class="mb-2">Email</span>
-                {% component "Input" type="email" placeholder="exemplo@mail.com" inputName="email" %}
+                {% component "Input" type="email" placeholder="exemplo@mail.com" inputName="email" id="email" value=form.email.value error=errors.email %}
             </div>
         </div>
         <div class="w-full">
             <span class="mb-2">Morada</span>
-            <div class="flex items-center gap-4">
+            <div class="flex gap-4">
                 <div class="w-full">
-                    {% component "Input" placeholder="Rua" inputName="street" %}
+                    {% component "Input" placeholder="Rua" inputName="address" id="address" value=form.address.value error=errors.address %}
                 </div>
                 <div class="w-52">
-                    {% component "Input" placeholder="Cidade" inputName="city" %}
+                    {% component "Input" placeholder="Cidade" inputName="locality" id="locality" value=form.locality.value error=errors.locality %}
                 </div>
                 <div class="w-44">
-                    {% component "Input" placeholder="XXXX-XXX" inputName="postal_code" %}
+                    {% component "Input" placeholder="XXXX-XXX" inputName="postal_code" id="postal_code" value=form.postal_code.value error=errors.postal_code %}
                 </div>
             </div>
         </div>

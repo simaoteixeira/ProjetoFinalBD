@@ -1,8 +1,10 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 
+from projeto.forms.LaborsForm import LaborsForm
 from projeto.models import Labors
 from projeto.tables.LaborsTable import LaborsTable
+from projeto.utils import getErrorsObject
 
 
 @login_required(login_url='/login')
@@ -20,17 +22,24 @@ def home(request):
 
 @login_required(login_url='/login')
 def create(request):
-    if request.method == 'POST':
-        labor = Labors()
-        labor.title = request.POST.get('title')
-        labor.cost  = request.POST.get('cost')
-        #labor.save()
-
-        return redirect('/mao-obra')
+    form = LaborsForm(request.POST or None)
 
     context = {
+        'form': form,
         'navSection': 'producao',
         'navSubSection': 'maoObra',
     }
+
+    if request.method == 'POST':
+        if form.is_valid():
+            print('valid')
+            print(form.cleaned_data)
+
+            return redirect('/producao/mao-obra')
+        else:
+            print('invalid')
+            errors = getErrorsObject(form.errors.get_context())
+
+            context['errors'] = errors
 
     return render(request, 'maosObra/criar.html', context)

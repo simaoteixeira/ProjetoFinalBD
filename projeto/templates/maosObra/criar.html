@@ -4,16 +4,17 @@
 
 {% block content %}
     <h1 class="font-extrabold text-4xl leading-10">Criar Tipos de Mão de Obra</h1>
-    <form class="flex flex-col gap-4 mt-4">
-        <div class="flex items-center gap-4">
-        <div class="w-full">
-            <span class="mb-2">Designação</span>
-            {% component "Input" placeholder="Designação" inputName="title" %}
-        </div>
-        <div class="w-full">
-            <span class="mb-2">Valor Base (€)</span>
-            {% component "Input" type="number" placeholder="100 €" inputName="cost" %}
-        </div>
+    <form method="post" class="flex flex-col gap-4 mt-4">
+        {% csrf_token %}
+        <div class="flex gap-4">
+            <div class="w-full">
+                <span class="mb-2">Designação</span>
+                {% component "Input" placeholder="Designação" inputName="title" id="title" value=form.title.value error=errors.title %}
+            </div>
+            <div class="w-full">
+                <span class="mb-2">Valor Base (€)</span>
+                {% component "Input" type="number" placeholder="100 €" inputName="cost" id="cost" value=form.cost.value error=errors.cost %}
+            </div>
         </div>
         <button type="submit" class="button !bg-green-500 text-white w-full hover:opacity-80 mt-8">
             <i class="ph-fill ph-check-circle !text-white"></i>

@@ -4,11 +4,14 @@ from django_components import component
 class NavSection(component.Component):
     template_name = "Input/input.html"
 
-    def get_context_data(self, placeholder, inputName, icon = None, type = "text", iconPosition = "left"):
+    def get_context_data(self, placeholder, inputName, icon = None, type = "text", iconPosition = "left", id = None, value = None, error = None):
         return {
+            "id": id,
             "icon": icon,
             "placeholder": placeholder,
             "inputName": inputName,
             "iconPosition": iconPosition,
-            "type": type
+            "type": type,
+            "value": value,
+            "error": error,
         }
