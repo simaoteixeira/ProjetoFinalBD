@@ -224,7 +224,7 @@ class MaterialReceiptComponents(models.Model):
     vat = models.IntegerField()
     vat_value = models.TextField()  # This field type is a guess.
     discount = models.FloatField()
-    disccount_value = models.TextField()  # This field type is a guess.
+    discount_value = models.TextField()  # This field type is a guess.
     line_total = models.TextField()  # This field type is a guess.
 
     class Meta:
@@ -257,7 +257,7 @@ class ProductionOrderComponents(models.Model):
     id_product = models.ForeignKey('Products', models.DO_NOTHING, db_column='id_product')
     quantity = models.IntegerField()
     price_base = models.TextField()  # This field type is a guess.
-    line_total = models.TextField()  # This field type is a guess.
+    line_total = models.TextField(blank=True, null=True)  # This field type is a guess.
 
     class Meta:
         managed = False
@@ -286,11 +286,12 @@ class Products(models.Model):
     id_product = models.AutoField(primary_key=True)
     name = models.TextField()
     description = models.TextField(blank=True, null=True)
-    weight = models.TextField(blank=True, null=True)
-    price_cost = models.TextField(blank=True, null=True)  # This field type is a guess.
-    type = models.TextField()
-    vat = models.IntegerField(blank=True, null=True)
+    weight = models.FloatField(blank=True, null=True)
+    type = models.TextField()  # This field type is a guess.
     profit_margin = models.FloatField()
+    vat = models.IntegerField()
+    price_cost = models.TextField(blank=True, null=True)  # This field type is a guess.
+    price_base = models.TextField(blank=True, null=True)  # This field type is a guess.
     pvp = models.TextField()  # This field type is a guess.
 
     class Meta:
@@ -307,7 +308,7 @@ class PurchasingOrderComponents(models.Model):
     vat = models.IntegerField()
     vat_value = models.TextField()  # This field type is a guess.
     discount = models.FloatField()
-    disccount_value = models.TextField()  # This field type is a guess.
+    discount_value = models.TextField()  # This field type is a guess.
     line_total = models.TextField()  # This field type is a guess.
 
     class Meta:

@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block title %}Criar Produto{% endblock %}
+
+{% block content %}
+    <h1 class="font-extrabold text-4xl leading-10">Criar Produto</h1>
+    <form method="post" class="flex flex-col gap-4 mt-4">
+        {% csrf_token %}
+        <div class="flex gap-4">
+            <div class="w-full">
+                <span class="mb-2">Designação</span>
+                {% component "Input" placeholder="Designação" inputName="name" id="name" value=form.name.value error=errors.name %}
+            </div>
+            <div class="w-full">
+                <span class="mb-2">Tipo</span>
+                Select
+            </div>
+        </div>
+        <div class="flex items-center gap-4">
+            <div class="w-full">
+                <span class="mb-2">Peso (Kg)</span>
+                {% component "Input" type="number" placeholder="0" inputName="weight" id="weight" value=form.weight.value error=errors.weight %}
+            </div>
+            <div class="w-full">
+                <span class="mb-2">Margem de Lucro (%)</span>
+                {% component "Input" type="number" placeholder="0" inputName="profit_margin" id="profit_margin" value=form.profit_margin.value error=errors.profit_margin %}
+            </div>
+            <div class="w-full">
+                <span class="mb-2">IVA (%)</span>
+                {% component "Input" type="number" placeholder="0" inputName="vat" id="vat" value=form.vat.value error=errors.vat %}
+            </div>
+        </div>
+        {% component "TextArea" label="Observações" name="description" id="description" value=form.description.value error=description.vat %}
+        <button type="submit" class="button !bg-green-500 text-white w-full hover:opacity-80 mt-8">
+            <i class="ph-fill ph-check-circle !text-white"></i>
+            Finalizar Criação
+        </button>
+    </form>
+{% endblock %}

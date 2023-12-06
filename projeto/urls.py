@@ -1,6 +1,6 @@
 from django.urls import path
 from .views import RegisterView, PedidoCompraView, FaturasView, FornecedoresView, RecessaoMaterialView, ClientesView, \
-    MaoObraView
+    MaoObraView, ArmazensView, ProdutosView
 
 urlpatterns = [
     path('', PedidoCompraView.home, name='home'),
@@ -16,5 +16,8 @@ urlpatterns = [
     path('vendas/clientes/criar', ClientesView.create, name='criarCliente'),
     path('producao/mao-obra', MaoObraView.home, name='maoObra'),
     path('producao/mao-obra/criar', MaoObraView.create, name='criarMaoObra'),
+    path('inventario/armazens', ArmazensView.home, name='armazens'),
+    path('inventario/produtos', ProdutosView.home, name='produtos'),
+    path('inventario/produtos/criar', ProdutosView.create, name='criarProduto'),
     path('registo', RegisterView.register, name='registo'),
 ]
