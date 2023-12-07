@@ -6,3 +6,4 @@ pip-tools
 django-components
 django-tables2
 django_filter
+django-environ
