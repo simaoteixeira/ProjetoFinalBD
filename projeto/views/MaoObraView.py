@@ -3,13 +3,14 @@ from django.shortcuts import render, redirect
 
 from projeto.forms.LaborsForm import LaborsForm
 from projeto.models import Labors
+from projeto.repositories.LaborRepo import LaborRepo
 from projeto.tables.LaborsTable import LaborsTable
 from projeto.utils import getErrorsObject
 
 
 @login_required(login_url='/login')
 def home(request):
-    table = LaborsTable(Labors.objects.all())
+    table = LaborsTable(LaborRepo().find_all())
     table.paginate(page=request.GET.get('page', 1), per_page=10)
 
     context = {
@@ -34,6 +35,9 @@ def create(request):
         if form.is_valid():
             print('valid')
             print(form.cleaned_data)
+            data = form.cleaned_data
+
+            LaborRepo().create(data['title'], data['cost'])
 
             return redirect('/producao/mao-obra')
         else:

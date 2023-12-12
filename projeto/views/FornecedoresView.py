@@ -3,13 +3,14 @@ from django.shortcuts import render, redirect
 
 from projeto.forms.SuppliersForm import SuppliersForm
 from projeto.models import Suppliers
+from projeto.repositories.SupplierRepo import SupplierRepo
 from projeto.tables.SuppliersTable import SuppliersTable
 from projeto.utils import getErrorsObject
 
 
 @login_required(login_url='/login')
 def home(request):
-    table = SuppliersTable(Suppliers.objects.all())
+    table = SuppliersTable(SupplierRepo().find_all())
     table.paginate(page=request.GET.get('page', 1), per_page=10)
 
     context = {
@@ -35,6 +36,9 @@ def create(request):
         if form.is_valid():
             print('valid')
             print(form.cleaned_data)
+            data = form.cleaned_data
+
+            SupplierRepo().create(data['name'], data['email'], data['nif'], data['phone'], data['address'], data['locality'], data['postal_code'])
 
             return redirect('/compras/fornecedores')
         else:

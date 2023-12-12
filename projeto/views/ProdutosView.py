@@ -42,4 +42,4 @@ def create(request):
 
             context['errors'] = errors
 
-    return render(request, 'clientes/criar.html', context)
+    return render(request, 'produtos/criar.html', context)

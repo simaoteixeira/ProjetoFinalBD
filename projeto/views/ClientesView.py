@@ -3,13 +3,14 @@ from django.shortcuts import render, redirect
 
 from projeto.forms.ClientsForm import ClientsForm
 from projeto.models import Clients
+from projeto.repositories.ClientRepo import ClientRepo
 from projeto.tables.ClientsTable import ClientsTable
 from projeto.utils import getErrorsObject
 
 
 @login_required(login_url='/login')
 def home(request):
-    table = ClientsTable(Clients.objects.all())
+    table = ClientsTable(ClientRepo().find_all())
     table.paginate(page=request.GET.get('page', 1), per_page=10)
 
     context = {
@@ -34,6 +35,10 @@ def create(request):
         if form.is_valid():
             print('valid')
             print(form.cleaned_data)
+
+            data = form.cleaned_data
+
+            ClientRepo().create(data['name'], data['email'], data['nif'], data['phone'], data['address'], data['locality'], data['postal_code'])
 
             return redirect('/vendas/clientes')
         else:
