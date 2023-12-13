@@ -367,14 +367,13 @@ class SalesOrders(models.Model):
 
 
 class Stock(models.Model):
-    id_product = models.OneToOneField(Products, models.DO_NOTHING, db_column='id_product', primary_key=True)  # The composite primary key (id_product, id_warehouse) found, that is not supported. The first column is selected.
-    id_warehouse = models.ForeignKey('Warehouses', models.DO_NOTHING, db_column='id_warehouse')
+    product = models.OneToOneField('Products', models.DO_NOTHING, db_column='id_product', primary_key=True)  # The composite primary key (id_product, id_warehouse) found, that is not supported. The first column is selected.
+    warehouse = models.ForeignKey('Warehouses', models.DO_NOTHING, db_column='id_warehouse')
     quantity = models.IntegerField()
 
     class Meta:
         managed = False
         db_table = 'stock'
-        unique_together = (('id_product', 'id_warehouse'), ('id_product', 'id_warehouse'),)
 
 
 class StockMovements(models.Model):

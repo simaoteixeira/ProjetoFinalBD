@@ -45,11 +45,11 @@
                         {% component "NavSubsection" title="Receções de material" subSectionSelected=navSubSection navSubSection='rececaoMaterial' icon="warehouse" linkTo="recessao" %}
                     </div>
                 {% endif %}
-                {% component "NavSection" title="Inventario" sectionSelected=navSection navSection='inventario' icon="warehouse" %}
+                {% component "NavSection" title="Inventario" sectionSelected=navSection navSection='inventario' icon="warehouse" linkTo="inventario" %}
                 {% if navSubSection and navSection == 'inventario' %}
                     <div class="flex flex-col gap-2 ml-8">
-                        {% component "NavSubsection" title="Movimentos" subSectionSelected=navSubSection navSubSection='movimentos' icon="arrows-left-right" %}
-                        {% component "NavSubsection" title="Armazens" subSectionSelected=navSubSection navSubSection='armazens' icon="warehouse" %}
+                        {% component "NavSubsection" title="Movimentos" subSectionSelected=navSubSection navSubSection='movimentos' icon="arrows-left-right" linkTo="movimentos" %}
+                        {% component "NavSubsection" title="Armazens" subSectionSelected=navSubSection navSubSection='armazens' icon="warehouse" linkTo="armazens" %}
                         {% component "NavSubsection" title="Produtos" subSectionSelected=navSubSection navSubSection='produtos' icon="archive" %}
                         {% component "NavSubsection" title="Componentes" subSectionSelected=navSubSection navSubSection='componentes' icon="cpu" %}
                     </div>
