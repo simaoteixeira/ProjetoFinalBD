@@ -10,7 +10,7 @@ class SuppliersTable(tables.Table):
     email = tables.Column(verbose_name="Email", accessor="email")
     tools = tables.TemplateColumn(
         verbose_name="",
-        template_name="fornecedores/_tools.html",
+        template_name="core/_tools_column.html",
         orderable=False,
     )
 

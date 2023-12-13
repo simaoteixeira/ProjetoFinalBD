@@ -234,7 +234,7 @@ class MaterialReceiptComponents(models.Model):
 
 class MaterialReceipts(models.Model):
     id_material_receipt = models.AutoField(primary_key=True)
-    id_supplier_invoice = models.ForeignKey('SupplierInvoices', models.DO_NOTHING, db_column='id_supplier_invoice', blank=True, null=True)
+    supplier_invoice = models.ForeignKey('SupplierInvoices', models.DO_NOTHING, db_column='id_supplier_invoice', blank=True, null=True)
     id_user = models.ForeignKey(AuthUser, models.DO_NOTHING, db_column='id_user')
     id_purchasing_order = models.ForeignKey('PurchasingOrders', models.DO_NOTHING, db_column='id_purchasing_order')
     n_delivery_note = models.TextField()
@@ -318,8 +318,8 @@ class PurchasingOrderComponents(models.Model):
 
 class PurchasingOrders(models.Model):
     id_purchasing_order = models.AutoField(primary_key=True)
-    id_supplier = models.ForeignKey('Suppliers', models.DO_NOTHING, db_column='id_supplier')
-    id_user = models.ForeignKey(AuthUser, models.DO_NOTHING, db_column='id_user')
+    supplier = models.ForeignKey('Suppliers', models.DO_NOTHING, db_column='id_supplier')
+    user = models.ForeignKey(AuthUser, models.DO_NOTHING, db_column='id_user')
     total_base = models.TextField()  # This field type is a guess.
     vat_total = models.TextField()  # This field type is a guess.
     discount_total = models.TextField()  # This field type is a guess.
@@ -412,7 +412,7 @@ class SupplierInvoiceComponents(models.Model):
 
 class SupplierInvoices(models.Model):
     id_supplier_invoice = models.AutoField(primary_key=True)
-    id_supplier = models.ForeignKey('Suppliers', models.DO_NOTHING, db_column='id_supplier')
+    supplier = models.ForeignKey('Suppliers', models.DO_NOTHING, db_column='id_supplier')
     obs = models.TextField(blank=True, null=True)
     total_base = models.TextField()  # This field type is a guess.
     vat_total = models.TextField()  # This field type is a guess.

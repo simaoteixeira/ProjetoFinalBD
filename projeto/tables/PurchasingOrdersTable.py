@@ -3,14 +3,14 @@ from ..models import PurchasingOrders
 
 
 class PurchasingOrdersTable(tables.Table):
-    Fornecedor = tables.Column(accessor='suppliers.name')
-    #Componentes = tables.Column(accessor='purchasing_order_components.name')
-    Valor = tables.Column(accessor='purchasing_orders.total_base')
-    Delivery = tables.Column(accessor='purchasing_orders.delivery_date', verbose_name='Data Possivel de Entrega')
-    RegistadoPor = tables.Column(accessor='auth_user.username', verbose_name='Registado por')
-    Criado = tables.Column(accessor='purchasing_orders.created_at', verbose_name='Data de Criação Pedido')
+    supplier = tables.Column(accessor='supplier.name', verbose_name='Fornecedor')
+    component_total = tables.Column(accessor='component_total', verbose_name='Total de Componentes')
+    total_base = tables.Column(accessor='total_base', verbose_name='Valor')
+    delivery_date = tables.Column(accessor='delivery_date', verbose_name='Data Possivel de entrega')
+    user = tables.Column(accessor='id_user', verbose_name='Registado por')
+    created_at = tables.Column(accessor='created_at', verbose_name='Data de Criação do Pedido')
 
     class Meta:
-        #model = PurchasingOrders
+        model = PurchasingOrders
         attrs = {"class": "table"}
-        #fields = ("id_supplier", "total_base", "id_user", "created_at")
+        fields = ('supplier', 'component_total', 'total_base', 'delivery_date', 'user', 'created_at')

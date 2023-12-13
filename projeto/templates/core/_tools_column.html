@@ -1,0 +1,10 @@
+<div class="flex items-center justify-center gap-2 w-full">
+    <a href="{{ linkTo }}" class="hover:opacity-90 transition-opacity">
+        <i class="ph-bold ph-eye text-xl text-gray-600"></i>
+    </a>
+    {% if trashButton %}
+        <a href="#" class="hover:opacity-90 transition-opacity">
+            <i class="ph-bold ph-trash text-xl text-gray-600"></i>
+        </a>
+    {% endif %}
+</div>
