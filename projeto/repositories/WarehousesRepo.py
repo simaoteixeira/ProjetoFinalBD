@@ -10,8 +10,8 @@ class WarehousesViewModel(models.Model):
     total_stock = models.IntegerField()
 
 class WarehousesRepo:
-    def __init__(self):
-        self.cursor = connections['default'].cursor()
+    def __init__(self, connection='default'):
+        self.cursor = connections[connection].cursor()
 
     def find_all(self):
         self.cursor.execute("SELECT * FROM V_Warehouses")

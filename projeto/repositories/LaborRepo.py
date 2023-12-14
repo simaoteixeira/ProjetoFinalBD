@@ -4,11 +4,11 @@ from projeto.models import Labors
 
 
 class LaborRepo:
-    def __init__(self):
-        self.cursor = connections['default'].cursor()
+    def __init__(self, connection='default'):
+        self.cursor = connections[connection].cursor()
 
     def create(self, title, cost):
-        self.cursor.execute(f"Call pa_create_labor('{title}', '{cost}')")
+        self.cursor.execute(f"Call pa_create_labor(%s, %s)", [title, cost])
         #self.cursor.callproc("pa_create_labor", [title, cost])
 
     def find_all(self):

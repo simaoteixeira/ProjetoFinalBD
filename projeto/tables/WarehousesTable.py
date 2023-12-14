@@ -1,5 +1,5 @@
 import django_tables2 as tables
-from ..models import Labors
+from ..models import Labors, Warehouses, Stock
 
 
 class WarehousesTable(tables.Table):
@@ -14,7 +14,7 @@ class WarehousesTable(tables.Table):
     )
 
     class Meta:
-        model = Labors
+        model = Warehouses
         attrs = {"class": "table"}
         fields = ("id", "name", "location", 'total_stock')
 
@@ -30,6 +30,6 @@ class WarehousesStockTable(tables.Table):
     )
 
     class Meta:
-        model = Labors
+        model = Stock
         attrs = {"class": "table"}
         fields = ("product", "quantity", "type", "warehouse")

@@ -4,11 +4,11 @@ from projeto.models import Suppliers
 
 
 class SupplierRepo:
-    def __init__(self):
-        self.cursor = connections['default'].cursor()
+    def __init__(self, connection='default'):
+        self.cursor = connections[connection].cursor()
 
     def create(self, name, email, nif, phone, address, locality, postal_code):
-        self.cursor.execute(f"Call PA_Create_Supplier('{name}', '{email}', '{nif}', '{phone}', '{address}', '{locality}', '{postal_code}')")
+        self.cursor.execute(f"Call PA_Create_Supplier(%s, %s, %s, %s, %s, %s, %s)", [name, email, nif, phone, address, locality, postal_code])
 
     def find_all(self):
         self.cursor.execute("SELECT * FROM V_Suppliers")

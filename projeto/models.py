@@ -266,9 +266,9 @@ class ProductionOrderComponents(models.Model):
 
 class ProductionOrders(models.Model):
     id_order_production = models.AutoField(primary_key=True)
-    id_labor = models.ForeignKey(Labors, models.DO_NOTHING, db_column='id_labor')
+    labor = models.ForeignKey('Labors', models.DO_NOTHING, db_column='id_labor')
     id_user = models.ForeignKey(AuthUser, models.DO_NOTHING, db_column='id_user')
-    id_product = models.ForeignKey('Products', models.DO_NOTHING, db_column='id_product')
+    product = models.ForeignKey('Products', models.DO_NOTHING, db_column='id_product')
     equipment_quantity = models.IntegerField()
     unit_cost = models.TextField(blank=True, null=True)  # This field type is a guess.
     production_cost = models.TextField(blank=True, null=True)  # This field type is a guess.

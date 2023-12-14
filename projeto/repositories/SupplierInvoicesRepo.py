@@ -4,8 +4,8 @@ from projeto.models import SupplierInvoices, Suppliers
 
 
 class SupplierInvoicesRepo:
-    def __init__(self):
-        self.cursor = connections['default'].cursor()
+    def __init__(self, connection='default'):
+        self.cursor = connections[connection].cursor()
 
     def find_all(self):
         self.cursor.execute("SELECT * FROM V_SupplierInvoices")
