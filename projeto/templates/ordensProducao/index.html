@@ -1,3 +1,4 @@
+{% extends 'base.html' %}
 {% load render_table from django_tables2 %}
 
 {% block title %}Ordens de Produção{% endblock %}
@@ -5,10 +6,10 @@
 {% block content %}
     <h1 class="font-extrabold text-4xl leading-10">Produção</h1>
     <div class="flex items-center justify-end">
-        <button class="button">
-            <i class="ph-currency-dollar ph-plus text-xl"></i>
-            <span>Criar Ordem de Produção</span>
-        </button>
+        <a href="#" class="button">
+            <i class="ph-bold ph-plus text-xl"></i>
+            <span>Criar Ordem de produção</span>
+        </a>
     </div>
     {% render_table table %}
 {% endblock %}

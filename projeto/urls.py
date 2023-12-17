@@ -1,6 +1,6 @@
 from django.urls import path
 from .views import RegisterView, PedidoCompraView, FaturasView, FornecedoresView, RecessaoMaterialView, ClientesView, \
-    MaoObraView, ArmazensView, ProdutosView, MovimentosView
+    MaoObraView, ArmazensView, ProdutosView, MovimentosView, OrdensProducaoView, EncomendasClienteView, GuiasRemessaView
 
 urlpatterns = [
     path('', PedidoCompraView.home, name='home'),
@@ -14,9 +14,14 @@ urlpatterns = [
     path('compras/fornecedores/criar', FornecedoresView.create, name='criarFornecedor'),
     path('compras/recessao', RecessaoMaterialView.home, name='recessao'),
 
+    path('vendas', ClientesView.home, name='vendas'),
     path('vendas/clientes', ClientesView.home, name='clientes'),
     path('vendas/clientes/criar', ClientesView.create, name='criarCliente'),
+    path('vendas/encomendas', EncomendasClienteView.home, name='encomendasCliente'),
+    path('vendas/guias-remessa', GuiasRemessaView.home, name='guiasRemessa'),
 
+    path('producao', OrdensProducaoView.home, name='producao'),
+    path('producao/ordens-producao', OrdensProducaoView.home, name='ordensProducao'),
     path('producao/mao-obra', MaoObraView.home, name='maoObra'),
     path('producao/mao-obra/criar', MaoObraView.create, name='criarMaoObra'),
 

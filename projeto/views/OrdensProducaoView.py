@@ -16,4 +16,4 @@ def home(request):
         'navSubSection': 'ordensProducao',
     }
 
-    return render(request, 'pedidoCompra/index.html', context)
+    return render(request, 'ordensProducao/index.html', context)

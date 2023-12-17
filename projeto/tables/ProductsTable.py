@@ -13,7 +13,7 @@ class ProductsTable(tables.Table):
         attrs = {"class": "table"}
         fields = ("name", "weight", "type", "price_base")
 
-class StockProductsTable():
+class StockProductsTable(tables.Table):
     name = tables.Column(verbose_name="Nome", accessor="product.name")
     quantity = tables.Column(verbose_name="Quantidade", accessor="quantity")
     weight = tables.Column(verbose_name="Peso", accessor="product.weight")

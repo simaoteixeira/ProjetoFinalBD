@@ -1246,8 +1246,9 @@ EXECUTE FUNCTION TR_sales_order_components_PRE_INS();
 --Lista as ordens de venda (cabeçalho)
 
 CREATE OR REPLACE VIEW V_SalesOrders AS
-SELECT *
-FROM sales_orders;
+SELECT so.*, u.username AS creator_name
+FROM sales_orders so
+INNER JOIN auth_user u ON so.id_user = u.id
 
 
 --Lista as linhas das ordens de venda
@@ -1373,8 +1374,9 @@ EXECUTE FUNCTION TR_client_order_components_PRE_INS();
 
 --Lista as encomendas do cliente (cabeçalho)
 CREATE OR REPLACE VIEW V_ClientOrders AS
-SELECT *
-FROM client_orders;
+SELECT co.*, cl.name AS client_name
+FROM client_orders co
+INNER JOIN clients cl USING (id_client)
 
 --Lista as linhas das encomendas do clientes
 CREATE OR REPLACE VIEW V_ClientOrdersComponents AS

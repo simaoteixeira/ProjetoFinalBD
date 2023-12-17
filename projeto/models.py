@@ -131,7 +131,7 @@ class ClientOrderComponents(models.Model):
 
 class ClientOrders(models.Model):
     id_client_order = models.AutoField(primary_key=True)
-    id_client = models.ForeignKey('Clients', models.DO_NOTHING, db_column='id_client')
+    client = models.ForeignKey('Clients', models.DO_NOTHING, db_column='id_client')
     id_sale_order = models.ForeignKey('SalesOrders', models.DO_NOTHING, db_column='id_sale_order', blank=True, null=True)
     total_base = models.TextField()  # This field type is a guess.
     vat_total = models.TextField()  # This field type is a guess.
@@ -352,7 +352,7 @@ class SalesOrderComponents(models.Model):
 
 class SalesOrders(models.Model):
     id_sale_order = models.AutoField(primary_key=True)
-    id_user = models.ForeignKey(AuthUser, models.DO_NOTHING, db_column='id_user')
+    user = models.ForeignKey('AuthUser', models.DO_NOTHING, db_column='id_user')
     id_client_invoice = models.ForeignKey(ClientInvoices, models.DO_NOTHING, db_column='id_client_invoice', blank=True, null=True)
     obs = models.TextField(blank=True, null=True)
     total_base = models.TextField()  # This field type is a guess.
