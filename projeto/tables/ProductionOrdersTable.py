@@ -18,4 +18,10 @@ class ProductionOrdersTable(tables.Table):
     class Meta:
         model = ProductionOrders
         attrs = {"class": "table"}
-        fields = ("name", "weight", "type", "price_base")
+        fields = (
+            "product",
+            "quantity",
+            "production_cost",
+            "labor_cost",
+            "status"
+        )

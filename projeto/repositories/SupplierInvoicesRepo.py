@@ -14,17 +14,22 @@ class SupplierInvoicesRepo:
         return [
             SupplierInvoices(
                 id_supplier_invoice=row[0],
-                supplier=(Suppliers(
-                    name=row[11],
-                )),
-                invoice_id=row[2],
-                invoice_date=row[3],
-                expire_date=row[4],
-                total_base=row[5],
-                vat_total=row[6],
-                discount_total=row[7],
-                total=row[8],
-                obs=row[9],
-                created_at=row[10],
+                supplier=Suppliers(
+                    id_supplier=row[1],
+                    name=row[2],
+                    address=row[3],
+                    locality=row[4],
+                    postal_code=row[5],
+                    nif=row[6],
+                ),
+                invoice_id=row[8],
+                invoice_date=row[9],
+                expire_date=row[10],
+                obs=row[11],
+                total_base=row[12],
+                vat_total=row[13],
+                discount_total=row[14],
+                total=row[15],
+                created_at=row[16],
             ) for row in data
         ]

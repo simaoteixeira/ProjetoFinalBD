@@ -229,9 +229,11 @@ CREATE OR REPLACE VIEW V_StockPerProduct(
     product_name,
     id_warehouse,
     warehouse_name,
-    total_quantity
+    total_quantity,
+    product_type,
+    product_weight
 ) AS
-SELECT p.id_product, p.name AS product_name, s.id_warehouse, w.name AS warehouse_name, s.quantity AS total_quantity
+SELECT p.id_product, p.name AS product_name, s.id_warehouse, w.name AS warehouse_name, s.quantity AS total_quantity, p.type AS product_type, p.weight AS product_weight
 FROM stock s
 INNER JOIN products p ON s.id_product = p.id_product
 INNER JOIN warehouses w ON s.id_warehouse = w.id_warehouse;
@@ -657,7 +659,8 @@ CREATE OR REPLACE VIEW V_MaterialReceipts(
     id_user,
     user_name,
     n_delivery_note,
-    obs
+    obs,
+    created_at
     )
     AS
 SELECT
@@ -668,7 +671,8 @@ SELECT
     u.id AS id_user,
     u.username AS user_name,
     mr.n_delivery_note,
-    mr.obs
+    mr.obs,
+    mr.created_at
 FROM
     material_receipts mr
 INNER JOIN
@@ -822,7 +826,12 @@ CREATE OR REPLACE VIEW V_SupplierInvoices (
     invoice_id,
     invoice_date,
     expire_date,
-    obs
+    obs,
+    total_base,
+    vat_total,
+    discount_total,
+    total,
+    created_at
 )
 AS
 SELECT
@@ -837,7 +846,12 @@ SELECT
     si.invoice_id,
     si.invoice_date,
     si.expire_date,
-    si.obs
+    si.obs,
+    si.total_base,
+    si.vat_total,
+    si.discount_total,
+    si.total,
+    si.created_at
 FROM
     supplier_invoices si
 INNER JOIN

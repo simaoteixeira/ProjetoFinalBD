@@ -15,18 +15,12 @@ class SalesOrdersRepo:
         return [
             SalesOrders(
                 id_sale_order=row[0],
-                user=(
-                    AuthUser(
+                user=AuthUser(
                         id=row[1],
-                        username=row[9],
-                    )
-                ),
-                id_client_invoice=row[2],
-                obs=row[3],
-                total_base=row[4],
-                vat_total=row[5],
-                discount_total=row[6],
-                total=row[7],
-                created_at=row[8],
+                        username=row[2],
+                    ),
+                obs=row[5],
+                total_base=row[6],
+                created_at=row[4],
             ) for row in data
         ]

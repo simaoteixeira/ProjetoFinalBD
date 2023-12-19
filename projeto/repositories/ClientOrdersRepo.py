@@ -13,14 +13,11 @@ class ClientOrdersRepo:
 
         return [ClientOrders(
             id_client_order=row[0],
-            client=(Clients(
+            client=Clients(
                 id_client=row[1],
-                name=row[9],
-            )),
-            id_sale_order=row[2],
-            total_base=row[3],
-            vat_total=row[4],
-            discount_total=row[5],
-            total=row[6],
-            created_at=row[8],
+                name=row[2],
+            ),
+            obs=row[3],
+            total_base=row[4],
+            created_at=row[5],
         ) for row in data]

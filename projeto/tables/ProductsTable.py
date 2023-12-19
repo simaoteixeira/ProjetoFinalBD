@@ -16,9 +16,9 @@ class ProductsTable(tables.Table):
 class StockProductsTable(tables.Table):
     name = tables.Column(verbose_name="Nome", accessor="product.name")
     quantity = tables.Column(verbose_name="Quantidade", accessor="quantity")
-    weight = tables.Column(verbose_name="Peso", accessor="product.weight")
+    weight = tables.Column(verbose_name="Peso Indiv.", accessor="product.weight")
     warehouse = tables.Column(verbose_name="Armazém", accessor="warehouse.name")
-    #type = tables.Column(verbose_name="Tipo", accessor="product.type")
+    type = tables.Column(verbose_name="Tipo", accessor="product.type")
     tools = tables.TemplateColumn(
         verbose_name="",
         template_name="core/_tools_column.html",

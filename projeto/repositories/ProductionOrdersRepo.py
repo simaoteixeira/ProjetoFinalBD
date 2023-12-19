@@ -1,6 +1,6 @@
 from django.db import connections
 
-from projeto.models import ProductionOrders
+from projeto.models import ProductionOrders, Labors, AuthUser, Products
 
 
 class ProductionOrdersRepo:
@@ -15,12 +15,24 @@ class ProductionOrdersRepo:
         return [
             ProductionOrders(
                 id_production_order=row[0],
-                product=row[1],
-                id_warehouse=row[2],
-                quantity=row[3],
-                date=row[4],
-                status=row[5],
-                product_name=row[6],
-                warehouse_name=row[7],
+                labor=Labors(
+                    id_labor=row[1],
+                    cost=row[2],
+                ),
+                user=AuthUser(
+                    id=row[3],
+                    username=row[4],
+                ),
+                product=Products(
+                    id_product=row[5],
+                    name=row[6],
+                ),
+                equipment_quantity=row[7],
+                production_cost=row[8],
+                unit_cost=row[9],
+                status=row[10],
+                created_at=row[11],
+                last_updated=row[12],
+                obs=row[13]
             ) for row in data
         ]

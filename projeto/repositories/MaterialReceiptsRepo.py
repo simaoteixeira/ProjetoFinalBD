@@ -1,9 +1,10 @@
 from django.db import connections, models
 
-from projeto.models import MaterialReceipts
+from projeto.models import MaterialReceipts, Suppliers, AuthUser, PurchasingOrders
+
 
 class MaterialReceiptsView(MaterialReceipts):
-    supplier_name = models.TextField()
+    supplier = models.ForeignKey('Suppliers', models.DO_NOTHING, db_column='id_supplier')
 
 class MaterialReceiptsRepo:
     def __init__(self, connection='default'):
@@ -16,16 +17,18 @@ class MaterialReceiptsRepo:
         return [
             MaterialReceiptsView(
                 id_material_receipt=row[0],
-                supplier_invoice=row[1],
-                id_user=row[2],
-                id_purchasing_order=row[3],
-                n_delivery_note=row[4],
-                total_base=row[5],
-                vat_total=row[6],
-                discount_total=row[7],
-                total=row[8],
-                obs=row[9],
-                created_at=row[10],
-                supplier_name=row[11]
+                purchasing_order=PurchasingOrders(
+                    id_purchasing_order=row[1]
+                ),
+                supplier=Suppliers(
+                    id_supplier=row[2],
+                    name=row[3]
+                ),
+                user=AuthUser(
+                    username=row[5]
+                ),
+                n_delivery_note=row[6],
+                obs=row[7],
+                created_at=row[8],
             ) for row in data
         ]

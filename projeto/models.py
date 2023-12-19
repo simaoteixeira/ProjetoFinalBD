@@ -138,6 +138,7 @@ class ClientOrders(models.Model):
     discount_total = models.TextField()  # This field type is a guess.
     total = models.TextField()  # This field type is a guess.
     created_at = models.DateTimeField()
+    obs = models.TextField(blank=True, null=True)
 
     class Meta:
         managed = False
@@ -235,8 +236,8 @@ class MaterialReceiptComponents(models.Model):
 class MaterialReceipts(models.Model):
     id_material_receipt = models.AutoField(primary_key=True)
     supplier_invoice = models.ForeignKey('SupplierInvoices', models.DO_NOTHING, db_column='id_supplier_invoice', blank=True, null=True)
-    id_user = models.ForeignKey(AuthUser, models.DO_NOTHING, db_column='id_user')
-    id_purchasing_order = models.ForeignKey('PurchasingOrders', models.DO_NOTHING, db_column='id_purchasing_order')
+    user = models.ForeignKey('AuthUser', models.DO_NOTHING, db_column='id_user')
+    purchasing_order = models.ForeignKey('PurchasingOrders', models.DO_NOTHING, db_column='id_purchasing_order')
     n_delivery_note = models.TextField()
     total_base = models.TextField()  # This field type is a guess.
     vat_total = models.TextField()  # This field type is a guess.
@@ -267,7 +268,7 @@ class ProductionOrderComponents(models.Model):
 class ProductionOrders(models.Model):
     id_order_production = models.AutoField(primary_key=True)
     labor = models.ForeignKey('Labors', models.DO_NOTHING, db_column='id_labor')
-    id_user = models.ForeignKey(AuthUser, models.DO_NOTHING, db_column='id_user')
+    user = models.ForeignKey('AuthUser', models.DO_NOTHING, db_column='id_user')
     product = models.ForeignKey('Products', models.DO_NOTHING, db_column='id_product')
     equipment_quantity = models.IntegerField()
     unit_cost = models.TextField(blank=True, null=True)  # This field type is a guess.
@@ -319,7 +320,7 @@ class PurchasingOrderComponents(models.Model):
 class PurchasingOrders(models.Model):
     id_purchasing_order = models.AutoField(primary_key=True)
     supplier = models.ForeignKey('Suppliers', models.DO_NOTHING, db_column='id_supplier')
-    user = models.ForeignKey(AuthUser, models.DO_NOTHING, db_column='id_user')
+    user = models.ForeignKey('AuthUser', models.DO_NOTHING, db_column='id_user')
     total_base = models.TextField()  # This field type is a guess.
     vat_total = models.TextField()  # This field type is a guess.
     discount_total = models.TextField()  # This field type is a guess.
