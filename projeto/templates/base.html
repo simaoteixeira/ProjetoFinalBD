@@ -5,7 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
-    <script src="/static/bsmodals/bsmodals.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.css" />
     <style type="text/tailwindcss">
         @layer utilities {
             .button {
@@ -50,23 +52,22 @@
                     <div class="flex flex-col gap-2 ml-8">
                         {% component "NavSubsection" title="Movimentos" subSectionSelected=navSubSection navSubSection='movimentos' icon="arrows-left-right" linkTo="movimentos" %}
                         {% component "NavSubsection" title="Armazens" subSectionSelected=navSubSection navSubSection='armazens' icon="warehouse" linkTo="armazens" %}
-                        {% component "NavSubsection" title="Produtos" subSectionSelected=navSubSection navSubSection='produtos' icon="archive" %}
-                        {% component "NavSubsection" title="Componentes" subSectionSelected=navSubSection navSubSection='componentes' icon="cpu" %}
+                        {% component "NavSubsection" title="Produtos" subSectionSelected=navSubSection navSubSection='produtos' icon="archive" linkTo="produtos" %}
                     </div>
                 {% endif %}
-                {% component "NavSection" title="Produção" sectionSelected=navSection navSection='producao' icon="package" %}
+                {% component "NavSection" title="Produção" sectionSelected=navSection navSection='producao' icon="package" linkTo="producao" %}
                 {% if navSubSection and navSection == 'producao' %}
                     <div class="flex flex-col gap-2 ml-8">
-                        {% component "NavSubsection" title="Ordens de Produção" subSectionSelected=navSubSection navSubSection='ordensProducao' icon="shopping-cart" %}
-                        {% component "NavSubsection" title="Mão de Obra" subSectionSelected=navSubSection navSubSection='maoObra' icon="hand-coins" %}
+                        {% component "NavSubsection" title="Ordens de Produção" subSectionSelected=navSubSection navSubSection='ordensProducao' icon="shopping-cart" linkTo="ordensProducao" %}
+                        {% component "NavSubsection" title="Mão de Obra" subSectionSelected=navSubSection navSubSection='maoObra' icon="hand-coins" linkTo="maoObra" %}
                     </div>
                 {% endif %}
-                {% component "NavSection" title="Vendas" sectionSelected=navSection navSection='vendas' icon="currency-dollar" %}
+                {% component "NavSection" title="Vendas" sectionSelected=navSection navSection='vendas' icon="currency-dollar" linkTo="vendas" %}
                 {% if navSubSection and navSection == 'vendas' %}
                     <div class="flex flex-col gap-2 ml-8">
-                        {% component "NavSubsection" title="Encomendas Cliente" subSectionSelected=navSubSection navSubSection='encomendas' icon="package" %}
-                        {% component "NavSubsection" title="Guias de Remessa" subSectionSelected=navSubSection navSubSection='guiasRemessa' icon="hand-coins" %}
-                        {% component "NavSubsection" title="Clientes" subSectionSelected=navSubSection navSubSection='clientes' icon="users-three" %}
+                        {% component "NavSubsection" title="Encomendas Cliente" subSectionSelected=navSubSection navSubSection='encomendas' icon="package" linkTo="encomendasCliente" %}
+                        {% component "NavSubsection" title="Guias de Remessa" subSectionSelected=navSubSection navSubSection='guiasRemessa' icon="hand-coins" linkTo="guiasRemessa" %}
+                        {% component "NavSubsection" title="Clientes" subSectionSelected=navSubSection navSubSection='clientes' icon="users-three" linkTo="clientes" %}
                         {% component "NavSubsection" title="Faturas Cliente" subSectionSelected=navSubSection navSubSection='faturasCliente' icon="scroll" %}
                     </div>
                 {% endif %}
@@ -95,5 +96,14 @@
             {% endblock %}
         </main>
     </div>
+    <script type="application/javascript">
+        $("a[rel='modal:open']").click(function(ev) {
+            $(this).modal({
+                fadeDuration: 250,
+                fadeDelay: 0.50
+            });
+            return false;
+        });
+    </script>
 </body>
 </html>

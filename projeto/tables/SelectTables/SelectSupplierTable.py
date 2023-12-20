@@ -10,7 +10,7 @@ class SelectSupplierTable(tables.Table):
     nif = tables.Column(verbose_name="NIF", accessor="nif")
     tools = tables.TemplateColumn(
         verbose_name="",
-        template_name="core/_select_column.html",
+        template_name="core/_select_supplier_column.html",
         orderable=False
     )
 

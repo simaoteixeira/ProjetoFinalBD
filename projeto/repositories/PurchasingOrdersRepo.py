@@ -31,5 +31,27 @@ class PurchasingOrdersRepo:
             ) for row in dataPurchasingOrders
         ]
 
-        print(data)
         return data
+
+    def create(self, id_supplier, id_user, delivery_date, obs, products=[]):
+        self.cursor.callproc('FN_Create_PurchasingOrder', [id_supplier, id_user, delivery_date, obs])
+        reponse = self.cursor.fetchone()
+
+        print()
+
+        if reponse[0]:
+            id_purchasing_order = reponse[0]
+
+            print(id_purchasing_order)
+
+            for product in products:
+                self.cursor.execute('Call PA_InsertLine_PurchasingOrder(%s, %s, %s, %s, %s, %s)', [
+                    id_purchasing_order,
+                    product["id"],
+                    product["quantity"],
+                    product["price_base"],
+                    product["vat"] or 0,
+                    product["discount"] or 0,
+                ])
+
+            return True
