@@ -499,6 +499,7 @@ INNER JOIN auth_user u ON po.id_user = u.id;
 DROP VIEW IF EXISTS V_PurchasingOrderComponents CASCADE;
 
 CREATE OR REPLACE VIEW V_PurchasingOrderComponents(
+    id_purchasing_order_component,
     id_product,
     product_name,
     quantity,
@@ -512,6 +513,7 @@ CREATE OR REPLACE VIEW V_PurchasingOrderComponents(
     id_purchasing_order
     ) AS
 SELECT
+    poc.id_purchasing_order_component,
     poc.id_product,
     p.name as product_name,
     poc.quantity,
@@ -687,6 +689,7 @@ INNER JOIN
 -- View	material_receipt_components	V_MaterialReceiptComponents	Listar as linhas das receções de material
 DROP VIEW IF EXISTS V_MaterialReceiptComponents CASCADE;
 CREATE OR REPLACE VIEW V_MaterialReceiptComponents(
+    id_material_receipt_component,
     id_product,
     product_name,
     id_warehouse,
@@ -701,6 +704,7 @@ CREATE OR REPLACE VIEW V_MaterialReceiptComponents(
     line_total
     ) AS
 SELECT
+    mrc.id_material_receipt_component,
     mrc.id_product,
     p.name AS product_name,
     w.id_warehouse,
@@ -876,6 +880,7 @@ GROUP BY
 -- View	supplier_invoice_components	V_SupplierInvoiceComponents	Listar as linhas das faturas de fornecedor
 DROP VIEW IF EXISTS V_SupplierInvoiceComponents CASCADE;
 CREATE OR REPLACE VIEW V_SupplierInvoiceComponents(
+    id_supplier_invoice_component,
     id_supplier_invoice,
     id_product,
     product_name,
@@ -889,6 +894,7 @@ CREATE OR REPLACE VIEW V_SupplierInvoiceComponents(
     line_total
     ) AS
 SELECT
+    sic.id_supplier_invoice_component,
     sic.id_supplier_invoice,
     sic.id_product,
     p.name AS product_name,
@@ -1116,6 +1122,7 @@ INNER JOIN
 -- View production_order_components V_ProductionOrderComponents Listar as linhas das ordens de produção
 DROP VIEW IF EXISTS V_ProductionOrderComponents CASCADE;
 CREATE OR REPLACE VIEW V_ProductionOrderComponents(
+    id_order_production_component,
     id_order_production,
     id_product,
     product_name,
@@ -1127,6 +1134,7 @@ CREATE OR REPLACE VIEW V_ProductionOrderComponents(
     line_total
     ) AS
 SELECT
+    poc.id_order_production_component,
     poc.id_order_production,
     poc.id_product,
     p.name AS product_name,
@@ -1349,6 +1357,7 @@ GROUP BY so.id_sale_order, so.id_user, u.username, so.created_at, so.obs, so.tot
 --Lista as linhas das ordens de venda
 DROP VIEW IF EXISTS V_SalesOrderComponents CASCADE;
 CREATE OR REPLACE VIEW V_SalesOrderComponents(
+    id_sales_order_component,
     id_product,
     product_name,
     quantity,
@@ -1361,6 +1370,7 @@ CREATE OR REPLACE VIEW V_SalesOrderComponents(
     line_total
 ) AS
 SELECT
+    soc.id_sales_order_component,
     soc.id_product,
     p.name AS product_name,
     soc.quantity,
@@ -1515,6 +1525,7 @@ CREATE OR REPLACE VIEW V_ClientOrdersComponents(
     line_total
 ) AS
 SELECT
+    coc.client_order_components,
     coc.id_product,
     p.name AS product_name,
     coc.quantity,
@@ -1679,6 +1690,7 @@ GROUP BY ci.id_client_invoice, ci.id_client, c.name, c.address, c.locality, c.po
 --Lista as linhas das faturas
 DROP VIEW IF EXISTS V_ClientInvoicesComponents CASCADE;
 CREATE OR REPLACE VIEW V_ClientInvoicesComponents(
+    id_client_invoice_component,
     id_product,
     product_name,
     quantity,
@@ -1691,6 +1703,7 @@ CREATE OR REPLACE VIEW V_ClientInvoicesComponents(
     line_total
 ) AS
 SELECT
+    cic.id_client_invoice_component,
     cic.id_product,
     p.name AS product_name,
     cic.quantity,
