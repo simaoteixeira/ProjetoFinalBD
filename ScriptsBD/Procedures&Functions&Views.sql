@@ -508,7 +508,8 @@ CREATE OR REPLACE VIEW V_PurchasingOrderComponents(
     vat_value,
     discount,
     discount_value,
-    line_total
+    line_total,
+    id_purchasing_order
     ) AS
 SELECT
     poc.id_product,
@@ -520,7 +521,8 @@ SELECT
     poc.vat_value,
     poc.discount,
     poc.discount_value,
-    poc.line_total
+    poc.line_total,
+    poc.id_purchasing_order
 FROM purchasing_order_components  poc
 INNER JOIN products p USING (id_product);
 

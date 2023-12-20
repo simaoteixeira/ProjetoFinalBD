@@ -8,26 +8,41 @@
     <div class="flex gap-4 items-center">
         <div class="bg-white p-6 border border-gray-300 flex flex-col gap-2 rounded-lg">
             <i class="ph-fill ph-truck text-5xl"></i>
-            <p class="text-xl leading-6 font-semibold text-gray-900 whitespace-nowrap">Fornecedor XPTO</p>
+            <p class="text-xl leading-6 font-semibold text-gray-900 whitespace-nowrap">{{ data.supplier.name }}</p>
         </div>
         <div class="bg-white p-6 w-full h-[8.125rem] border border-gray-300 flex gap-8 items-center justify-center rounded-lg">
             <div class="flex flex-col items-center gap-2">
                 <span class="text-sm leading-5 font-medium">Registado a</span>
-                <p class="text-xl leading-6 font-semibold text-gray-900">09/11/2023</p>
+                <p class="text-xl leading-6 font-semibold text-gray-900">{{ data.created_at|date:"d M, Y" }}</p>
             </div>
             <i class="ph-bold ph-arrow-right text-4xl"></i>
             <div class="flex flex-col items-center gap-2">
                 <span class="text-sm leading-5 font-medium">Entrega prevista a<span>
-                <p class="text-xl leading-6 font-semibold text-green-500">13/11/2023</p>
+                <p class="text-xl leading-6 font-semibold text-green-500">{{ data.delivery_date|date:"d M, Y" }}</p>
             </div>
         </div>
     </div>
-    <div>
-        <span class="text-sm leading-5 font-medium mb-2">Componentes</span>
-        <p>Tabela de componentes</p>
+    <div class="flex flex-col gap-2">
+        <span class="text-sm leading-5 font-medium">Componentes</span>
+        {% render_table componentsTable %}
+        <div class="bg-gray-300 rounded-md mt-4 py-2 px-4 w-1/2 self-end flex flex-col items-center">
+            <div class="grid grid-cols-4 gap-4 items-center w-3/4">
+                <span class="text-sm leading-5 font-medium">Total Unit.</span>
+                <span class="text-sm leading-5 font-medium">Total IVA</span>
+                <span class="text-sm leading-5 font-medium">Total Desconto</span>
+                <span class="text-sm leading-5 font-medium">Valor Total</span>
+            </div>
+            <div class="grid grid-cols-4 gap-4 items-center w-3/4">
+                <p class="text-sm leading-6 font-semibold text-gray-900">{{ data.total_base }}€</p>
+                <p class="text-sm leading-6 font-semibold text-gray-900">{{ data.vat_total }}€</p>
+                <p class="text-sm leading-6 font-semibold text-gray-900">{{ data.discount_total }}€</p>
+                <p class="text-sm leading-6 font-semibold text-gray-900">{{ data.total }}€</p>
+            </div>
+        </div>
     </div>
-    <form class="flex flex-col gap-2">
-        {% component "TextArea" name="observations" label="Observações" %}
+    <form method="post" class="flex flex-col gap-2">
+        {% csrf_token %}
+        {% component "TextArea" name="observations" label="Observações" value=data.obs %}
         <button type="submit" class="button w-fit self-end">
             Adicionar Observações
         </button>

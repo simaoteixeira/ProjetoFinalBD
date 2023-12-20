@@ -302,15 +302,16 @@ class Products(models.Model):
 
 class PurchasingOrderComponents(models.Model):
     id_purchasing_order_components = models.AutoField(primary_key=True)
-    id_purchasing_order = models.ForeignKey('PurchasingOrders', models.DO_NOTHING, db_column='id_purchasing_order')
-    id_product = models.ForeignKey(Products, models.DO_NOTHING, db_column='id_product')
+    purchasing_order = models.ForeignKey('PurchasingOrders', models.DO_NOTHING, db_column='id_purchasing_order')
+    product = models.ForeignKey('Products', models.DO_NOTHING, db_column='id_product')
     quantity = models.IntegerField()
-    price_base = models.TextField()  # This field type is a guess.
+    price_base = models.FloatField()  # This field type is a guess.
     vat = models.IntegerField()
-    vat_value = models.TextField()  # This field type is a guess.
-    discount = models.FloatField()
-    discount_value = models.TextField()  # This field type is a guess.
-    line_total = models.TextField()  # This field type is a guess.
+    vat_value = models.FloatField()  # This field type is a guess.
+    discount = models.IntegerField()
+    discount_value = models.FloatField()  # This field type is a guess.
+    line_total = models.FloatField()  # This field type is a guess.
+    total_unit = models.FloatField()  # This field type is a guess.
 
     class Meta:
         managed = False

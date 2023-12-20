@@ -6,7 +6,7 @@ from projeto.models import AuthUser
 from projeto.repositories.ProductsRepo import ProductsRepo
 from projeto.repositories.PurchasingOrdersRepo import PurchasingOrdersRepo
 from projeto.repositories.SupplierRepo import SupplierRepo
-from projeto.tables.PurchasingOrdersTable import PurchasingOrdersTable
+from projeto.tables.PurchasingOrdersTable import PurchasingOrdersTable, PurchasingOrdersProductsTable
 from projeto.tables.SelectTables.SelectProductsTable import SelectProductsTable
 from projeto.tables.SelectTables.SelectSupplierTable import SelectSupplierTable
 from projeto.tables.UsersTable import UsersTable
@@ -29,7 +29,20 @@ def home(request):
 
 @login_required(login_url='/login')
 def view(request, id):
+    if request.method == 'POST' and request.POST.get('observations'):
+        PurchasingOrdersRepo().update_obs(id, request.POST.get('observations'))
+
+    data = PurchasingOrdersRepo().find_by_id(id)
+    components = PurchasingOrdersRepo().find_components(id)
+
+    componentsTable = PurchasingOrdersProductsTable(components)
+
+    if data is None:
+        return render(request, '404.html', status=404)
+
     context = {
+        'data': data,
+        'componentsTable': componentsTable,
         'navSection': 'compras',
         'navSubSection': 'pedidosCompra',
     }
