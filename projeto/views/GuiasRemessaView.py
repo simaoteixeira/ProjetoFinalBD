@@ -86,6 +86,7 @@ def create(request):
             print(data)
 
             SalesOrdersRepo().create(
+                id_user=request.user.id,
                 id_client_order=data["client_orders"],
                 obs=data["obs"],
                 products=data["products"],

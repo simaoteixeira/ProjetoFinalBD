@@ -72,11 +72,12 @@ def create(request):
             print(data)
 
             ProductionOrdersRepo().create(
+                id_labor=data["labor"],
+                id_user=request.user.id,
                 id_product=data["product"],
                 equipment_quantity=data["equipment_quantity"],
-                labor=data["labor"],
                 obs=data["obs"],
-                products=data["products"]
+                products=data["products"],
             )
         else:
             errors = getErrorsObject(form.errors.get_context())

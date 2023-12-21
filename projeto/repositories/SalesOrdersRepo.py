@@ -67,15 +67,17 @@ class SalesOrdersRepo:
             ) for row in data
         ]
 
-    def create(self, id_client_order, obs, products):
-        self.cursor.callproc("FN_Create_SalesOrder", [tuple(id_client_order), obs or ''])
+    def create(self, id_user, id_client_order, obs, products):
+        id_client_order = list(map(int, id_client_order))
+
+        self.cursor.callproc("FN_Create_SalesOrder", [id_user, id_client_order, obs])
         result = self.cursor.fetchone()
 
         if result[0]:
-            id_sales_order = result[1]
+            id_sales_order = result[0]
 
             for product in products:
-                self.cursor.execute("Call PA_InsertLine_SalesOrder($s, $s, $s, $s, $s, $s)",
+                self.cursor.execute("Call PA_InsertLine_SalesOrder(%s, %s, %s, %s, %s, %s)",
                                     [id_sales_order, product['id'], product['quantity'], product['price_base'],
                                      product['vat'], product['discount']])
 
