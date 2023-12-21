@@ -994,13 +994,12 @@ CREATE OR REPLACE PROCEDURE PA_InsertLine_ProductionOrder(
     IN _id_product INTEGER,
     IN _id_warehouse INTEGER,
     IN _quantity INTEGER,
-    IN _price_base MONEY
 )
 LANGUAGE plpgsql
 AS $$
 BEGIN
-    INSERT INTO production_order_components (id_order_production, id_product,id_warehouse, quantity, price_base)
-    VALUES (_id_production_order, _id_product,_id_warehouse, _quantity, _price_base);
+    INSERT INTO production_order_components (id_order_production, id_product,id_warehouse, quantity)
+    VALUES (_id_production_order, _id_product,_id_warehouse, _quantity);
 END;
 $$;
 -- Trigger production_order_components TR_production_order_components_PRE_INS Depois de inserir/atualizar/eliminar a linha de uma ordem de produção, temos de atualizar os valores totais da própria linha e depois atualizar os valores totais da ordem de produção e dar saída nos movimentos de stock (stock_movements)
@@ -1344,6 +1343,7 @@ CREATE OR REPLACE VIEW V_SalesOrders(
     id_user,
     user_name,
     client_orders,
+    client_names,
     created_at,
     obs,
     total_base
@@ -1354,12 +1354,14 @@ SELECT
     so.id_user,
     u.username AS user_name,
     ARRAY_AGG(co.id_client_order) AS client_orders,
+    ARRAY_AGG(c.name) AS client_names,
     so.created_at,
     so.obs,
     so.total_base
  FROM sales_orders so
 INNER JOIN auth_user u ON so.id_user = u.id
 INNER JOIN client_orders co ON so.id_sale_order = co.id_sale_order
+INNER JOIN clients c ON co.id_client = c.id_client
 GROUP BY so.id_sale_order, so.id_user, u.username, so.created_at, so.obs, so.total_base;
 
 
