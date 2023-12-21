@@ -19,16 +19,23 @@ class StockProductsTable(tables.Table):
     weight = tables.Column(verbose_name="Peso Indiv.", accessor="product.weight")
     warehouse = tables.Column(verbose_name="Armazém", accessor="warehouse.name")
     type = tables.Column(verbose_name="Tipo", accessor="product.type")
-    tools = tables.TemplateColumn(
+    see = tables.TemplateColumn(
         verbose_name="",
-        template_name="core/_tools_column.html",
+        template_name="core/_column_eye.html",
         orderable=False,
-        extra_context={
-            'trashButton': True,
-        }
+        linkify=('produto', {'id': tables.A('product.id_product')}),
     )
 
     class Meta:
         model = Stock
         attrs = {"class": "table"}
         fields = ("name", "quantity", "weight", "warehouse", "type")
+
+class ProductsPerWarehouseTable(tables.Table):
+    warehouse = tables.Column(verbose_name="Armazém", accessor="warehouse.name")
+    quantity = tables.Column(verbose_name="Quantidade", accessor="quantity")
+
+    class Meta:
+        model = Stock
+        attrs = {"class": "table"}
+        fields = ("warehouse", "quantity")

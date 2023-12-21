@@ -1,5 +1,5 @@
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 
 from projeto.forms.PurchasingOrderForm import PurchasingOrdersForm
 from projeto.models import AuthUser
@@ -100,6 +100,8 @@ def create(request):
                 obs=data["obs"],
                 products=data["products"]
             )
+
+            return redirect('home')
         else:
             errors = getErrorsObject(form.errors.get_context())
             print(errors)

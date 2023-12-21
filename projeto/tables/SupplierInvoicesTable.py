@@ -8,13 +8,11 @@ class SupplierInvoicesTable(tables.Table):
     supplier = tables.Column(accessor='supplier.name', verbose_name='Fornecedor')
     total = tables.Column(accessor='total', verbose_name='Valor')
     created_at = tables.Column(accessor='created_at', verbose_name='Data de Criação')
-    tools = tables.TemplateColumn(
+    see = tables.TemplateColumn(
         verbose_name="",
-        template_name="core/_tools_column.html",
+        template_name="core/_column_eye.html",
         orderable=False,
-        extra_context={
-            'trashButton': True
-        }
+        linkify=('fatura', {'id': tables.A('id_supplier_invoice')}),
     )
 
     class Meta:

@@ -1,17 +1,17 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 
-from projeto.models import Warehouses
-from projeto.tables.WarehousesTable import WarehousesTable
+from projeto.repositories.StockMovmentsRepo import StockMovmentsRepo
+from projeto.tables.StockMovmentsTable import StockMovmentsTable
+
 
 
 @login_required(login_url='/login')
 def home(request):
-    #table = WarehousesTable(Warehouses.objects.all())
-    #table.paginate(page=request.GET.get('page', 1), per_page=10)
+    table = StockMovmentsTable(StockMovmentsRepo().find_all())
 
     context = {
-        #'table': table,
+        'table': table,
         'navSection': 'inventario',
         'navSubSection': 'movimentos',
     }

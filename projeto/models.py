@@ -79,8 +79,8 @@ class AuthUserUserPermissions(models.Model):
 
 class ClientInvoiceComponents(models.Model):
     id_client_invoice_component = models.AutoField(primary_key=True)
-    id_product = models.ForeignKey('Products', models.DO_NOTHING, db_column='id_product')
-    id_client_invoice = models.ForeignKey('ClientInvoices', models.DO_NOTHING, db_column='id_client_invoice')
+    product = models.ForeignKey('Products', models.DO_NOTHING, db_column='id_product')
+    client_invoice = models.ForeignKey('ClientInvoices', models.DO_NOTHING, db_column='id_client_invoice')
     quantity = models.IntegerField()
     price_base = models.TextField()  # This field type is a guess.
     vat = models.IntegerField()
@@ -96,7 +96,7 @@ class ClientInvoiceComponents(models.Model):
 
 class ClientInvoices(models.Model):
     id_client_invoice = models.AutoField(primary_key=True)
-    id_client = models.ForeignKey('Clients', models.DO_NOTHING, db_column='id_client')
+    client = models.ForeignKey('Clients', models.DO_NOTHING, db_column='id_client')
     obs = models.TextField(blank=True, null=True)
     total_base = models.TextField()  # This field type is a guess.
     vat_total = models.TextField()  # This field type is a guess.
@@ -114,8 +114,8 @@ class ClientInvoices(models.Model):
 
 class ClientOrderComponents(models.Model):
     id_client_order_components = models.AutoField(primary_key=True)
-    id_product = models.ForeignKey('Products', models.DO_NOTHING, db_column='id_product')
-    id_client_order = models.ForeignKey('ClientOrders', models.DO_NOTHING, db_column='id_client_order')
+    product = models.ForeignKey('Products', models.DO_NOTHING, db_column='id_product')
+    client_order = models.ForeignKey('ClientOrders', models.DO_NOTHING, db_column='id_client_order')
     quantity = models.IntegerField()
     price_base = models.TextField()  # This field type is a guess.
     vat = models.IntegerField()
@@ -123,6 +123,7 @@ class ClientOrderComponents(models.Model):
     discount = models.FloatField()
     discount_value = models.TextField()  # This field type is a guess.
     line_total = models.TextField()  # This field type is a guess.
+    total_unit = models.TextField()  # This field type is a guess.
 
     class Meta:
         managed = False
@@ -218,8 +219,8 @@ class Labors(models.Model):
 class MaterialReceiptComponents(models.Model):
     id_material_receipt_component = models.AutoField(primary_key=True)
     id_material_receipt = models.ForeignKey('MaterialReceipts', models.DO_NOTHING, db_column='id_material_receipt')
-    id_warehouse = models.ForeignKey('Warehouses', models.DO_NOTHING, db_column='id_warehouse')
-    id_product = models.ForeignKey('Products', models.DO_NOTHING, db_column='id_product')
+    warehouse = models.ForeignKey('Warehouses', models.DO_NOTHING, db_column='id_warehouse')
+    product = models.ForeignKey('Products', models.DO_NOTHING, db_column='id_product')
     quantity = models.IntegerField()
     price_base = models.TextField()  # This field type is a guess.
     vat = models.IntegerField()
@@ -227,6 +228,7 @@ class MaterialReceiptComponents(models.Model):
     discount = models.FloatField()
     discount_value = models.TextField()  # This field type is a guess.
     line_total = models.TextField()  # This field type is a guess.
+    total_unit = models.TextField()  # This field type is a guess.
 
     class Meta:
         managed = False
@@ -337,8 +339,8 @@ class PurchasingOrders(models.Model):
 
 class SalesOrderComponents(models.Model):
     id_sales_order_component = models.AutoField(primary_key=True)
-    id_product = models.ForeignKey(Products, models.DO_NOTHING, db_column='id_product')
-    id_sale_order = models.ForeignKey('SalesOrders', models.DO_NOTHING, db_column='id_sale_order')
+    product = models.ForeignKey(Products, models.DO_NOTHING, db_column='id_product')
+    sale_order = models.ForeignKey('SalesOrders', models.DO_NOTHING, db_column='id_sale_order')
     quantity = models.IntegerField()
     price_base = models.TextField()  # This field type is a guess.
     vat = models.IntegerField()
@@ -346,6 +348,7 @@ class SalesOrderComponents(models.Model):
     discount = models.FloatField()
     discount_value = models.TextField()  # This field type is a guess.
     line_total = models.TextField()  # This field type is a guess.
+    total_unit = models.TextField()  # This field type is a guess.
 
     class Meta:
         managed = False
@@ -380,14 +383,15 @@ class Stock(models.Model):
 
 class StockMovements(models.Model):
     id_stock_movement = models.AutoField(primary_key=True)
-    id_product = models.ForeignKey(Products, models.DO_NOTHING, db_column='id_product')
-    id_warehouse = models.ForeignKey('Warehouses', models.DO_NOTHING, db_column='id_warehouse')
+    product = models.ForeignKey('Products', models.DO_NOTHING, db_column='id_product')
+    warehouse = models.ForeignKey('Warehouses', models.DO_NOTHING, db_column='id_warehouse')
     quantity = models.IntegerField()
     type = models.TextField()
     reason = models.TextField()
     id_reason = models.IntegerField()
     prev_quantity = models.IntegerField()
     pos_quantity = models.IntegerField()
+    created_at = models.DateTimeField()
 
     class Meta:
         managed = False
@@ -396,8 +400,8 @@ class StockMovements(models.Model):
 
 class SupplierInvoiceComponents(models.Model):
     id_supplier_invoice_component = models.AutoField(primary_key=True)
-    id_supplier_invoice = models.ForeignKey('SupplierInvoices', models.DO_NOTHING, db_column='id_supplier_invoice')
-    id_product = models.ForeignKey(Products, models.DO_NOTHING, db_column='id_product')
+    supplier_invoice = models.ForeignKey('SupplierInvoices', models.DO_NOTHING, db_column='id_supplier_invoice')
+    product = models.ForeignKey('Products', models.DO_NOTHING, db_column='id_product')
     quantity = models.IntegerField()
     price_base = models.TextField()  # This field type is a guess.
     vat = models.IntegerField()
@@ -405,6 +409,7 @@ class SupplierInvoiceComponents(models.Model):
     discount = models.FloatField()
     discount_value = models.TextField()  # This field type is a guess.
     line_total = models.TextField()  # This field type is a guess.
+    total_unit = models.TextField()  # This field type is a guess.
 
     class Meta:
         managed = False
@@ -423,6 +428,7 @@ class SupplierInvoices(models.Model):
     invoice_date = models.DateTimeField()
     invoice_id = models.TextField()
     created_at = models.DateTimeField()
+    material_receptions = models.TextField()
 
     class Meta:
         managed = False

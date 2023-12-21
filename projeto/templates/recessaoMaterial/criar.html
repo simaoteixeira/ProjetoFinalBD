@@ -1,0 +1,134 @@
+{% extends 'base.html' %}
+{% load render_table from django_tables2 %}
+
+{% block title %}Recessoes de Material{% endblock %}
+
+{% block content %}
+    <h1 class="font-extrabold text-4xl leading-10">Registar Recessão de Material</h1>
+    <form method="post" class="flex flex-col gap-4">
+        {% csrf_token %}
+        <div class="flex gap-4">
+            <div class="w-full">
+                <span class="mb-2">Fornecedor</span>
+                <a href="#supplierModal" class="button w-full !justify-start" rel="modal:open">
+                    <i class="ph-fill ph-truck"></i>
+                    {% if selected_supplier %}
+                        <input name="supplier" class="hidden" value="{{ selected_supplier_id }}">
+                        {{ selected_supplier }}
+                    {% else %}
+                        Seleciona um Fornecedor
+                    {% endif %}
+                </a>
+                {% if errors.supplier %}
+                    <span class="text-red-500 ml-1">{{ errors.supplier }}</span>
+                {% endif %}
+            </div>
+            <div class="w-full">
+                <span class="mb-2">Pedido de compra</span>
+                <a href="#purchasingOrdersModal" class="button w-full !justify-start" rel="modal:open">
+                    <i class="ph-fill ph-truck"></i>
+                    <div id="purchasingOrderInfo">
+                        {% if form.purchasing_order.value %}
+                        <input name="purchasing_order" class="hidden" value="{{ form.purchasing_order.value }}">
+                        {{ form.purchasing_order.value }}
+                        {% else %}
+                            Seleciona o Pedido de Compra
+                        {% endif %}
+                    </div>
+                </a>
+                {% if errors.purchasing_order %}
+                    <span class="text-red-500 ml-1">{{ errors.purchasing_order }}</span>
+                {% endif %}
+            </div>
+            <div class="w-full">
+                <span class="mb-2">Numero da Guia</span>
+                {% component "Input" type="text" placeholder="Numero de Guia" inputName="n_delivery_note" value=form.n_delivery_note.value error=errors.n_delivery_note %}
+            </div>
+        </div>
+        {% component "ProductsBaseTable" errors=errors deleteOnSelect=True %}
+        <div class="table-container w-1/2">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Id Produto</th>
+                        <th>Designação</th>
+                        <th>Armazem</th>
+                    </tr>
+                </thead>
+                <tbody id="products-warehouses-table">
+                    <!--<tr>
+                        <td>25a7</td>
+                        <td>Processador Ryzen 7</td>
+                        <td>
+                            <select name="" id="5" class="border border-gray-300 py-2 px-4 flex gap-2 rounded-lg bg-white items-center w-full">
+                                <option value="0" selected>Seleciona um Armazem</option>
+                                <option value="1">Armazem 1</option>
+                                <option value="2">Armazem 2</option>
+                                <option value="3">Armazem 3</option>
+                            </select>
+                        </td>
+                    </tr>-->
+                </tbody>
+            </table>
+        </div>
+        {% if errors.warehouse_1 %}
+            <span class="text-red-500 ml-1">{{ errors.warehouse_1 }}</span>
+        {% endif %}
+        {% component "TextArea" name="observations" label="Observações" %}
+        <button class="button !bg-green-500 text-white w-full hover:opacity-80">
+            <i class="ph-fill ph-check-circle !text-white"></i>
+            Finalizar Registo
+        </button>
+        <div id="product-list" class="hidden">
+            <input type="text" class="hidden product-list-new" name="product_1"></input>
+        </div>
+    </form>
+    {% component "SelectTableModal" id="supplierModal" title="Seleciona um Fornecedor" table=selectSupplierTable %}
+    {% if selected_supplier %}
+        {% component "SelectTableModal" id="purchasingOrdersModal" title="Seleciona um Pedido de Compra" table=selectPurchasingOrdersTable %}
+    {% endif %}
+    {% component "SelectTableModal" id="warehousesModal" title="Seleciona um Armazem" table=selectWarehousesTable %}
+    {% if selectProductsTable %}
+        {% component "SelectTableModal" id="componentsModal" title="Seleciona um Produto" table=selectProductsTable %}
+    {% endif %}
+
+    <script type="application/javascript">
+        $(document).ready(() => {
+            $('button#select_purchasingOrder').click((e) => {
+                let purchasing_order_id = $(e.target).attr('data-purchasingOrder-id')
+                //refetch the page with get parameters
+
+                $("#purchasingOrderInfo").empty()
+                $("#purchasingOrderInfo").append(`
+                    <input name="purchasing_order" class="hidden" value="${purchasing_order_id}">
+                    ${purchasing_order_id}
+                `)
+
+                $('form').submit()
+            })
+
+            //see if any component is selected buttons with id select_product and get product id from 'data-product-id' attribute
+            $('button[id=select_product]').click((e) => {
+                let product_id = $(e.target).attr('data-product-id')
+                let product_name = $(e.target).attr('data-product-name')
+
+                $('#products-warehouses-table').prepend(`
+                      <tr id="row_${product_id}">
+                          <td>${product_id}</td>
+                          <td>${product_name}</td>
+                          <td>
+                              <select name="warehouse-${product_id}" id="warehouse-${product_id}" class="border border-gray-300 py-2 px-4 flex gap-2 rounded-lg bg-white items-center w-full">
+                                  <option value="0">Seleciona um Armazem</option>
+                                  {% for warehouse in warehouses %}
+                                      <option value="{{ warehouse.id_warehouse }}">{{ warehouse.name }}</option>
+                                  {% endfor %}
+                              </select>
+                          </td>
+                      </tr>
+                  `)
+            })
+
+        })
+    </script>
+{% endblock %}
+```

@@ -1,8 +1,15 @@
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 
+from projeto.forms.ClientOrdersForm import ClientOrdersForm
+from projeto.forms.SalesOrdersForm import SalesOrdersForm
+from projeto.repositories.ClientOrdersRepo import ClientOrdersRepo
+from projeto.repositories.ClientRepo import ClientRepo
 from projeto.repositories.SalesOrdersRepo import SalesOrdersRepo
 from projeto.tables.SalesOrdersTable import SalesOrdersTable
+from projeto.tables.SelectTables.SelectClientOrdersTable import SelectClientOrdersTable
+from projeto.tables.SelectTables.SelectClientTable import SelectClientTable
+from projeto.utils import getErrorsObject
 
 
 @login_required(login_url='/login')
@@ -16,4 +23,79 @@ def home(request):
         'navSubSection': 'guiasRemessa',
     }
 
-    return render(request, 'encomendasCliente/index.html', context)
+    return render(request, 'guiasRemessa/index.html', context)
+
+def create(request):
+    form = SalesOrdersForm(request.POST or None)
+    clients = ClientRepo().find_all()
+
+    clientsTable = SelectClientTable(clients)
+    clientsTable.paginate(page=request.GET.get('page', 1), per_page=10)
+
+    context = {
+        'form': form,
+        'clients': clients,
+        'selectClientTable': clientsTable,
+        'navSection': 'vendas',
+        'navSubSection': 'guiasRemessa',
+    }
+
+    if request.method == 'GET' and "selected_client" in request.GET or form['client'].value() is not None:
+        selected_client = request.GET["selected_client"] or form.client.value
+
+        selected_client_name = ""
+
+        for client in clients:
+            if client.id_client == int(selected_client):
+                selected_client_name = client.name
+                break
+
+        context["selected_client"] = selected_client_name
+        context["selected_client_id"] = selected_client
+
+        print(selected_client)
+
+        clientOrders = ClientOrdersRepo().find_by_client(selected_client)
+        clientOrdersTable = SelectClientOrdersTable(clientOrders)
+
+        context["clientOrders"] = clientOrders
+        context["selectClientOrdersTable"] = clientOrdersTable
+
+        client_orders = []
+
+        for field in form.data:
+            if field.startswith("client_order_"):
+                if form.data[field] is not None and form.data[field] != "":
+                    client_orders.append(form.data[field])
+
+        if len(client_orders) > 0 and client_orders[0] is not None:
+            print(client_orders)
+            context["selected_client_orders"] = client_orders
+
+            components = ClientOrdersRepo().find_components_by_ids(client_orders)
+            print(components)
+            context["components"] = components
+
+    if request.method == 'POST':
+        form = SalesOrdersForm(request.POST)
+        data = form.data
+        print(data)
+
+        if form.is_valid():
+            data = form.cleaned_data
+            print(data)
+
+            SalesOrdersRepo().create(
+                id_client_order=data["client_orders"],
+                obs=data["obs"],
+                products=data["products"],
+            )
+
+            return redirect('guiasRemessa')
+        else:
+            errors = getErrorsObject(form.errors.get_context())
+            print(errors)
+
+            context['errors'] = errors
+
+    return render(request, 'guiasRemessa/criar.html', context)

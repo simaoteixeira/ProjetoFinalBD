@@ -6,10 +6,10 @@
 {% block content %}
     <h1 class="font-extrabold text-4xl leading-10">Pedidos de Compra</h1>
     <div class="flex items-center justify-between">
-        <button class="button">
+        <a  href="{% url "criarRecessao" %}"  class="button">
             <i class="ph-fill ph-archive-box text-xl"></i>
             <span>Registar Recessão</span>
-        </button>
+        </a>
         <a href="{%  url "criarPedidoCompra" %}" class="button">
             <i class="ph-bold ph-plus text-xl"></i>
             <span>Registar Pedido de Compra</span>

@@ -1,0 +1,99 @@
+{% extends 'base.html' %}
+{% load render_table from django_tables2 %}
+
+{% block title %}Ordens de Produção{% endblock %}
+
+{% block content %}
+    <h1 class="font-extrabold text-4xl leading-10">Registo de Ordem de Produção</h1>
+    <form method="post" class="flex flex-col gap-4">
+        {% csrf_token %}
+        <div class="flex gap-4">
+            <div class="w-1/2">
+                <span class="mb-2">Equipamento a ser produzido</span>
+                <a href="#equipmentModal" class="button w-full !justify-start" rel="modal:open">
+                    <i class="ph-fill ph-truck"></i>
+                    {% if selected_equipment %}
+                        <input name="product" class="hidden" value="{{ selected_equipment_id }}">
+                        {{ selected_equipment }}
+                    {% else %}
+                        Seleciona um Equipamento
+                    {% endif %}
+                </a>
+                {% if errors.product %}
+                    <span class="text-red-500 ml-1">{{ errors.product }}</span>
+                {% endif %}
+            </div>
+        </div>
+        <div class="flex gap-4">
+            <div class="w-full">
+                <span class="mb-2">Quantidade</span>
+                {% component "Input" type="number" placeholder="0" inputName="equipment_quantity" id="equipment_quantity" value=form.equipment_quantity.value error=errors.equipment_quantity %}
+            </div>
+            <div class="w-full">
+                <span class="mb-2">Mão de Obra</span>
+                <select name="labor" id="labor" class="border border-gray-300 py-2 px-4 flex gap-2 rounded-lg bg-white items-center w-full">
+                    <option value="0">Seleciona uma mão de obra</option>
+                    {% for labor in labors %}
+                        <option value="{{ labor.id_labor }}">{{ labor.title }} - <span>{{ labor.cost }}</span></option>
+                    {% endfor %}
+                </select>
+                {% if errors.labor %}
+                    <span class="text-red-500 ml-1">{{ errors.labor }}</span>
+                {% endif %}
+            </div>
+        </div>
+        {% component "ProductsWarehouseTable" errors=errors %}
+        <div class="flex items-center gap-4">
+            <div class="bg-white p-6 border border-gray-300 flex flex-col gap-2 rounded-lg">
+                <i class="ph-fill ph-currency-dollar text-5xl"></i>
+                <p class="text-xl leading-6 font-semibold text-gray-900 whitespace-nowrap">Custo Base Produção: <span id="tot_base_prod">0 €</span></p>
+            </div>
+            <div class="bg-white p-6 border border-gray-300 flex flex-col gap-2 rounded-lg">
+                <i class="text-5xl font-bold">x1</i>
+                <p class="text-xl leading-6 font-semibold text-gray-900 whitespace-nowrap">Custo Unitario: <span id="tot_unit_prod">0 €</span></p>
+            </div>
+        </div>
+        {% component "TextArea" name="obs" label="Observações" %}
+        <button class="button !bg-green-500 text-white w-full hover:opacity-80">
+            <i class="ph-fill ph-check-circle !text-white"></i>
+            Criar Ordem de Produção
+        </button>
+        <div id="product-list" class="hidden">
+            <input type="text" class="hidden product-list-new" name="product_1"></input>
+        </div>
+    </form>
+    {% component "SelectTableModal" id="equipmentModal" title="Seleciona um Equipamento" table=selectEquipmentsTable %}
+    {% component "SelectTableModal" id="componentsModal" title="Seleciona um Componente" table=selectComponentsTable %}
+
+    <script type="application/javascript">
+        $('#labor').change((e) => {
+            //get labor cost and sumwith tot_unit_prod
+            let labor_cost = $('#labor option:selected').text().split('-')[1].trim().split(' ')[1]
+            let tot_sum = $('#total_sum').text().split(' ')[0]
+            let quantity = $('#equipment_quantity').val() || 1
+
+            $('#tot_unit_prod').text(`${parseFloat(labor_cost) + (parseFloat(tot_sum) || 0)} €`)
+            $("#tot_base_prod").text(`${(parseFloat(labor_cost) + (parseFloat(tot_sum) || 0)) * quantity} €`)
+        })
+
+        $('#total_sum').bind('DOMSubtreeModified', (e) => {
+            //get labor cost and sumwith tot_unit_prod
+            let labor_cost = $('#labor option:selected').text().split('-')[1].trim().split(' ')[1]
+            let tot_sum = $('#total_sum').text().split(' ')[0]
+            let quantity = $('#equipment_quantity').val() || 1
+
+            $('#tot_unit_prod').text(`${(parseFloat(labor_cost) || 0) + parseFloat(tot_sum)} €`)
+            $("#tot_base_prod").text(`${(parseFloat(labor_cost) || 0) + parseFloat(tot_sum) * quantity} €`)
+        })
+
+        $('#equipment_quantity').change((e) => {
+            //get labor cost and sumwith tot_unit_prod
+            let labor_cost = $('#labor option:selected').text().split('-')[1].trim().split(' ')[1] || 0
+            let tot_sum = $('#total_sum').text().split(' ')[0] || 0
+            let quantity = $('#equipment_quantity').val() || 1
+
+            $('#tot_unit_prod').text(`${parseFloat(labor_cost) + parseFloat(tot_sum)} €`)
+            $("#tot_base_prod").text(`${parseFloat(labor_cost) + parseFloat(tot_sum) * quantity} €`)
+        })
+    </script>
+{% endblock %}

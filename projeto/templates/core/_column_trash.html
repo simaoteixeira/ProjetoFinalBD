@@ -1,0 +1,14 @@
+<a href="#deleteModal" rel="modal:open">
+    <i class='ph-bold ph-trash text-xl text-red-600 hover:opacity-90 transition-opacity'></i>
+</a>
+
+<div id="deleteModal" class="modal">
+    <div class="flex flex-col gap-2">
+        <h4 class="font-bold text-2xl">Tens a certeza que pretendes apagar?</h4>
+        <p class="text-sm">Esta ação não pode ser desfeita.</p>
+    </div>
+    <div class="flex justify-between mt-4">
+        <a href="#deleteModal" rel="modal:close" class="button">Cancel</a>
+        <a href="{{ deleteLinkBase }}/{{ record.pk }}/delete" class="button !bg-red-500 !text-white">Delete</a>
+    </div>
+</div>

@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% load render_table from django_tables2 %}
+
+{% block title %}Encomendas Cliente{% endblock %}
+
+{% block content %}
+    <h1 class="font-extrabold text-4xl leading-10">Criar Encomenda Cliente</h1>
+    <form method="post" class="flex flex-col gap-4">
+        {% csrf_token %}
+        <div class="flex gap-4">
+            <div class="w-1/2">
+                <span class="mb-2">Cliente</span>
+                <a href="#clientModal" class="button w-full !justify-start" rel="modal:open">
+                    <i class="ph-fill ph-truck"></i>
+                    {% if selected_client %}
+                        <input name="client" class="hidden" value="{{ selected_client_id }}">
+                        {{ selected_client }}
+                    {% else %}
+                        Seleciona um Cliente
+                    {% endif %}
+                </a>
+                {% if errors.client %}
+                    <span class="text-red-500 ml-1">{{ errors.client }}</span>
+                {% endif %}
+            </div>
+        </div>
+        {% component "ProductsBaseTable" errors=errors %}
+        {% component "TextArea" name="obs" label="Observações" %}
+        <button class="button !bg-green-500 text-white w-full hover:opacity-80">
+            <i class="ph-fill ph-check-circle !text-white"></i>
+            Finalizar Registo
+        </button>
+        <div id="product-list" class="hidden">
+            <input type="text" class="hidden product-list-new" name="product_1"></input>
+        </div>
+    </form>
+    {% component "SelectTableModal" id="clientModal" title="Seleciona um Cliente" table=selectClientsTable %}
+    {% component "SelectTableModal" id="componentsModal" title="Seleciona um Equipamento/Componente" table=selectProductsTable %}
+{% endblock %}
+```

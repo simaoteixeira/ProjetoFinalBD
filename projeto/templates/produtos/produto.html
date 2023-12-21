@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% load render_table from django_tables2 %}
+
+{% block title %}Produtos{% endblock %}
+
+{% block content %}
+    <h1 class="font-extrabold text-4xl leading-10">Produto</h1>
+    <h2 class="text-2xl font-extrabold mt-4">{{ product.name }}</h2>
+    <div class="flex items-center gap-4">
+        <div class="bg-white p-6 border border-gray-300 flex flex-col gap-2 rounded-lg">
+            <i class="ph-fill ph-cpu text-5xl"></i>
+            <p class="text-xl leading-6 font-semibold text-gray-900 whitespace-nowrap"><span class="font-bold capitalize">{{ product.type }}</span></p>
+        </div>
+        <div class="bg-white p-6 border border-gray-300 flex flex-col gap-2 rounded-lg">
+            <i class="ph-fill ph-percent text-5xl"></i>
+            <p class="text-xl leading-6 font-semibold text-gray-900 whitespace-nowrap"><span class="font-bold">IVA:</span> {{ product.vat }} %</p>
+        </div>
+        <div class="bg-white p-6 border border-gray-300 flex flex-col gap-2 rounded-lg">
+            <i class="ph-fill ph-currency-dollar text-5xl"></i>
+            <p class="text-xl leading-6 font-semibold text-gray-900 whitespace-nowrap"><span class="font-bold">Custo Base:</span> {{ product.price_base }}</p>
+        </div>
+        <div class="bg-white p-6 border border-gray-300 flex flex-col gap-2 rounded-lg">
+            <i class="ph-fill ph-currency-dollar text-5xl"></i>
+            <p class="text-xl leading-6 font-semibold text-gray-900 whitespace-nowrap"><span class="font-bold">PVP:</span> {{ product.pvp }}</p>
+        </div>
+    </div>
+    <span>Distribuição por Armazem</span>
+    {% render_table warehouseDistribution %}
+    <form method="post" class="flex flex-col gap-2">
+        {% csrf_token %}
+        {% component "TextArea" name="observations" label="Observações" value=data.obs %}
+        <button type="submit" class="button w-fit self-end">
+            Adicionar Observações
+        </button>
+    </form>
+{% endblock %}

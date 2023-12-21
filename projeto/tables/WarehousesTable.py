@@ -7,10 +7,11 @@ class WarehousesTable(tables.Table):
     name = tables.Column(verbose_name="Nome", accessor="name")
     location = tables.Column(verbose_name="Localização", accessor="location")
     total_stock = tables.Column(verbose_name="Produtos em Stock", accessor="total_stock")
-    tools = tables.TemplateColumn(
+    see = tables.TemplateColumn(
         verbose_name="",
-        template_name="core/_tools_column.html",
+        template_name="core/_column_eye.html",
         orderable=False,
+        linkify=('armazem', {'id': tables.A('id_warehouse')}),
     )
 
     class Meta:
@@ -23,10 +24,11 @@ class WarehousesStockTable(tables.Table):
     quantity = tables.Column(verbose_name="Quantidade", accessor="quantity")
     type = tables.Column(verbose_name="Tipo", accessor="product.type")
     warehouse = tables.Column(verbose_name="Armazém", accessor="warehouse.name")
-    tools = tables.TemplateColumn(
+    see = tables.TemplateColumn(
         verbose_name="",
-        template_name="core/_tools_column.html",
-        orderable=False
+        template_name="core/_column_eye.html",
+        orderable=False,
+        linkify=('produto', {'id': tables.A('product.id_product')}),
     )
 
     class Meta:

@@ -57,27 +57,53 @@ class PurchasingOrdersRepo:
 
         return data
 
+    def find_by_supplier(self, id):
+        self.cursor.execute("SELECT * FROM V_PurchasingOrders WHERE id_supplier = %s", [id])
+        dataPurchasingOrder = self.cursor.fetchall()
+
+        data = [
+            PurchasingOrders(
+                    id_purchasing_order=row[0],
+                    supplier=Suppliers(
+                        id_supplier=row[1],
+                        name=row[2],
+                    ),
+                    user=AuthUser(
+                        username=row[4],
+                    ),
+                    delivery_date=row[5],
+                    created_at=row[6],
+                    obs=row[7],
+                    total_base=row[8],
+                    vat_total=row[9],
+                    discount_total=row[10],
+                    total=row[11],
+                ) for row in dataPurchasingOrder
+        ]
+
+        return data
+
     def find_components(self, id):
         self.cursor.execute("SELECT * FROM V_PurchasingOrderComponents WHERE id_purchasing_order = %s", [id])
         dataPurchasingOrderComponents = self.cursor.fetchall()
 
         data = [
             PurchasingOrderComponents(
-                product=Products(
-                    id_product=row[0],
-                    name=row[1],
-                ),
-                quantity=row[2],
-                price_base=row[3],
-                total_unit=row[4],
-                vat=row[5],
-                vat_value=row[6],
-                discount=row[7],
-                discount_value=row[8],
-                line_total=row[9],
                 purchasing_order=PurchasingOrders(
-                    id_purchasing_order=row[10],
+                    id_purchasing_order=row[0],
                 ),
+                product=Products(
+                    id_product=row[1],
+                    name=row[2],
+                ),
+                quantity=row[3],
+                price_base=row[4],
+                total_unit=row[5],
+                vat=row[6],
+                vat_value=row[7],
+                discount=row[8],
+                discount_value=row[9],
+                line_total=row[10],
             ) for row in dataPurchasingOrderComponents
         ]
 

@@ -418,12 +418,12 @@ BEGIN
 
      IF
         (SELECT COUNT(*)
-        FROM purchasing_orders_components
+        FROM purchasing_order_components
         WHERE id_purchasing_orders = NEW.id_purchasing_orders AND id_product = NEW.id_product )
     > 0
     THEN
 
-        UPDATE purchasing_orders_components
+        UPDATE purchasing_order_components
         SET quantity = quantity + NEW.quantity,
         vat_value = _vat_total, discount_value = _discount_total, line_total = (quantity + NEW.quantity) * price_base
         WHERE id_purchasing_orders = NEW.id_purchasing_orders AND id_product = NEW.id_product ;
@@ -499,7 +499,7 @@ INNER JOIN auth_user u ON po.id_user = u.id;
 DROP VIEW IF EXISTS V_PurchasingOrderComponents CASCADE;
 
 CREATE OR REPLACE VIEW V_PurchasingOrderComponents(
-    id_purchasing_order_component,
+    id_purchasing_order_components,
     id_product,
     product_name,
     quantity,
@@ -513,7 +513,7 @@ CREATE OR REPLACE VIEW V_PurchasingOrderComponents(
     id_purchasing_order
     ) AS
 SELECT
-    poc.id_purchasing_order_component,
+    poc.id_purchasing_order_components,
     poc.id_product,
     p.name as product_name,
     poc.quantity,
@@ -664,7 +664,11 @@ CREATE OR REPLACE VIEW V_MaterialReceipts(
     user_name,
     n_delivery_note,
     obs,
-    created_at
+    created_at,
+    total_base,
+    vat_total,
+    discount_total,
+    total
     )
     AS
 SELECT
@@ -676,7 +680,11 @@ SELECT
     u.username AS user_name,
     mr.n_delivery_note,
     mr.obs,
-    mr.created_at
+    mr.created_at,
+    mr.total_base,
+    mr.vat_total,
+    mr.discount_total,
+    mr.total
 FROM
     material_receipts mr
 INNER JOIN
@@ -701,7 +709,8 @@ CREATE OR REPLACE VIEW V_MaterialReceiptComponents(
     vat_value,
     discount,
     discount_value,
-    line_total
+    line_total,
+    id_material_receipt
     ) AS
 SELECT
     mrc.id_material_receipt_component,
@@ -716,7 +725,8 @@ SELECT
     mrc.vat_value,
     mrc.discount,
     mrc.discount_value,
-    mrc.line_total
+    mrc.line_total,
+    mrc.id_material_receipt
 FROM material_receipt_components mrc
 INNER JOIN products  p USING (id_product)
 INNER JOIN warehouses w USING (id_warehouse);
@@ -728,7 +738,7 @@ CREATE OR REPLACE FUNCTION FN_Create_SupplierInvoice(
     _invoice_id INT,
     _invoice_date DATE,
     _expire_date DATE,
-    _obs TEXT
+    _obs TEXT = NULL
 )
 RETURNS INT AS
 $$
@@ -984,13 +994,12 @@ CREATE OR REPLACE PROCEDURE PA_InsertLine_ProductionOrder(
     IN _id_product INTEGER,
     IN _id_warehouse INTEGER,
     IN _quantity INTEGER,
-    IN _price_base MONEY
 )
 LANGUAGE plpgsql
 AS $$
 BEGIN
-    INSERT INTO production_order_components (id_order_production, id_product,id_warehouse, quantity, price_base)
-    VALUES (_id_production_order, _id_product,_id_warehouse, _quantity, _price_base);
+    INSERT INTO production_order_components (id_order_production, id_product,id_warehouse, quantity)
+    VALUES (_id_production_order, _id_product,_id_warehouse, _quantity);
 END;
 $$;
 -- Trigger production_order_components TR_production_order_components_PRE_INS Depois de inserir/atualizar/eliminar a linha de uma ordem de produção, temos de atualizar os valores totais da própria linha e depois atualizar os valores totais da ordem de produção e dar saída nos movimentos de stock (stock_movements)
@@ -1122,7 +1131,7 @@ INNER JOIN
 -- View production_order_components V_ProductionOrderComponents Listar as linhas das ordens de produção
 DROP VIEW IF EXISTS V_ProductionOrderComponents CASCADE;
 CREATE OR REPLACE VIEW V_ProductionOrderComponents(
-    id_order_production_component,
+    id_production_order_components,
     id_order_production,
     id_product,
     product_name,
@@ -1134,7 +1143,7 @@ CREATE OR REPLACE VIEW V_ProductionOrderComponents(
     line_total
     ) AS
 SELECT
-    poc.id_order_production_component,
+    poc.id_production_order_components,
     poc.id_order_production,
     poc.id_product,
     p.name AS product_name,
@@ -1334,6 +1343,7 @@ CREATE OR REPLACE VIEW V_SalesOrders(
     id_user,
     user_name,
     client_orders,
+    client_names,
     created_at,
     obs,
     total_base
@@ -1344,12 +1354,14 @@ SELECT
     so.id_user,
     u.username AS user_name,
     ARRAY_AGG(co.id_client_order) AS client_orders,
+    ARRAY_AGG(c.name) AS client_names,
     so.created_at,
     so.obs,
     so.total_base
  FROM sales_orders so
 INNER JOIN auth_user u ON so.id_user = u.id
 INNER JOIN client_orders co ON so.id_sale_order = co.id_sale_order
+INNER JOIN clients c ON co.id_client = c.id_client
 GROUP BY so.id_sale_order, so.id_user, u.username, so.created_at, so.obs, so.total_base;
 
 
@@ -1358,6 +1370,7 @@ GROUP BY so.id_sale_order, so.id_user, u.username, so.created_at, so.obs, so.tot
 DROP VIEW IF EXISTS V_SalesOrderComponents CASCADE;
 CREATE OR REPLACE VIEW V_SalesOrderComponents(
     id_sales_order_component,
+    id_sale_order,
     id_product,
     product_name,
     quantity,
@@ -1371,6 +1384,7 @@ CREATE OR REPLACE VIEW V_SalesOrderComponents(
 ) AS
 SELECT
     soc.id_sales_order_component,
+    soc.id_sale_order,
     soc.id_product,
     p.name AS product_name,
     soc.quantity,
@@ -1513,6 +1527,8 @@ INNER JOIN clients c USING (id_client);
 --Lista as linhas das encomendas do clientes
 DROP VIEW IF EXISTS V_ClientOrdersComponents CASCADE;
 CREATE OR REPLACE VIEW V_ClientOrdersComponents(
+    id_client_order_components,
+    id_client_order,
     id_product,
     product_name,
     quantity,
@@ -1525,7 +1541,8 @@ CREATE OR REPLACE VIEW V_ClientOrdersComponents(
     line_total
 ) AS
 SELECT
-    coc.client_order_components,
+    coc.id_client_order_components,
+    coc.id_client_order,
     coc.id_product,
     p.name AS product_name,
     coc.quantity,
@@ -1665,7 +1682,12 @@ CREATE OR REPLACE VIEW V_ClientInvoices(
     invoice_id,
     invoice_date,
     expire_date,
-    obs
+    obs,
+    total_base,
+    vat_total,
+    discount_total,
+    total,
+    created_at
 ) AS
 SELECT
     ci.id_client_invoice,
@@ -1679,7 +1701,12 @@ SELECT
     ci.invoice_id,
     ci.invoice_date,
     ci.expire_date,
-    ci.obs
+    ci.obs,
+    ci.total_base,
+    ci.vat_total,
+    ci.discount_total,
+    ci.total,
+    ci.created_at
 FROM client_invoices ci
 INNER JOIN clients c USING (id_client)
 INNER JOIN sales_orders so ON ci.id_client_invoice = so.id_client_invoice
@@ -1691,6 +1718,7 @@ GROUP BY ci.id_client_invoice, ci.id_client, c.name, c.address, c.locality, c.po
 DROP VIEW IF EXISTS V_ClientInvoicesComponents CASCADE;
 CREATE OR REPLACE VIEW V_ClientInvoicesComponents(
     id_client_invoice_component,
+    id_client_invoice,
     id_product,
     product_name,
     quantity,
@@ -1704,6 +1732,7 @@ CREATE OR REPLACE VIEW V_ClientInvoicesComponents(
 ) AS
 SELECT
     cic.id_client_invoice_component,
+    cic.id_client_invoice,
     cic.id_product,
     p.name AS product_name,
     cic.quantity,
