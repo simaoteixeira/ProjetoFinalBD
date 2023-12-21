@@ -514,7 +514,7 @@ CREATE TYPE production_order_status AS ENUM ('WAITING_PROD', 'IN_PROD', 'COMPLET
 create table production_orders (
    id_order_production  SERIAL                 not null,
    id_labor             INTEGER                 not null,
-   id_warehouse         INTEGER                 not null,
+   id_warehouse         INTEGER                  null,
    id_user            INTEGER                 not null,
    id_product            INTEGER                 not null,
    equipment_quantity   INTEGER                 not null,
