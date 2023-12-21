@@ -1,0 +1,143 @@
+{% extends 'base.html' %}
+{% load render_table from django_tables2 %}
+
+{% block title %}Faturas Fornecedor{% endblock %}
+
+{% block content %}
+    <h1 class="font-extrabold text-4xl leading-10">Registo de Fatura de Fornecedor</h1>
+    <form method="post" class="flex flex-col gap-4">
+        {% csrf_token %}
+        <div class="flex gap-4">
+            <div class="w-full">
+                <span class="mb-2">Fornecedor</span>
+                <a href="#supplierModal" class="button w-full !justify-start" rel="modal:open">
+                    <i class="ph-fill ph-truck"></i>
+                    {% if selected_supplier %}
+                        <input name="supplier" class="hidden" value="{{ selected_supplier_id }}">
+                        {{ selected_supplier }}
+                    {% else %}
+                        Seleciona um Fornecedor
+                    {% endif %}
+                </a>
+                {% if errors.supplier %}
+                    <span class="text-red-500 ml-1">{{ errors.supplier }}</span>
+                {% endif %}
+            </div>
+            <div class="w-full">
+                <span class="mb-2">Adicinar Recessão</span>
+                <a href="#materialReceiptModal" class="button w-full !justify-start" rel="modal:open">
+                    <i class="ph-fill ph-archive-box"></i>
+                    Adicionar Recessão
+                </a>
+                {% if errors.material_receipt_1 %}
+                    <span class="text-red-500 ml-1">{{ errors.material_receipt_1 }}</span>
+                {% endif %}
+            </div>
+        </div>
+        <hr class="border-gray-300">
+        <span class="-mb-2 font-medium">Relativa a</span>
+        <div id="materialReceipts-list" class="flex items-center gap-4">
+            <input type="text" class="hidden materialReceipts-list-new" name="material_receipt_1"></input>
+        </div>
+        <div class="w-full">
+            <span class="mb-2">Numero Fatura</span>
+            {% component "Input" type="text" placeholder="Numero da Fatura" inputName="invoice_id" value=form.invoice_id.value error=errors.invoice_id %}
+        </div>
+        <div class="flex gap-4">
+            <div class="w-full">
+                <span class="mb-2">Data Fatura</span>
+                {% component "Input" type="date" placeholder="Data da Fatura" inputName="invoice_date" value=form.invoice_date.value error=errors.invoice_date %}
+            </div>
+            <div class="w-full">
+                <span class="mb-2">Data Vencimento</span>
+                {% component "Input" type="date" placeholder="Data de Vencimento" inputName="expire_date" value=form.expire_date.value error=errors.expire_date %}
+            </div>
+        </div>
+        {% component "ProductsBaseTable" errors=errors canAddProducts=False %}
+        {% component "TextArea" name="obs" label="Observações" %}
+        <button class="button !bg-green-500 text-white w-full hover:opacity-80">
+            <i class="ph-fill ph-check-circle !text-white"></i>
+            Finalizar Registo
+        </button>
+        <div id="product-list" class="hidden">
+            <input type="text" class="hidden product-list-new" name="product_1"></input>
+        </div>
+    </form>
+    {% component "SelectTableModal" id="supplierModal" title="Seleciona um Fornecedor" table=selectSupplierTable %}
+    {% if selected_supplier %}
+        {% component "SelectTableModal" id="materialReceiptModal" title="Seleciona uma Recessão de Materiais" table=selectMaterialReceiptsTable %}
+    {% endif %}
+
+    <script type="application/javascript">
+        field_number = 1
+        var product_number = 0
+
+        $(document).ready(function() {
+            $("button#select_materialReceipts").click((e) => {
+                let material_receipt_id = $(e.target).attr('data-materialreceipts-id')
+
+                {% if selected_material_receipts %}
+                    field_number = {{ selected_material_receipts|length }} + 1
+                {% endif %}
+
+                addMaterialReceipt(material_receipt_id)
+
+                $('#componentsModal').modal('hide')
+                $('form').submit()
+            })
+        })
+
+        function addMaterialReceipt(material_receipt_id)
+        {
+            $('input[name="material_receipt_' + field_number + '"]').val(material_receipt_id)
+
+            var clone = $('.materialReceipts-list-new').clone()
+            name = clone.attr('name')
+
+            clone.attr('name', name.replace('1', field_number + 1))
+
+            clone.val('')
+            clone.removeClass('materialReceipts-list-new')
+
+            $('#materialReceipts-list').append(`
+                <div id="test-${material_receipt_id}" class="bg-white p-6 border border-gray-300 flex flex-col gap-2 rounded-lg">
+                    <i class="ph-fill ph-archive-box text-5xl"></i>
+                    <p class="text-xl leading-6 font-semibold text-gray-900 whitespace-nowrap"><span class="font-bold">Recessão:</span> ${material_receipt_id}</p>
+                </div>
+            `)
+
+            clone.appendTo($(`#test-${material_receipt_id}`))
+
+            field_number++
+            console.log(field_number)
+        }
+
+        function addProduct(product_id) {
+            $('input[name="product_' + product_number + '"]').val(product_id)
+
+            clone = $('.product-list-new').clone()
+            name = clone.attr('name')
+
+            clone.attr('name', name.replace('1', product_number + 1))
+
+            clone.val('')
+            clone.removeClass('product-list-new')
+            clone.appendTo($('#product-list'))
+
+            product_number++
+        }
+
+        {% if selected_material_receipts %}
+            {% for material_receipt in selected_material_receipts %}
+                addMaterialReceipt('{{ material_receipt }}')
+            {% endfor %}
+        {% endif %}
+
+        {% if components %}
+            {% for component in components %}
+                addProduct('{{ component.product.id_product }}')
+                addRowToTable({{ component.product.id_product }}, '{{ component.product.name }}', '{{ component.price_base }}', {{ component.quantity }}, {{ component.vat }}, {{ component.discount}})
+            {% endfor %}
+        {% endif %}
+    </script>
+{% endblock %}

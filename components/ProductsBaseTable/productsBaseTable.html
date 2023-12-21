@@ -46,14 +46,16 @@
                            <i class="ph-bold ph-x text-red-500 text-xl"></i>
                        </td>
                    </tr>-->
-        <tr>
-            <td colspan="12">
-                <a href="#componentsModal" class="button w-full" rel="modal:open">
-                    <i class="ph-bold ph-plus"></i>
-                    Adicionar Componente
-                </a>
-            </td>
-        </tr>
+        {% if canAddProducts %}
+            <tr>
+                <td colspan="12">
+                    <a href="#componentsModal" class="button w-full" rel="modal:open">
+                        <i class="ph-bold ph-plus"></i>
+                        Adicionar Componente
+                    </a>
+                </td>
+            </tr>
+        {% endif %}
         <tr class="bg-gray-100 rounded-lg py-1">
             <td colspan="4">
                 Valor Total
@@ -178,6 +180,151 @@
                     </td>
                     <td>
                         <i class="ph-bold ph-x text-red-500 text-xl cursor-pointer" onClick="removeRowFromTable(${product_id})"></i>
+                    </td>
+                </tr>
+            `)
+
+            $(`#quantity_${product_id}`).change((e) => {
+                let quantity = $(e.target).val()
+                let unit_value = $(`#unit_value-${product_id}`).val()
+                let tot_unit = quantity * unit_value
+
+                $(`#tot_unit-${product_id}`).text(priceFormat.format(tot_unit))
+
+                let IVA = $(`#IVA-${product_id}`).val()
+                let tot_iva = tot_unit * (IVA / 100)
+
+                $(`#tot-iva-${product_id}`).text(priceFormat.format(tot_iva))
+
+                let discount = $(`#discount-${product_id}`).val()
+                let tot_discount = tot_unit * (discount / 100)
+
+                $(`#tot-discount-${product_id}`).text(priceFormat.format(tot_discount))
+
+                let tot = tot_unit + tot_iva - tot_discount
+
+                $(`#tot`).text(priceFormat.format(tot))
+
+                updateTotals()
+            })
+
+            $(`#unit_value-${product_id}`).change((e) => {
+                let quantity = $(`#quantity_${product_id}`).val()
+                let unit_value = $(e.target).val()
+                let tot_unit = quantity * unit_value
+
+                $(`#tot_unit-${product_id}`).text(priceFormat.format(tot_unit))
+
+                let IVA = $(`#IVA-${product_id}`).val()
+                let tot_iva = tot_unit * (IVA / 100)
+
+                $(`#tot-iva-${product_id}`).text(priceFormat.format(tot_iva))
+
+                let discount = $(`#discount-${product_id}`).val()
+                let tot_discount = tot_unit * (discount / 100)
+
+                $(`#tot-discount-${product_id}`).text(priceFormat.format(tot_discount))
+
+                let tot = tot_unit + tot_iva - tot_discount
+
+                $(`#tot`).text(priceFormat.format(tot))
+
+                updateTotals()
+            })
+
+            $(`#IVA-${product_id}`).change((e) => {
+                let quantity = $(`#quantity_${product_id}`).val()
+                let unit_value = $(`#unit_value-${product_id}`).val()
+                let tot_unit = quantity * unit_value
+
+                $(`#tot_unit-${product_id}`).text(priceFormat.format(tot_unit))
+
+                let IVA = $(e.target).val()
+                let tot_iva = tot_unit * (IVA / 100)
+
+                $(`#tot-iva-${product_id}`).text(priceFormat.format(tot_iva))
+
+                let discount = $(`#discount-${product_id}`).val()
+                let tot_discount = tot_unit * (discount / 100)
+
+                $(`#tot-discount-${product_id}`).text(priceFormat.format(tot_discount))
+
+                let tot = tot_unit + tot_iva - tot_discount
+
+                $(`#tot`).text(priceFormat.format(tot))
+
+                updateTotals()
+            })
+
+            $(`#discount-${product_id}`).change((e) => {
+                let quantity = $(`#quantity_${product_id}`).val()
+                let unit_value = $(`#unit_value-${product_id}`).val()
+                let tot_unit = quantity * unit_value
+
+                $(`#tot_unit-${product_id}`).text(priceFormat.format(tot_unit))
+
+                let IVA = $(`#IVA-${product_id}`).val()
+                let tot_iva = tot_unit * (IVA / 100)
+
+                $(`#tot-iva-${product_id}`).text(priceFormat.format(tot_iva))
+
+                let discount = $(e.target).val()
+                let tot_discount = tot_unit * (discount / 100)
+
+                $(`#tot-discount-${product_id}`).text(priceFormat.format(tot_discount))
+
+                let tot = tot_unit + tot_iva - tot_discount
+
+                $(`#tot`).text(priceFormat.format(tot))
+
+                updateTotals()
+            })
+
+            updateTotals()
+        }
+
+        function addRowToTable(product_id, product_name, product_cost, product_quantity, product_vat, product_discount)
+        {
+            product_cost = product_cost.split(' ')[1]
+            product_cost = parseFloat(product_cost)
+
+            $('#products-table').prepend(`
+                <tr id="row_${product_id}">
+                    <td>${product_id}</td>
+                    <td>${product_name}</td>
+                    <td class="w-28">
+                        <div class="border border-gray-300 py-2 px-4 flex gap-2 rounded-lg bg-white items-center w-full">
+                            <input class="w-full outline-none leading-7" type="number" min="0" placeholder="0" name="quantity-${product_id}" id="quantity_${product_id}" value="${product_quantity}">
+                        </div>
+                    </td>
+                    <td>
+                        <div class="border border-gray-300 py-2 px-4 flex gap-2 rounded-lg bg-white items-center w-full">
+                            <input class="w-full outline-none leading-7" type="number" min="0" placeholder="0" name="unit_value-${product_id}" id="unit_value-${product_id}" value="${product_cost}">
+                        </div>
+                    </td>
+                    <td id="tot_unit-${product_id}">
+                        ${priceFormat.format(product_cost)}
+                    </td>
+                    <td  class="w-24">
+                        <div class="border border-gray-300 py-2 px-4 flex gap-2 rounded-lg bg-white items-center w-full">
+                            <input class="w-full outline-none leading-7" type="number" min="0" placeholder="0" name="IVA-${product_id}" id="IVA-${product_id}" value="${product_vat}">
+                        </div>
+                    </td>
+                    <td id="tot-iva-${product_id}">
+                        0 €
+                    </td>
+                    <td  class="w-24">
+                        <div class="border border-gray-300 py-2 px-4 flex gap-2 rounded-lg bg-white items-center w-full">
+                            <input class="w-full outline-none leading-7" type="number" min="0" placeholder="0" name="discount-${product_id}" id="discount-${product_id}" value="${product_discount}">
+                        </div>
+                    </td>
+                    <td id="tot-discount-${product_id}">
+                        0 €
+                    </td>
+                    <td id="tot">
+                        ${priceFormat.format(product_cost)}
+                    </td>
+                    <td>
                     </td>
                 </tr>
             `)

@@ -48,7 +48,7 @@ def create(request):
         'warehouses': warehouses,
         'selectWarehousesTable': warehousesTable,
         'navSection': 'compras',
-        'navSubSection': 'pedidosCompra',
+        'navSubSection': 'rececaoMaterial',
     }
 
     if request.method == 'GET' and "selected_supplier" in request.GET or form['supplier'].value() is not None:

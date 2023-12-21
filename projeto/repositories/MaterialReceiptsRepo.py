@@ -65,9 +65,68 @@ class MaterialReceiptsRepo:
             total=data[12],
         )
 
+    def find_by_supplier(self, id):
+        self.cursor.execute("SELECT * FROM V_MaterialReceipts WHERE id_supplier = %s", [id])
+        data = self.cursor.fetchall()
+
+        return [
+            MaterialReceiptsView(
+                id_material_receipt=row[0],
+                purchasing_order=PurchasingOrders(
+                    id_purchasing_order=row[1]
+                ),
+                supplier=Suppliers(
+                    id_supplier=row[2],
+                    name=row[3]
+                ),
+                user=AuthUser(
+                    username=row[5]
+                ),
+                n_delivery_note=row[6],
+                obs=row[7],
+                created_at=row[8],
+                total_base=row[9],
+                vat_total=row[10],
+                discount_total=row[11],
+                total=row[12],
+            ) for row in data
+        ]
+
+    def find_components_by_ids(self, ids=[]):
+        #Convert ids to tuple
+        ids = tuple(ids)
+        print(ids)
+        self.cursor.execute("SELECT * FROM V_MaterialReceiptComponents WHERE id_material_receipt IN %s", [ids])
+        data = self.cursor.fetchall()
+
+        return [
+            MaterialReceiptComponents(
+                id_material_receipt_component=row[0],
+                product=Products(
+                    id_product=row[1],
+                    name=row[2]
+                ),
+                warehouse=Warehouses(
+                    id_warehouse=row[3],
+                    name=row[4]
+                ),
+                quantity=row[5],
+                price_base=row[6],
+                total_unit=row[7],
+                vat=row[8],
+                vat_value=row[9],
+                discount=row[10],
+                discount_value=row[11],
+                line_total=row[12],
+                id_material_receipt=MaterialReceipts(
+                    id_material_receipt=row[13]
+                )
+            ) for row in data
+        ]
+
     def create(self, id_user, id_purchasing_order, n_delivery_note, obs, products=[]):
         print(id_user, id_purchasing_order, n_delivery_note, obs, products)
-        self.cursor.callproc("FN_Create_MaterialReceipts", [id_user, id_purchasing_order, n_delivery_note, obs])
+        self.cursor.callproc("FN_Create_MaterialReceipts", [id_user, id_purchasing_order, n_delivery_note, obs or ''])
         response = self.cursor.fetchone()
 
         if (response[0]):

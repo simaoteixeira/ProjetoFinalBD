@@ -397,8 +397,8 @@ class StockMovements(models.Model):
 
 class SupplierInvoiceComponents(models.Model):
     id_supplier_invoice_component = models.AutoField(primary_key=True)
-    id_supplier_invoice = models.ForeignKey('SupplierInvoices', models.DO_NOTHING, db_column='id_supplier_invoice')
-    id_product = models.ForeignKey(Products, models.DO_NOTHING, db_column='id_product')
+    supplier_invoice = models.ForeignKey('SupplierInvoices', models.DO_NOTHING, db_column='id_supplier_invoice')
+    product = models.ForeignKey('Products', models.DO_NOTHING, db_column='id_product')
     quantity = models.IntegerField()
     price_base = models.TextField()  # This field type is a guess.
     vat = models.IntegerField()
@@ -406,6 +406,7 @@ class SupplierInvoiceComponents(models.Model):
     discount = models.FloatField()
     discount_value = models.TextField()  # This field type is a guess.
     line_total = models.TextField()  # This field type is a guess.
+    total_unit = models.TextField()  # This field type is a guess.
 
     class Meta:
         managed = False
@@ -424,6 +425,7 @@ class SupplierInvoices(models.Model):
     invoice_date = models.DateTimeField()
     invoice_id = models.TextField()
     created_at = models.DateTimeField()
+    material_receptions = models.TextField()
 
     class Meta:
         managed = False
