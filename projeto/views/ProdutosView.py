@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect
 
 from projeto.forms.ProductForm import ProductForm
 from projeto.repositories.ProductsRepo import ProductsRepo
-from projeto.tables.ProductsTable import StockProductsTable
+from projeto.tables.ProductsTable import StockProductsTable, ProductsPerWarehouseTable
 from projeto.utils import getErrorsObject
 
 @login_required(login_url='/login')
@@ -46,3 +46,21 @@ def create(request):
             context['errors'] = errors
 
     return render(request, 'produtos/criar.html', context)
+
+def view(request, id):
+    if request.method == 'POST' and request.POST.get('observations'):
+        ProductsRepo().update_obs(id, request.POST.get('observations'))
+
+    product = ProductsRepo().find_by_id(id)
+    productsPerWarehouse = ProductsRepo().find_product_stock_by_warehouse(id)
+
+    productsPerWarehouseTable = ProductsPerWarehouseTable(productsPerWarehouse)
+
+    context = {
+        'product': product,
+        'warehouseDistribution': productsPerWarehouseTable,
+        'navSection': 'inventario',
+        'navSubSection': 'produtos',
+    }
+
+    return render(request, 'produtos/produto.html', context)

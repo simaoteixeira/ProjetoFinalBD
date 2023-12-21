@@ -35,6 +35,7 @@ urlpatterns = [
     path('inventario/armazens/<int:id>', ArmazensView.view, name='armazem'),
     path('inventario/produtos', ProdutosView.home, name='produtos'),
     path('inventario/produtos/criar', ProdutosView.create, name='criarProduto'),
+    path('inventario/produtos/<int:id>', ProdutosView.view, name='produto'),
 
     path('registo', RegisterView.register, name='registo'),
 ]
