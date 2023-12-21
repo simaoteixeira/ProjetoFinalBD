@@ -418,12 +418,12 @@ BEGIN
 
      IF
         (SELECT COUNT(*)
-        FROM purchasing_orders_components
+        FROM purchasing_order_components
         WHERE id_purchasing_orders = NEW.id_purchasing_orders AND id_product = NEW.id_product )
     > 0
     THEN
 
-        UPDATE purchasing_orders_components
+        UPDATE purchasing_order_components
         SET quantity = quantity + NEW.quantity,
         vat_value = _vat_total, discount_value = _discount_total, line_total = (quantity + NEW.quantity) * price_base
         WHERE id_purchasing_orders = NEW.id_purchasing_orders AND id_product = NEW.id_product ;
@@ -499,7 +499,7 @@ INNER JOIN auth_user u ON po.id_user = u.id;
 DROP VIEW IF EXISTS V_PurchasingOrderComponents CASCADE;
 
 CREATE OR REPLACE VIEW V_PurchasingOrderComponents(
-    id_purchasing_order_component,
+    id_purchasing_order_components,
     id_product,
     product_name,
     quantity,
@@ -513,7 +513,7 @@ CREATE OR REPLACE VIEW V_PurchasingOrderComponents(
     id_purchasing_order
     ) AS
 SELECT
-    poc.id_purchasing_order_component,
+    poc.id_purchasing_order_components,
     poc.id_product,
     p.name as product_name,
     poc.quantity,
@@ -664,7 +664,11 @@ CREATE OR REPLACE VIEW V_MaterialReceipts(
     user_name,
     n_delivery_note,
     obs,
-    created_at
+    created_at,
+    total_base,
+    vat_total,
+    discount_total,
+    total
     )
     AS
 SELECT
@@ -676,7 +680,11 @@ SELECT
     u.username AS user_name,
     mr.n_delivery_note,
     mr.obs,
-    mr.created_at
+    mr.created_at,
+    mr.total_base,
+    mr.vat_total,
+    mr.discount_total,
+    mr.total
 FROM
     material_receipts mr
 INNER JOIN
@@ -701,7 +709,8 @@ CREATE OR REPLACE VIEW V_MaterialReceiptComponents(
     vat_value,
     discount,
     discount_value,
-    line_total
+    line_total,
+    id_material_receipt
     ) AS
 SELECT
     mrc.id_material_receipt_component,
@@ -716,7 +725,8 @@ SELECT
     mrc.vat_value,
     mrc.discount,
     mrc.discount_value,
-    mrc.line_total
+    mrc.line_total,
+    mrc.id_material_receipt
 FROM material_receipt_components mrc
 INNER JOIN products  p USING (id_product)
 INNER JOIN warehouses w USING (id_warehouse);
@@ -1122,7 +1132,7 @@ INNER JOIN
 -- View production_order_components V_ProductionOrderComponents Listar as linhas das ordens de produção
 DROP VIEW IF EXISTS V_ProductionOrderComponents CASCADE;
 CREATE OR REPLACE VIEW V_ProductionOrderComponents(
-    id_order_production_component,
+    id_production_order_components,
     id_order_production,
     id_product,
     product_name,
@@ -1134,7 +1144,7 @@ CREATE OR REPLACE VIEW V_ProductionOrderComponents(
     line_total
     ) AS
 SELECT
-    poc.id_order_production_component,
+    poc.id_production_order_components,
     poc.id_order_production,
     poc.id_product,
     p.name AS product_name,
@@ -1513,6 +1523,7 @@ INNER JOIN clients c USING (id_client);
 --Lista as linhas das encomendas do clientes
 DROP VIEW IF EXISTS V_ClientOrdersComponents CASCADE;
 CREATE OR REPLACE VIEW V_ClientOrdersComponents(
+    id_client_order_components,
     id_product,
     product_name,
     quantity,
@@ -1525,7 +1536,7 @@ CREATE OR REPLACE VIEW V_ClientOrdersComponents(
     line_total
 ) AS
 SELECT
-    coc.client_order_components,
+    coc.id_client_order_components,
     coc.id_product,
     p.name AS product_name,
     coc.quantity,

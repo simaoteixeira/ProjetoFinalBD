@@ -13,6 +13,8 @@ urlpatterns = [
     path('compras/fornecedores', FornecedoresView.home, name='fornecedores'),
     path('compras/fornecedores/criar', FornecedoresView.create, name='criarFornecedor'),
     path('compras/recessao', RecessaoMaterialView.home, name='recessao'),
+    path('compras/recessao/criar', RecessaoMaterialView.create, name='criarRecessao'),
+    path('compras/recessao/<slug:id>', RecessaoMaterialView.view, name='recessaoMaterial'),
 
     path('vendas', ClientesView.home, name='vendas'),
     path('vendas/clientes', ClientesView.home, name='clientes'),

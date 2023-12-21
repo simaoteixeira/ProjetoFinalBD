@@ -218,8 +218,8 @@ class Labors(models.Model):
 class MaterialReceiptComponents(models.Model):
     id_material_receipt_component = models.AutoField(primary_key=True)
     id_material_receipt = models.ForeignKey('MaterialReceipts', models.DO_NOTHING, db_column='id_material_receipt')
-    id_warehouse = models.ForeignKey('Warehouses', models.DO_NOTHING, db_column='id_warehouse')
-    id_product = models.ForeignKey('Products', models.DO_NOTHING, db_column='id_product')
+    warehouse = models.ForeignKey('Warehouses', models.DO_NOTHING, db_column='id_warehouse')
+    product = models.ForeignKey('Products', models.DO_NOTHING, db_column='id_product')
     quantity = models.IntegerField()
     price_base = models.TextField()  # This field type is a guess.
     vat = models.IntegerField()
@@ -227,6 +227,7 @@ class MaterialReceiptComponents(models.Model):
     discount = models.FloatField()
     discount_value = models.TextField()  # This field type is a guess.
     line_total = models.TextField()  # This field type is a guess.
+    total_unit = models.TextField()  # This field type is a guess.
 
     class Meta:
         managed = False

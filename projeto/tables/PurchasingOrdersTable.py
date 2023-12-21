@@ -1,4 +1,5 @@
 import django_tables2 as tables
+from django.urls import reverse
 from ..models import PurchasingOrders, PurchasingOrderComponents
 
 
@@ -8,6 +9,13 @@ class PurchasingOrdersTable(tables.Table):
     delivery_date = tables.Column(accessor='delivery_date', verbose_name='Data Possivel de entrega')
     user = tables.Column(accessor='user.username', verbose_name='Registado por')
     created_at = tables.Column(accessor='created_at', verbose_name='Data de Criação do Pedido')
+    see = tables.TemplateColumn(
+        verbose_name="",
+        template_name="core/_column_eye.html",
+        orderable=False,
+        linkify=('pedidoCompra', {'id': tables.A('id_purchasing_order')}),
+    )
+
 
     class Meta:
         model = PurchasingOrders

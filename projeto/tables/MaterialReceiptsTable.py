@@ -5,10 +5,11 @@ class MaterialReceiptsTable(tables.Table):
     purchase_order = tables.Column(accessor='purchasing_order.id_purchasing_order', verbose_name='Ordem de Compra')
     n_delivery_note = tables.Column(accessor='n_delivery_note', verbose_name='N Guia')
     created_at = tables.Column(accessor='created_at', verbose_name='Criada a')
-    tools = tables.TemplateColumn(
+    see = tables.TemplateColumn(
         verbose_name="",
-        template_name="core/_tools_column.html",
-        orderable=False
+        template_name="core/_column_eye.html",
+        orderable=False,
+        linkify=('recessaoMaterial', {'id': tables.A('id_material_receipt')}),
     )
 
     class Meta:

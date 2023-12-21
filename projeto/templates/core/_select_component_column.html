@@ -1,3 +1,10 @@
-<button id="select_product" class="button !px-1.5 !py-1 !text-sm" data-product-id="{{ record.id_product }}" data-product-name="{{ record.name }}" data-product-cost="{{ record.price_cost }}">
+<button id="select_product" class="button !px-1.5 !py-1 !text-sm"
+        data-product-id="{{ record.id_product }}"
+        data-product-name="{{ record.name }}"
+        data-product-cost="{{ record.price_cost }}"
+        data-product-quantity="{% if record.quantity %}{{ record.quantity }}{% endif %}"
+        data-product-total-unit="{% if record.total_unit %}{{ record.total_unit }}{% endif %}"
+        data-product-vat="{% if record.vat %}{{ record.vat }}{% endif %}"
+        data-product-discount="{% if record.discount %}{{ record.discount }}{% endif %}">
     Selecionar
 </button>
