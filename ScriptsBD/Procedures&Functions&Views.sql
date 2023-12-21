@@ -1368,6 +1368,7 @@ GROUP BY so.id_sale_order, so.id_user, u.username, so.created_at, so.obs, so.tot
 DROP VIEW IF EXISTS V_SalesOrderComponents CASCADE;
 CREATE OR REPLACE VIEW V_SalesOrderComponents(
     id_sales_order_component,
+    id_sale_order,
     id_product,
     product_name,
     quantity,
@@ -1381,6 +1382,7 @@ CREATE OR REPLACE VIEW V_SalesOrderComponents(
 ) AS
 SELECT
     soc.id_sales_order_component,
+    soc.id_sale_order,
     soc.id_product,
     p.name AS product_name,
     soc.quantity,
@@ -1676,7 +1678,12 @@ CREATE OR REPLACE VIEW V_ClientInvoices(
     invoice_id,
     invoice_date,
     expire_date,
-    obs
+    obs,
+    total_base,
+    vat_total,
+    discount_total,
+    total,
+    created_at
 ) AS
 SELECT
     ci.id_client_invoice,
@@ -1690,7 +1697,12 @@ SELECT
     ci.invoice_id,
     ci.invoice_date,
     ci.expire_date,
-    ci.obs
+    ci.obs,
+    ci.total_base,
+    ci.vat_total,
+    ci.discount_total,
+    ci.total,
+    ci.created_at
 FROM client_invoices ci
 INNER JOIN clients c USING (id_client)
 INNER JOIN sales_orders so ON ci.id_client_invoice = so.id_client_invoice
@@ -1702,6 +1714,7 @@ GROUP BY ci.id_client_invoice, ci.id_client, c.name, c.address, c.locality, c.po
 DROP VIEW IF EXISTS V_ClientInvoicesComponents CASCADE;
 CREATE OR REPLACE VIEW V_ClientInvoicesComponents(
     id_client_invoice_component,
+    id_client_invoice,
     id_product,
     product_name,
     quantity,
@@ -1715,6 +1728,7 @@ CREATE OR REPLACE VIEW V_ClientInvoicesComponents(
 ) AS
 SELECT
     cic.id_client_invoice_component,
+    cic.id_client_invoice,
     cic.id_product,
     p.name AS product_name,
     cic.quantity,
