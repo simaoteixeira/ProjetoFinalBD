@@ -1,0 +1,151 @@
+<div class="table-container">
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Id Produto</th>
+            <th>Designação</th>
+            <th>Quantidade</th>
+            <th>Armazem</th>
+            <th>Total Unit.</th>
+            <th>Total</th>
+            <th> </th>
+        </tr>
+        </thead>
+        <tbody id="products-table">
+
+            {% if canAddProducts %}
+                <tr>
+                    <td colspan="12">
+                        <a href="#componentsModal" class="button w-full" rel="modal:open">
+                            <i class="ph-bold ph-plus"></i>
+                            Adicionar Componente
+                        </a>
+                    </td>
+                </tr>
+            {% endif %}
+            <tr class="bg-gray-100 rounded-lg py-1">
+                <td colspan="5">
+                    Valor Total Compoennets
+                </td>
+                <td colspan="2" id="total_sum">
+                    0€
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+{% if errors.product_1 %}
+    <span class="text-red-500 ml-1">{{ errors.product_1 }}</span>
+{% endif %}
+
+<script type="application/javascript">
+        let field_number = 1;
+        let priceFormat = new Intl.NumberFormat('pt-PT', {
+            style: 'currency',
+            currency: 'EUR',
+        });
+
+        let hidden_products = [];
+
+        $(document).ready(() => {
+            //see if any component is selected buttons with id select_product and get product id from 'data-product-id' attribute
+            $('button#select_product').click((e) => {
+                selectProduct(e)
+            })
+        })
+
+        function selectProduct(e) {
+            let product_id = $(e.target).attr('data-product-id')
+                let product_name = $(e.target).attr('data-product-name')
+                let product_cost = $(e.target).attr('data-product-cost')
+
+                $('input[name="product_' + field_number + '"]').val(product_id)
+
+                clone = $('.product-list-new').clone()
+                name = clone.attr('name')
+
+                clone.attr('name', name.replace('1', field_number + 1))
+
+                clone.val('')
+                clone.removeClass('product-list-new')
+                clone.appendTo($('#product-list'))
+
+                field_number++
+
+                $('#componentsModal').modal('hide')
+
+                addRowToTable(product_id, product_name, product_cost)
+        }
+
+        function addRowToTable(product_id, product_name, product_cost)
+        {
+            product_cost = product_cost.split(' ')[1]
+            product_cost = parseFloat(product_cost)
+
+            $('#products-table').prepend(`
+                <tr id="row_${product_id}">
+                    <td>${product_id}</td>
+                    <td>${product_name}</td>
+                    <td class="w-28">
+                        <div class="border border-gray-300 py-2 px-4 flex gap-2 rounded-lg bg-white items-center w-full">
+                            <input class="w-full outline-none leading-7" type="number" min="0" placeholder="0" name="quantity-${product_id}" id="quantity_${product_id}" value="1">
+                        </div>
+                    </td>
+                    <td>
+                        <select class="border border-gray-300 py-2 px-4 flex gap-2 rounded-lg bg-white items-center w-full" name="warehouse-${product_id}" id="warehouse-${product_id}">
+                            <option value="0">Seleciona Armazem</option>
+                            {% for warehouse in warehouses %}
+                                <option value="{{ warehouse.id_warehouse }}">{{ warehouse.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </td>
+                    <td id="unit-val-${product_id}">
+                        ${priceFormat.format(product_cost)}
+                    </td>
+                    <td id="tot_unit-${product_id}">
+                        ${priceFormat.format(product_cost)}
+                    </td>
+
+                    <td>
+                        <i class="ph-bold ph-x text-red-500 text-xl cursor-pointer" onClick="removeRowFromTable(${product_id})"></i>
+                    </td>
+                </tr>
+            `)
+
+            $(`#quantity_${product_id}`).change((e) => {
+                let quantity = $(e.target).val()
+                let unit_value = product_cost
+                let tot_unit = quantity * unit_value
+
+                $(`#tot_unit-${product_id}`).text(priceFormat.format(tot_unit))
+
+                updateTotals()
+            })
+            updateTotals()
+        }
+
+        function updateTotals() {
+            let total_sum = 0
+
+            //for each tot_unit-<product_id> get the value and add it to total_sum_unit
+            $('[id^="tot_unit-"]').each((index, element) => {
+                let value = $(element).text().trim()
+
+                value = value.split(' ')[0]
+                value = value.replace('.', '')
+                value = value.replace(',', '.')
+                value = parseFloat(value)
+
+                total_sum += value
+            })
+
+            $('#total_sum').text(priceFormat.format(total_sum))
+        }
+
+        function removeRowFromTable(product_id) {
+            //$(`#row_${product_id}`).remove()
+            $(`tr[id="row_${product_id}"]`).remove()
+
+            updateTotals()
+        }
+    </script>

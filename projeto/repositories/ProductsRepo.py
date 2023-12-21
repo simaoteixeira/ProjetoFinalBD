@@ -63,7 +63,7 @@ class ProductsRepo:
         ]
 
     def find_all_products(self):
-        self.cursor.execute("SELECT * FROM V_Products WHERE type = 'PRODUCT'")
+        self.cursor.execute("SELECT * FROM V_Products WHERE type = 'EQUIPMENT'")
         data = self.cursor.fetchall()
 
         return [
@@ -127,7 +127,8 @@ class ProductsRepo:
 
 
     def create(self, name, type, description, weight, vat, profit_margin):
-        self.cursor.callproc('create_product', [name, type, description, weight, vat, profit_margin])
+        print(name, type, description, weight, vat, profit_margin)
+        self.cursor.callproc('FN_Create_Product', [name, description, type, weight, vat, profit_margin])
 
     def update_obs(self, id, description):
         self.cursor.execute("UPDATE products SET description = %s WHERE  = %s", [description, id])

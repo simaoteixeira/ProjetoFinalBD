@@ -36,3 +36,16 @@ class ProductionOrdersRepo:
                 obs=row[13]
             ) for row in data
         ]
+
+    def create(self, id_labor, id_user, id_product, equipment_quantity, obs, products):
+        return True
+        #self.cursor.callproc('FN_Create_ProductionOrder', [id_labor, id_user, id_product, equipment_quantity, obs])
+        #response = self.cursor.fetchone()
+#
+        #if response[0]:
+        #    id_production_order = response[0]
+#
+        #    for product in products:
+        #        self.cursor.execute('Call PA_InsertLine_ProductionOrder(%s, %s, %s, %s, %s)', [id_production_order, product["id"], product["warehouse"], product["quantity"]])
+#
+        #    return True

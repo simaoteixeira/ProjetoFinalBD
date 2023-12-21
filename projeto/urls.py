@@ -1,6 +1,7 @@
 from django.urls import path
 from .views import RegisterView, PedidoCompraView, FaturasView, FornecedoresView, RecessaoMaterialView, ClientesView, \
-    MaoObraView, ArmazensView, ProdutosView, MovimentosView, OrdensProducaoView, EncomendasClienteView, GuiasRemessaView
+    MaoObraView, ArmazensView, ProdutosView, MovimentosView, OrdensProducaoView, EncomendasClienteView, \
+    GuiasRemessaView, FaturasClienteView
 
 urlpatterns = [
     path('', PedidoCompraView.home, name='home'),
@@ -18,14 +19,20 @@ urlpatterns = [
     path('compras/recessao/criar', RecessaoMaterialView.create, name='criarRecessao'),
     path('compras/recessao/<slug:id>', RecessaoMaterialView.view, name='recessaoMaterial'),
 
-    path('vendas', ClientesView.home, name='vendas'),
+    path('vendas', GuiasRemessaView.home, name='vendas'),
     path('vendas/clientes', ClientesView.home, name='clientes'),
     path('vendas/clientes/criar', ClientesView.create, name='criarCliente'),
     path('vendas/encomendas', EncomendasClienteView.home, name='encomendasCliente'),
+    path('vendas/encomendas/criar', EncomendasClienteView.create, name='criarEncomendaCliente'),
     path('vendas/guias-remessa', GuiasRemessaView.home, name='guiasRemessa'),
+    path('vendas/guias-remessa/criar', GuiasRemessaView.create, name='criarGuiaRemessa'),
+    path('vendas/faturas', FaturasClienteView.home, name='faturasCliente'),
+    path('vendas/faturas/criar', FaturasClienteView.create, name='criarFaturaCliente'),
+    path('vendas/faturas/<slug:id>', FaturasClienteView.view, name='faturaCliente'),
 
     path('producao', OrdensProducaoView.home, name='producao'),
     path('producao/ordens-producao', OrdensProducaoView.home, name='ordensProducao'),
+    path('producao/ordens-producao/criar', OrdensProducaoView.create, name='criarOrdemProducao'),
     path('producao/mao-obra', MaoObraView.home, name='maoObra'),
     path('producao/mao-obra/criar', MaoObraView.create, name='criarMaoObra'),
 

@@ -36,12 +36,19 @@ def create(request):
 
             data = form.cleaned_data
 
-            ProductsRepo().create(data)
+            ProductsRepo().create(
+                name=data['name'],
+                type=data['type'],
+                description=data['description'],
+                weight=data['weight'],
+                vat=data['vat'],
+                profit_margin=data['profit_margin'],
+            )
 
             return redirect('/inventario/produtos')
         else:
-            print('invalid')
             errors = getErrorsObject(form.errors.get_context())
+            print('invalid', errors)
 
             context['errors'] = errors
 

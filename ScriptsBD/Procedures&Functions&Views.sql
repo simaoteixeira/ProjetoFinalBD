@@ -1528,6 +1528,7 @@ INNER JOIN clients c USING (id_client);
 DROP VIEW IF EXISTS V_ClientOrdersComponents CASCADE;
 CREATE OR REPLACE VIEW V_ClientOrdersComponents(
     id_client_order_components,
+    id_client_order,
     id_product,
     product_name,
     quantity,
@@ -1541,6 +1542,7 @@ CREATE OR REPLACE VIEW V_ClientOrdersComponents(
 ) AS
 SELECT
     coc.id_client_order_components,
+    coc.id_client_order,
     coc.id_product,
     p.name AS product_name,
     coc.quantity,

@@ -1,0 +1,142 @@
+{% extends 'base.html' %}
+{% load render_table from django_tables2 %}
+
+{% block title %}Faturas Cliente{% endblock %}
+
+{% block content %}
+    <h1 class="font-extrabold text-4xl leading-10">Registo de Fatura de Cliente</h1>
+    <form method="post" class="flex flex-col gap-4">
+        {% csrf_token %}
+        <div class="flex gap-4">
+            <div class="w-full">
+                <span class="mb-2">Cliente</span>
+                <a href="#clientModal" class="button w-full !justify-start" rel="modal:open">
+                    <i class="ph-fill ph-truck"></i>
+                    {% if selected_client %}
+                        <input name="client" class="hidden" value="{{ selected_client_id }}">
+                        {{ selected_client }}
+                    {% else %}
+                        Seleciona um Cliente
+                    {% endif %}
+                </a>
+                {% if errors.client %}
+                    <span class="text-red-500 ml-1">{{ errors.client }}</span>
+                {% endif %}
+            </div>
+            <div class="w-full">
+                <span class="mb-2">Adicionar Guia de Remessa</span>
+                <a href="#salesOrderModal" class="button w-full !justify-start" rel="modal:open">
+                    <i class="ph-fill ph-archive-box"></i>
+                    Adicionar Guia
+                </a>
+                {% if errors.sales_order_1 %}
+                    <span class="text-red-500 ml-1">{{ errors.sales_order_1 }}</span>
+                {% endif %}
+            </div>
+        </div>
+        <hr class="border-gray-300">
+        <span class="-mb-2 font-medium">Relativa a</span>
+        <div id="salesOrder-list" class="flex items-center gap-4">
+            <input type="text" class="hidden salesOrder-list-new" name="sales_order_1"></input>
+        </div>
+        <div class="w-full">
+            <span class="mb-2">Numero Fatura</span>
+            {% component "Input" type="text" placeholder="Numero da Fatura" inputName="invoice_id" value=form.invoice_id.value error=errors.invoice_id %}
+        </div>
+        <div class="flex gap-4">
+            <div class="w-full">
+                <span class="mb-2">Data Fatura</span>
+                {% component "Input" type="date" placeholder="Data da Fatura" inputName="invoice_date" value=form.invoice_date.value error=errors.invoice_date %}
+            </div>
+            <div class="w-full">
+                <span class="mb-2">Data Vencimento</span>
+                {% component "Input" type="date" placeholder="Data de Vencimento" inputName="expire_date" value=form.expire_date.value error=errors.expire_date %}
+            </div>
+        </div>
+        {% component "ProductsBaseTable" errors=errors canAddProducts=False %}
+        {% component "TextArea" name="obs" label="Observações" %}
+        <button class="button !bg-green-500 text-white w-full hover:opacity-80">
+            <i class="ph-fill ph-check-circle !text-white"></i>
+            Finalizar Registo
+        </button>
+        <div id="product-list" class="hidden">
+            <input type="text" class="hidden product-list-new" name="product_1"></input>
+        </div>
+    </form>
+    {% component "SelectTableModal" id="clientModal" title="Seleciona um Cliente" table=selectClientTable %}
+    {% if selected_client %}
+        {% component "SelectTableModal" id="salesOrderModal" title="Seleciona uma Guia de Remessa" table=selectSalesOrdersTable %}
+    {% endif %}
+
+    <script type="application/javascript">
+        field_number = 1
+        var product_number = 0
+
+        $(document).ready(function() {
+            $("button#select_salesOrder").click((e) => {
+                let sales_order_id = $(e.target).attr('data-salesOrder-id')
+
+                {% if selected_sales_orders %}
+                    field_number = {{ selected_sales_orders|length }} + 1
+                {% endif %}
+
+                addSalesOrder(sales_order_id)
+
+                $('form').submit()
+            })
+        })
+
+        function addSalesOrder(material_receipt_id)
+        {
+            $('input[name="sales_order_' + field_number + '"]').val(material_receipt_id)
+
+            var clone = $('.salesOrder-list-new').clone()
+            name = clone.attr('name')
+
+            clone.attr('name', name.replace('1', field_number + 1))
+
+            clone.val('')
+            clone.removeClass('materialReceipts-list-new')
+
+            $('#salesOrder-list').append(`
+                <div id="test-${material_receipt_id}" class="bg-white p-6 border border-gray-300 flex flex-col gap-2 rounded-lg">
+                    <i class="ph-fill ph-archive-box text-5xl"></i>
+                    <p class="text-xl leading-6 font-semibold text-gray-900 whitespace-nowrap"><span class="font-bold">Recessão:</span> ${material_receipt_id}</p>
+                </div>
+            `)
+
+            clone.appendTo($(`#test-${material_receipt_id}`))
+
+            field_number++
+            console.log(field_number)
+        }
+
+        function addProduct(product_id) {
+            $('input[name="product_' + product_number + '"]').val(product_id)
+
+            clone = $('.product-list-new').clone()
+            name = clone.attr('name')
+
+            clone.attr('name', name.replace('1', product_number + 1))
+
+            clone.val('')
+            clone.removeClass('product-list-new')
+            clone.appendTo($('#product-list'))
+
+            product_number++
+        }
+
+        {% if selected_sales_orders %}
+            {% for sales_order in selected_sales_orders %}
+                addSalesOrder('{{ sales_order }}')
+            {% endfor %}
+        {% endif %}
+
+        {% if components %}
+            {% for component in components %}
+                addProduct('{{ component.product.id_product }}')
+                addRowToTable({{ component.product.id_product }}, '{{ component.product.name }}', '{{ component.price_base }}', {{ component.quantity }}, {{ component.vat }}, {{ component.discount}})
+            {% endfor %}
+        {% endif %}
+    </script>
+{% endblock %}
