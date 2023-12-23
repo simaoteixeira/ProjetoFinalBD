@@ -84,21 +84,21 @@ class ProductsRepo:
     def find_all_stock(self):
         self.cursor.execute("SELECT * FROM V_StockPerProduct")
         data = self.cursor.fetchall()
-
+        print(data)
         return [
             Stock(
                 product=
-                    Products(
-                        id_product=row[0],
-                        name=row[1],
-                        type=row[5],
-                        weight=row[6],
-                    ),
+                Products(
+                    id_product=row[0],
+                    name=row[1],
+                    type=row[5],
+                    weight=row[6],
+                ),
                 warehouse=
-                    Warehouses(
-                        id_warehouse=row[2],
-                        name=row[3]
-                    ),
+                Warehouses(
+                    id_warehouse=row[2],
+                    name=row[3]
+                ),
                 quantity=row[4],
             ) for row in data
         ]
@@ -110,25 +110,26 @@ class ProductsRepo:
         return [
             Stock(
                 product=
-                    Products(
-                        id_product=row[0],
-                        name=row[1],
-                        type=row[5],
-                        weight=row[6],
-                    ),
+                Products(
+                    id_product=row[0],
+                    name=row[1],
+                    type=row[5],
+                    weight=row[6],
+                ),
                 warehouse=
-                    Warehouses(
-                        id_warehouse=row[2],
-                        name=row[3]
-                    ),
+                Warehouses(
+                    id_warehouse=row[2],
+                    name=row[3]
+                ),
                 quantity=row[4],
             ) for row in data
         ]
 
-
     def create(self, name, type, description, weight, vat, profit_margin):
         print(name, type, description, weight, vat, profit_margin)
-        self.cursor.callproc('FN_Create_Product', [name, description, type, weight, vat, profit_margin])
+        self.cursor.execute("SELECT FN_Create_Product(%s,%s,%s,%s,%s,%s)",
+                            [name, description, type, weight, vat, profit_margin])
+        data = self.cursor.fetchall()
 
     def update_obs(self, id, description):
         self.cursor.execute("UPDATE products SET description = %s WHERE  = %s", [description, id])

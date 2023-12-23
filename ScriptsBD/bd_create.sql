@@ -514,7 +514,7 @@ CREATE TYPE production_order_status AS ENUM ('WAITING_PROD', 'IN_PROD', 'COMPLET
 create table production_orders (
    id_order_production  SERIAL                 not null,
    id_labor             INTEGER                 not null,
-   id_warehouse         INTEGER                  null,
+   id_warehouse         INTEGER                  not null,
    id_user            INTEGER                 not null,
    id_product            INTEGER                 not null,
    equipment_quantity   INTEGER                 not null,
@@ -548,7 +548,7 @@ create table production_order_components (
    id_order_production  INTEGER                 not null,
    id_product           INTEGER                 not null,
    quantity             INTEGER                 not null,
-   price_base           MONEY                not null,
+   price_base           MONEY                null DEFAULT 0::money,
    line_total           MONEY                null GENERATED ALWAYS AS (price_base * quantity) STORED,
    constraint PK_PRODUCTION_ORDER_COMPONENTS primary key (id_production_order_components),
    constraint FK_PRODUCTI_HAS_PRODUCTI foreign key (id_order_production)
