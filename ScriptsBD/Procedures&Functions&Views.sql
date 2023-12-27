@@ -1112,43 +1112,80 @@ $$
 DECLARE
     _line_total      MONEY;
     _production_cost MONEY;
-    _total           MONEY;
+    _unit_cost       MONEY;
+	_quantity		INTEGER;
 BEGIN
-    _line_total := NEW.price_base * NEW.quantity;
-    NEW.line_total := _line_total;
-    _production_cost := (SELECT l.cost + _line_total
-                         FROM production_orders po
-                                  INNER JOIN labors l ON po.id_labor = l.id_labor
-                         WHERE po.id_order_production = NEW.id_order_production);
+    -- Obter o preço base do produto
+    SELECT price_base INTO NEW.price_base
+    FROM products
+    WHERE id_product = NEW.id_product;
 
-    RAISE NOTICE 'Custo de produção: %', _production_cost;
+	--Obter quantidade antiga caso o componente já esteja na tabela
+	_quantity:= (SELECT COALESCE(quantity,0)
+	FROM production_order_components
+	WHERE id_order_production = NEW.id_order_production AND
+	id_product=NEW.id_product);
+
+	-- Se _quantity for NULL, define como 0
+	IF _quantity IS NULL THEN
+		_quantity := 0;
+	END IF;
+	--quantidade total a contar com a nova que vai entrar
+	_quantity= _quantity+ NEW.quantity;
+
+	RAISE NOTICE 'quantity: %',_quantity;
+
+    -- Calcular o total da linha (price_base * _quantity) quantidade total
+    NEW.line_total := NEW.price_base * _quantity;
+    RAISE NOTICE 'NEW.line_total: %', NEW.line_total;
+
+    -- Calcular o custo de produção por componente
+	_unit_cost := (SELECT SUM(price_base * quantity)
+				   FROM production_order_components
+				   WHERE id_order_production = NEW.id_order_production);
+
+	-- Se _unit_cost for NULL, define como preço_base * quantidade, se não apenas adiciona ao custo unitário preço_base * quantidade
+	IF _unit_cost IS NULL THEN
+		_unit_cost := (NEW.quantity * NEW.price_base);
+	ELSE
+	_unit_cost := _unit_cost + (NEW.quantity * NEW.price_base);
+	END IF;
 
 
+	RAISE NOTICE '_unit_cost: %', _unit_cost;
+
+    -- Atualizar o custo unitário na tabela de ordens de produção
     UPDATE production_orders
-    SET production_cost =_production_cost,
-        unit_cost       = NEW.price_base
+    SET unit_cost = _unit_cost
     WHERE id_order_production = NEW.id_order_production;
+    RAISE NOTICE 'Unit cost updated';
 
-    IF
-            (SELECT COUNT(*)
-             FROM production_order_components
-             WHERE id_order_production = NEW.id_order_production
-               AND id_product = NEW.id_product
-               AND id_warehouse = NEW.id_warehouse)
-            > 0
-    THEN
+    -- Atualizar o custo total de produção na tabela de ordens de produção
+    UPDATE production_orders
+    SET production_cost = unit_cost * equipment_quantity
+    WHERE id_order_production = NEW.id_order_production;
+    RAISE NOTICE 'Production cost updated';
 
-        UPDATE production_order_components
-        SET quantity   = quantity + NEW.quantity,
-            line_total = (quantity + NEW.quantity) * price_base
+    -- Verificar se o componente já existe na ordem de produção
+    IF EXISTS (
+        SELECT 1
+        FROM production_order_components
         WHERE id_order_production = NEW.id_order_production
           AND id_product = NEW.id_product
-          AND id_warehouse = NEW.id_warehouse;
+          AND id_warehouse = NEW.id_warehouse
+    ) THEN
+        -- Atualizar a quantidade e o total da linha do componente existente
+        UPDATE production_order_components
+		SET quantity = _quantity
+		WHERE id_order_production = NEW.id_order_production
+		  AND id_product = NEW.id_product
+		  AND id_warehouse = NEW.id_warehouse;
+        RAISE NOTICE 'Component quantity and line total updated';
 
         RETURN NULL;
+    ELSE
+        RETURN NEW;
     END IF;
-
-    RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
 CREATE TRIGGER TR_production_order_components_PRE_INS
@@ -1156,6 +1193,7 @@ CREATE TRIGGER TR_production_order_components_PRE_INS
     ON production_order_components
     FOR EACH ROW
 EXECUTE FUNCTION TR_production_order_components_PRE_INS();
+
 
 
 DROP FUNCTION IF EXISTS TR_production_order_PRE_UPD() CASCADE;
