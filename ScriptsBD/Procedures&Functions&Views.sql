@@ -275,8 +275,8 @@ SELECT p.id_product,
        p.type     AS product_type,
        p.weight   AS product_weight
 FROM stock s
-        INNER JOIN warehouses w ON s.id_warehouse = w.id_warehouse
-        RIGHT JOIN products p ON s.id_product = p.id_product;
+         INNER JOIN warehouses w ON s.id_warehouse = w.id_warehouse
+         RIGHT JOIN products p ON s.id_product = p.id_product;
 
 -- View stock_movements V_Stock
 DROP VIEW IF EXISTS V_Stock;
@@ -662,19 +662,56 @@ END;
 $$;
 
 /**
+    Função que dado um id de um produto, vai procurar todas as linhas de receções de material com esse produto e calcula o preço médio do produto
+*/
+
+CREATE OR REPLACE FUNCTION FN_GetProductAveragePriceByMaterialReceipts(
+    _id_product INT
+)
+    RETURNS MONEY AS
+$$
+DECLARE
+    _total_quantity INT;
+    _total_price    MONEY;
+    _average_price  MONEY;
+BEGIN
+    SELECT COALESCE(SUM(quantity), 0)::int
+    INTO _total_quantity
+    FROM material_receipt_components
+    WHERE id_product = _id_product;
+
+    SELECT COALESCE(SUM(price_base * quantity), 0::money)::money
+    INTO _total_price
+    FROM material_receipt_components
+    WHERE id_product = _id_product;
+
+    IF _total_quantity = 0 THEN
+        RETURN 0::money;
+    END IF;
+
+    _average_price := _total_price::money / _total_quantity;
+
+    RETURN _average_price::money;
+END;
+$$
+    LANGUAGE plpgsql;
+
+
+/**
     Depois de inserir/atualizar/eliminar a linha de uma receção de material, temos de atualizar os valores totais da própria linha e depois atualizar os valores totais da receção de material, e dar entrada nos movimentos de stock (stock_movements)
 */
 DROP FUNCTION IF EXISTS TR_material_receipt_components_PRE_INS() CASCADE;
 CREATE OR REPLACE FUNCTION TR_material_receipt_components_PRE_INS() RETURNS TRIGGER AS
 $$
 DECLARE
-    _vat_value      MONEY;
-    _discount_value MONEY;
-    _line_total     MONEY;
-    _total_base     MONEY;
-    _vat_total      MONEY;
-    _discount_total MONEY;
-    _total          MONEY;
+    _vat_value         MONEY;
+    _discount_value    MONEY;
+    _line_total        MONEY;
+    _total_base        MONEY;
+    _vat_total         MONEY;
+    _discount_total    MONEY;
+    _total             MONEY;
+    _new_product_price MONEY;
 BEGIN
     _vat_value := NEW.price_base * (NEW.vat / 100.0) * NEW.quantity;
     _discount_value := NEW.price_base * (NEW.discount / 100.0) * NEW.quantity;
@@ -706,6 +743,15 @@ BEGIN
         total          = _total
     WHERE id_material_receipt = NEW.id_material_receipt;
 
+
+    SELECT FN_GetProductAveragePriceByMaterialReceipts(NEW.id_product) INTO _new_product_price;
+
+    RAISE NOTICE 'Novo preço médio: %', _new_product_price;
+
+    UPDATE products
+    SET price_cost = _new_product_price
+    WHERE id_product = NEW.id_product;
+
     IF
             (SELECT COUNT(*)
              FROM material_receipt_components
@@ -724,9 +770,9 @@ BEGIN
           AND id_product = NEW.id_product
           AND id_warehouse = NEW.id_warehouse;
 
-        -- Entrada no stock
         PERFORM FN_AddProductToStock(NEW.id_warehouse, NEW.id_product, NEW.quantity, 'IN', 'material_receipt',
-                                     NEW.id_material_receipt);
+                                 NEW.id_material_receipt);
+
         RETURN NULL;
     END IF;
 
@@ -1113,46 +1159,47 @@ DECLARE
     _line_total      MONEY;
     _production_cost MONEY;
     _unit_cost       MONEY;
-	_quantity		INTEGER;
+    _quantity        INTEGER;
 BEGIN
     -- Obter o preço base do produto
-    SELECT price_base INTO NEW.price_base
+    SELECT price_base
+    INTO NEW.price_base
     FROM products
     WHERE id_product = NEW.id_product;
 
-	--Obter quantidade antiga caso o componente já esteja na tabela
-	_quantity:= (SELECT COALESCE(quantity,0)
-	FROM production_order_components
-	WHERE id_order_production = NEW.id_order_production AND
-	id_product=NEW.id_product);
+    --Obter quantidade antiga caso o componente já esteja na tabela
+    _quantity := (SELECT COALESCE(quantity, 0)
+                  FROM production_order_components
+                  WHERE id_order_production = NEW.id_order_production
+                    AND id_product = NEW.id_product);
 
-	-- Se _quantity for NULL, define como 0
-	IF _quantity IS NULL THEN
-		_quantity := 0;
-	END IF;
-	--quantidade total a contar com a nova que vai entrar
-	_quantity= _quantity+ NEW.quantity;
+    -- Se _quantity for NULL, define como 0
+    IF _quantity IS NULL THEN
+        _quantity := 0;
+    END IF;
+    --quantidade total a contar com a nova que vai entrar
+    _quantity = _quantity + NEW.quantity;
 
-	RAISE NOTICE 'quantity: %',_quantity;
+    RAISE NOTICE 'quantity: %',_quantity;
 
     -- Calcular o total da linha (price_base * _quantity) quantidade total
     NEW.line_total := NEW.price_base * _quantity;
     RAISE NOTICE 'NEW.line_total: %', NEW.line_total;
 
     -- Calcular o custo de produção por componente
-	_unit_cost := (SELECT SUM(price_base * quantity)
-				   FROM production_order_components
-				   WHERE id_order_production = NEW.id_order_production);
+    _unit_cost := (SELECT SUM(price_base * quantity)
+                   FROM production_order_components
+                   WHERE id_order_production = NEW.id_order_production);
 
-	-- Se _unit_cost for NULL, define como preço_base * quantidade, se não apenas adiciona ao custo unitário preço_base * quantidade
-	IF _unit_cost IS NULL THEN
-		_unit_cost := (NEW.quantity * NEW.price_base);
-	ELSE
-	_unit_cost := _unit_cost + (NEW.quantity * NEW.price_base);
-	END IF;
+    -- Se _unit_cost for NULL, define como preço_base * quantidade, se não apenas adiciona ao custo unitário preço_base * quantidade
+    IF _unit_cost IS NULL THEN
+        _unit_cost := (NEW.quantity * NEW.price_base);
+    ELSE
+        _unit_cost := _unit_cost + (NEW.quantity * NEW.price_base);
+    END IF;
 
 
-	RAISE NOTICE '_unit_cost: %', _unit_cost;
+    RAISE NOTICE '_unit_cost: %', _unit_cost;
 
     -- Atualizar o custo unitário na tabela de ordens de produção
     UPDATE production_orders
@@ -1167,19 +1214,17 @@ BEGIN
     RAISE NOTICE 'Production cost updated';
 
     -- Verificar se o componente já existe na ordem de produção
-    IF EXISTS (
-        SELECT 1
-        FROM production_order_components
-        WHERE id_order_production = NEW.id_order_production
-          AND id_product = NEW.id_product
-          AND id_warehouse = NEW.id_warehouse
-    ) THEN
+    IF EXISTS (SELECT 1
+               FROM production_order_components
+               WHERE id_order_production = NEW.id_order_production
+                 AND id_product = NEW.id_product
+                 AND id_warehouse = NEW.id_warehouse) THEN
         -- Atualizar a quantidade e o total da linha do componente existente
         UPDATE production_order_components
-		SET quantity = _quantity
-		WHERE id_order_production = NEW.id_order_production
-		  AND id_product = NEW.id_product
-		  AND id_warehouse = NEW.id_warehouse;
+        SET quantity = _quantity
+        WHERE id_order_production = NEW.id_order_production
+          AND id_product = NEW.id_product
+          AND id_warehouse = NEW.id_warehouse;
         RAISE NOTICE 'Component quantity and line total updated';
 
         RETURN NULL;
