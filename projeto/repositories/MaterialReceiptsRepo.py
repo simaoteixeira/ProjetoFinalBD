@@ -126,7 +126,7 @@ class MaterialReceiptsRepo:
 
     def create(self, id_user, id_purchasing_order, n_delivery_note, obs, products=[]):
         print(id_user, id_purchasing_order, n_delivery_note, obs, products)
-        self.cursor.callproc("FN_Create_MaterialReceipts", [id_user, id_purchasing_order, n_delivery_note, obs or ''])
+        self.cursor.execute("SELECT * FROM FN_Create_MaterialReceipts(%s,%s,%s,%s)", [id_user, id_purchasing_order, n_delivery_note, obs or ''])
         response = self.cursor.fetchone()
 
         if (response[0]):

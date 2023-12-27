@@ -113,7 +113,7 @@ class PurchasingOrdersRepo:
         self.cursor.execute("UPDATE purchasing_orders SET obs = %s WHERE id_purchasing_order = %s", [obs.strip(), id])
 
     def create(self, id_supplier, id_user, delivery_date, obs, products=[]):
-        self.cursor.callproc('FN_Create_PurchasingOrder', [id_supplier, id_user, delivery_date, obs])
+        self.cursor.execute('SELECT * FROM FN_Create_PurchasingOrder(%s,%s,%s,%s)', [id_supplier, id_user, delivery_date, obs])
         reponse = self.cursor.fetchone()
 
         print()
