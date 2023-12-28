@@ -28,11 +28,15 @@ def home(request):
 
 @login_required(login_url='/login')
 def create(request):
+    productsRepo = ProductsRepo()
+    laborsRepo = LaborRepo()
+    warehousesRepo = WarehousesRepo()
     form = ProductionOrdersForm(request.POST or None)
-    equipments = ProductsRepo().find_all_products()
-    components = ProductsRepo().find_all_components()
-    labors = LaborRepo().find_all()
-    warehouses = WarehousesRepo().find_all()
+
+    equipments = productsRepo.find_all_products()
+    components = productsRepo.find_all_components()
+    labors = laborsRepo.find_all()
+    warehouses = warehousesRepo.find_all()
 
     equipmentsTable = SelectEquipmentsTable(equipments)
     componentsTable = SelectProductsTable(components)
@@ -64,12 +68,9 @@ def create(request):
 
     if request.method == 'POST':
         form = ProductionOrdersForm(request.POST)
-        data = form.data
-        print(data)
 
         if form.is_valid():
             data = form.cleaned_data
-            print(data)
 
             ProductionOrdersRepo().create(
                 id_labor=data["labor"],
@@ -81,7 +82,6 @@ def create(request):
             )
         else:
             errors = getErrorsObject(form.errors.get_context())
-            print(errors)
 
             context['errors'] = errors
 

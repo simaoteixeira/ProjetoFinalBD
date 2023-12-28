@@ -34,15 +34,12 @@ def create(request):
 
     if request.method == 'POST':
         if form.is_valid():
-            print('valid')
-            print(form.cleaned_data)
             data = form.cleaned_data
 
             SupplierRepo().create(data['name'], data['email'], data['nif'], data['phone'], data['address'], data['locality'], data['postal_code'])
 
             return redirect('/compras/fornecedores')
         else:
-            print('invalid')
             errors = getErrorsObject(form.errors.get_context())
 
             context['errors'] = errors

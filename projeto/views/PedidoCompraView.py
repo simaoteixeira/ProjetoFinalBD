@@ -29,11 +29,13 @@ def home(request):
 
 @login_required(login_url='/login')
 def view(request, id):
-    if request.method == 'POST' and request.POST.get('observations'):
-        PurchasingOrdersRepo().update_obs(id, request.POST.get('observations'))
+    repo = PurchasingOrdersRepo()
 
-    data = PurchasingOrdersRepo().find_by_id(id)
-    components = PurchasingOrdersRepo().find_components(id)
+    if request.method == 'POST' and request.POST.get('observations'):
+        repo.update_obs(id, request.POST.get('observations'))
+
+    data = repo.find_by_id(id)
+    components = repo.find_components(id)
 
     componentsTable = PurchasingOrdersProductsTable(components)
 
@@ -52,9 +54,12 @@ def view(request, id):
 
 @login_required(login_url='/login')
 def create(request):
+    supplierRepo = SupplierRepo()
+    productsRepo = ProductsRepo()
     form = PurchasingOrdersForm(request.POST or None)
-    suppliers = SupplierRepo().find_all()
-    components = ProductsRepo().find_all_components()
+
+    suppliers = supplierRepo.find_all()
+    components = productsRepo.find_all_components()
 
     suppliersTable = SelectSupplierTable(suppliers)
     suppliersTable.paginate(page=request.GET.get('page', 1), per_page=10)
@@ -87,11 +92,9 @@ def create(request):
 
     if request.method == 'POST':
         form = PurchasingOrdersForm(request.POST)
-        data = form.data
-        print(data)
+
         if form.is_valid():
             data = form.cleaned_data
-            print(data)
 
             PurchasingOrdersRepo().create(
                 id_supplier=data["supplier"],
@@ -104,7 +107,6 @@ def create(request):
             return redirect('home')
         else:
             errors = getErrorsObject(form.errors.get_context())
-            print(errors)
 
             context['errors'] = errors
 

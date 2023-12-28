@@ -2,7 +2,6 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 
 from projeto.forms.LaborsForm import LaborsForm
-from projeto.models import Labors
 from projeto.repositories.LaborRepo import LaborRepo
 from projeto.tables.LaborsTable import LaborsTable
 from projeto.utils import getErrorsObject
@@ -33,15 +32,12 @@ def create(request):
 
     if request.method == 'POST':
         if form.is_valid():
-            print('valid')
-            print(form.cleaned_data)
             data = form.cleaned_data
 
             LaborRepo().create(data['title'], data['cost'])
 
             return redirect('/producao/mao-obra')
         else:
-            print('invalid')
             errors = getErrorsObject(form.errors.get_context())
 
             context['errors'] = errors

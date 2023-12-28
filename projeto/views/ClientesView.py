@@ -23,6 +23,7 @@ def home(request):
 
 @login_required(login_url='/login')
 def create(request):
+    repo = ClientRepo()
     form = ClientsForm(request.POST or None)
 
     context = {
@@ -38,7 +39,7 @@ def create(request):
 
             data = form.cleaned_data
 
-            ClientRepo().create(data['name'], data['email'], data['nif'], data['phone'], data['address'], data['locality'], data['postal_code'])
+            repo.create(data['name'], data['email'], data['nif'], data['phone'], data['address'], data['locality'], data['postal_code'])
 
             return redirect('/vendas/clientes')
         else:
