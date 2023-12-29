@@ -41,7 +41,7 @@
         </div>
         <div class="w-full">
             <span class="mb-2">Numero Fatura</span>
-            {% component "Input" type="text" placeholder="Numero da Fatura" inputName="invoice_id" value=form.invoice_id.value error=errors.invoice_id %}
+            {% component "Input" type="number" placeholder="Numero da Fatura" inputName="invoice_id" value=form.invoice_id.value error=errors.invoice_id %}
         </div>
         <div class="flex gap-4">
             <div class="w-full">
@@ -55,7 +55,7 @@
         </div>
         {% component "ProductsBaseTable" errors=errors canAddProducts=False %}
         {% component "TextArea" name="obs" label="Observações" %}
-        <button class="button !bg-green-500 text-white w-full hover:opacity-80">
+        <button id="submitButton" class="button !bg-green-500 text-white w-full hover:opacity-80">
             <i class="ph-fill ph-check-circle !text-white"></i>
             Finalizar Registo
         </button>
@@ -70,9 +70,15 @@
 
     <script type="application/javascript">
         field_number = 1
-        var product_number = 0
+        var product_number = 1
 
         $(document).ready(function() {
+            $("#submitButton").click((e) => {
+                $("form").append(`<input type="text" class="hidden" name="submit" value={{ True }}>`)
+
+                $('form').submit()
+            })
+
             $("button#select_materialReceipts").click((e) => {
                 let material_receipt_id = $(e.target).attr('data-materialreceipts-id')
 
@@ -109,7 +115,6 @@
             clone.appendTo($(`#test-${material_receipt_id}`))
 
             field_number++
-            console.log(field_number)
         }
 
         function addProduct(product_id) {

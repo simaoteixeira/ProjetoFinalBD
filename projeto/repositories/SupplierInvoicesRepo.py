@@ -86,9 +86,9 @@ class SupplierInvoicesRepo:
         ]
 
     def create(self, id_supplier, invoice_id, invoice_date, expire_date, obs, products, id_material_receipt=[]):
-        print(id_supplier, invoice_id, invoice_date, expire_date, obs, products, id_material_receipt)
-        self.cursor.execute("SELECT * FROM FN_Create_SupplierInvoice(%s, %s, %s, %s, %s, %s)", [id_material_receipt, id_supplier, int(invoice_id), invoice_date, expire_date, obs])
-
+        print("obs", obs)
+        self.cursor.execute(f"SELECT * FROM FN_Create_SupplierInvoice(%s, %s, %s, %s, %s, %s)", [id_material_receipt, id_supplier, invoice_id, invoice_date, expire_date, str(obs)])
+#
         result = self.cursor.fetchone()
 
         if result[0]:

@@ -91,6 +91,7 @@
         $(document).ready(() => {
             //see if any component is selected buttons with id select_product and get product id from 'data-product-id' attribute
             $('button#select_product').click((e) => {
+                $('.close-modal').click()
                 selectProduct(e)
             })
         })
@@ -112,8 +113,6 @@
                 clone.appendTo($('#product-list'))
 
                 field_number++
-
-                $('#componentsModal').modal('hide')
 
                 {% if deleteOnSelect %}
                     //data-product-quantity="2" data-product-total-unit="" data-product-vat="22" data-product-discount=""
@@ -180,7 +179,9 @@
                         ${priceFormat.format(product_cost)}
                     </td>
                     <td>
-                        <i class="ph-bold ph-x text-red-500 text-xl cursor-pointer" onClick="removeRowFromTable(${product_id})"></i>
+                        {% if deleteOnSelect %}
+                            <i class="ph-bold ph-x text-red-500 text-xl cursor-pointer" onClick="removeRowFromTable(${product_id})"></i>
+                        {% endif %}
                     </td>
                 </tr>
             `)
@@ -326,6 +327,9 @@
                         ${priceFormat.format(product_cost)}
                     </td>
                     <td>
+                        {% if deleteOnSelect %}
+                            <i class="ph-bold ph-x text-red-500 text-xl cursor-pointer" onClick="removeRowFromTable(${product_id})"></i>
+                        {% endif %}
                     </td>
                 </tr>
             `)

@@ -8,11 +8,6 @@ class SuppliersTable(tables.Table):
     phone = tables.Column(verbose_name="Telefone", accessor="phone")
     address = tables.Column(verbose_name="Morada", accessor="address")
     email = tables.Column(verbose_name="Email", accessor="email")
-    tools = tables.TemplateColumn(
-        verbose_name="",
-        template_name="core/_tools_column.html",
-        orderable=False,
-    )
 
     class Meta:
         model = Suppliers

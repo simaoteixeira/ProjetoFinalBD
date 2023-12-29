@@ -1,9 +1,13 @@
+import datetime
+
 from django import forms
+
+from projeto.utils import compareDates
 
 
 class SupplierInvoicesForm(forms.Form):
     supplier = forms.IntegerField(required=True, error_messages={'required': 'Campo obrigatório'})
-    invoice_id = forms.CharField(required=True, error_messages={'required': 'Campo obrigatório'})
+    invoice_id = forms.IntegerField(required=True, error_messages={'required': 'Campo obrigatório'})
     invoice_date = forms.DateField(required=True, error_messages={'required': 'Campo obrigatório'})
     expire_date = forms.DateField(required=True, error_messages={'required': 'Campo obrigatório'})
     obs = forms.CharField(required=False, max_length=500, error_messages={'max_length': 'Máximo de 500 caracteres'})
@@ -62,6 +66,23 @@ class SupplierInvoicesForm(forms.Form):
             field_name = 'material_receipt_%s' % (i,)
 
         self.cleaned_data['material_receipts'] = material_receipts
+
+        invoice_date = self.data['invoice_date']
+        expire_date = self.data['expire_date']
+
+        if not invoice_date:
+            self.add_error('invoice_date', 'Campo obrigatório')
+            return
+
+        if not expire_date:
+            self.add_error('expire_date', 'Campo obrigatório')
+            return
+
+        if not compareDates(expire_date, str(datetime.date.today())):
+            self.add_error('expire_date', 'Data deve ser posterior à data atual')
+
+        if compareDates(invoice_date, expire_date):
+            self.add_error('invoice_date', 'Data deve ser anterior à data de vencimento')
 
     def get_material_receipts_fields(self):
         for field_name in self.fields:

@@ -67,8 +67,10 @@ def create(request):
 
         for field in form.data:
             if (field.startswith("material_receipt_")):
-                if (form.data[field] is not None and form.data[field] != ""):
-                    material_receipts.append(form.data[field])
+                fieldData = form.data[field]
+
+                if (fieldData is not None and fieldData != "" and fieldData not in material_receipts):
+                    material_receipts.append(fieldData)
 
         if len(material_receipts) > 0 and material_receipts[0] is not None:
             context["selected_material_receipts"] = material_receipts
@@ -79,25 +81,27 @@ def create(request):
     if request.method == 'POST':
         form = SupplierInvoicesForm(request.POST)
 
-        if form.is_valid():
-            data = form.cleaned_data
+        if("submit" in form.data):
+            if form.is_valid():
+                print("valid")
+                data = form.cleaned_data
 
-            SupplierInvoicesRepo().create(
-                data['supplier'],
-                data['invoice_id'],
-                data['invoice_date'],
-                data['expire_date'],
-                data['obs'],
-                data['products'],
-                data['material_receipts']
-            )
+                SupplierInvoicesRepo().create(
+                    data['supplier'],
+                    data['invoice_id'],
+                    data['invoice_date'],
+                    data['expire_date'],
+                    data['obs'],
+                    data['products'],
+                    data['material_receipts']
+                )
 
-            return redirect('faturas')
-        else:
-            errors = getErrorsObject(form.errors.get_context())
-            print(errors)
+                return redirect('faturas')
+            else:
+                print(form.data)
+                errors = getErrorsObject(form.errors.get_context())
 
-            context['errors'] = errors
+                context['errors'] = errors
 
     return render(request, 'faturas/criar.html', context)
 
