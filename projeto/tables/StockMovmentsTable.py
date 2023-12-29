@@ -1,10 +1,19 @@
 import django_tables2 as tables
 
+from projeto.enums import MOVEMENTTYPES
 from projeto.models import ProductionOrders, StockMovements
 
 
 class StockMovmentsTable(tables.Table):
-    type = tables.Column(verbose_name="Tipo de Movimento", accessor="type")
+    #tables.Column(verbose_name="Tipo de Movimento", accessor="type")
+    type =  tables.TemplateColumn(
+        verbose_name="Tipo de Movimento",
+        template_name="core/_column_stock_type.html",
+        orderable=False,
+        extra_context={
+            "MOVEMENTTYPES": {d.name: d for d in MOVEMENTTYPES}
+        }
+    )
     quantity = tables.Column(verbose_name="Quantidade", accessor="quantity")
     product = tables.Column(verbose_name="Componente/Equipamento", accessor="product.name")
     warehouse = tables.Column(verbose_name="Armazém", accessor="warehouse.name")

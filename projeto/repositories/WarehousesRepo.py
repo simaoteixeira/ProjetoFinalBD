@@ -27,28 +27,26 @@ class WarehousesRepo:
         ]
 
     def get_stock(self, id):
-        self.cursor.execute("SELECT * FROM V_Stock WHERE id_warehouse = %s", [id])
-        data = self.cursor.fetchone()
+        self.cursor.execute("SELECT * FROM V_StockPerProduct WHERE id_warehouse = %s", [id])
+        data = self.cursor.fetchall()
 
         print(data)
 
         if data is None:
             return None
 
-        return Stock(
-            product=(
-                Products(
-                    id_product=data[0],
-                    name=data[3],
-                    description=data[4],
-                    type=data[5],
-                )
-            ),
-            warehouse=(
-                Warehouses(
-                    id_warehouse=data[1],
-                    name=data[6]
-                )
-            ),
-            quantity=data[2],
-        )
+        return [
+            Stock(
+                product=Products(
+                    id_product=row[0],
+                    name=row[1],
+                    type=row[5],
+                    weight=row[6],
+                ),
+                warehouse=Warehouses(
+                    id_warehouse=row[2],
+                    name=row[3]
+                ),
+                quantity=row[4],
+            ) for row in data
+        ]

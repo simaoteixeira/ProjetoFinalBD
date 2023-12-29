@@ -18,3 +18,7 @@ def compareDates(date1, date2):
     date2 = datetime.strptime(date2, datetime_format)
 
     return date1 > date2
+
+def forDjango(cls):
+    cls.do_not_call_in_templates = True
+    return cls

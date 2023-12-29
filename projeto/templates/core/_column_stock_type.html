@@ -1,0 +1,8 @@
+<div class="flex items-center gap-4">
+    {% if record.type == "IN" %}
+        <i class="ph-bold ph-download-simple text-xl text-green-500"></i>
+    {% else %}
+        <i class="ph-bold ph-upload-simple text-xl text-red-500"></i>
+    {% endif %}
+    {{ record.type }}
+</div>
