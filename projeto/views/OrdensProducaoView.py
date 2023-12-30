@@ -1,5 +1,5 @@
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 
 from projeto.forms.ProductionOrdersForm import ProductionOrdersForm
 from projeto.repositories.LaborRepo import LaborRepo
@@ -80,6 +80,8 @@ def create(request):
                 obs=data["obs"],
                 products=data["products"],
             )
+
+            return redirect("ordensProducao")
         else:
             errors = getErrorsObject(form.errors.get_context())
 

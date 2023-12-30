@@ -98,8 +98,29 @@
 
         function selectProduct(e) {
             let product_id = $(e.target).attr('data-product-id')
-                let product_name = $(e.target).attr('data-product-name')
-                let product_cost = $(e.target).attr('data-product-cost')
+            let product_name = $(e.target).attr('data-product-name')
+            let product_cost = $(e.target).attr('data-product-cost')
+
+            product_cost = product_cost.split(' ')[1]
+            product_cost = parseFloat(product_cost)
+
+            if($(`#row_${product_id}`).length > 0) {
+                let quantity = $(`#quantity_${product_id}`).val()
+                quantity = parseInt(quantity) + 1
+
+                $(`#quantity_${product_id}`).val(quantity)
+
+                let unit_value = product_cost
+                console.log(unit_value, quantity)
+                let tot_unit = quantity * unit_value
+                console.log(tot_unit)
+
+                $(`#tot_unit-${product_id}`).text(priceFormat.format(tot_unit))
+
+                updateTotalInLine(product_id, tot_unit)
+                updateTotals()
+                return
+            }
 
                 $('input[name="product_' + field_number + '"]').val(product_id)
 
@@ -139,9 +160,6 @@
 
         function addRowToTable(product_id, product_name, product_cost)
         {
-            product_cost = product_cost.split(' ')[1]
-            product_cost = parseFloat(product_cost)
-
             $('#products-table').prepend(`
                 <tr id="row_${product_id}">
                     <td>${product_id}</td>
@@ -193,20 +211,7 @@
 
                 $(`#tot_unit-${product_id}`).text(priceFormat.format(tot_unit))
 
-                let IVA = $(`#IVA-${product_id}`).val()
-                let tot_iva = tot_unit * (IVA / 100)
-
-                $(`#tot-iva-${product_id}`).text(priceFormat.format(tot_iva))
-
-                let discount = $(`#discount-${product_id}`).val()
-                let tot_discount = tot_unit * (discount / 100)
-
-                $(`#tot-discount-${product_id}`).text(priceFormat.format(tot_discount))
-
-                let tot = tot_unit + tot_iva - tot_discount
-
-                $(`#tot`).text(priceFormat.format(tot))
-
+                updateTotalInLine(product_id, tot_unit)
                 updateTotals()
             })
 
@@ -217,20 +222,7 @@
 
                 $(`#tot_unit-${product_id}`).text(priceFormat.format(tot_unit))
 
-                let IVA = $(`#IVA-${product_id}`).val()
-                let tot_iva = tot_unit * (IVA / 100)
-
-                $(`#tot-iva-${product_id}`).text(priceFormat.format(tot_iva))
-
-                let discount = $(`#discount-${product_id}`).val()
-                let tot_discount = tot_unit * (discount / 100)
-
-                $(`#tot-discount-${product_id}`).text(priceFormat.format(tot_discount))
-
-                let tot = tot_unit + tot_iva - tot_discount
-
-                $(`#tot`).text(priceFormat.format(tot))
-
+                updateTotalInLine(product_id, tot_unit)
                 updateTotals()
             })
 
@@ -241,20 +233,7 @@
 
                 $(`#tot_unit-${product_id}`).text(priceFormat.format(tot_unit))
 
-                let IVA = $(e.target).val()
-                let tot_iva = tot_unit * (IVA / 100)
-
-                $(`#tot-iva-${product_id}`).text(priceFormat.format(tot_iva))
-
-                let discount = $(`#discount-${product_id}`).val()
-                let tot_discount = tot_unit * (discount / 100)
-
-                $(`#tot-discount-${product_id}`).text(priceFormat.format(tot_discount))
-
-                let tot = tot_unit + tot_iva - tot_discount
-
-                $(`#tot`).text(priceFormat.format(tot))
-
+                updateTotalInLine(product_id, tot_unit)
                 updateTotals()
             })
 
@@ -265,28 +244,16 @@
 
                 $(`#tot_unit-${product_id}`).text(priceFormat.format(tot_unit))
 
-                let IVA = $(`#IVA-${product_id}`).val()
-                let tot_iva = tot_unit * (IVA / 100)
-
-                $(`#tot-iva-${product_id}`).text(priceFormat.format(tot_iva))
-
-                let discount = $(e.target).val()
-                let tot_discount = tot_unit * (discount / 100)
-
-                $(`#tot-discount-${product_id}`).text(priceFormat.format(tot_discount))
-
-                let tot = tot_unit + tot_iva - tot_discount
-
-                $(`#tot`).text(priceFormat.format(tot))
-
+                updateTotalInLine(product_id, tot_unit)
                 updateTotals()
             })
 
             updateTotals()
         }
 
-        function addRowToTable(product_id, product_name, product_cost, product_quantity, product_vat, product_discount)
+        function addRowToTableWithAllData(product_id, product_name, product_cost, product_quantity, product_vat, product_discount)
         {
+            console.log(product_id, product_name, product_cost, product_quantity, product_vat, product_discount)
             product_cost = product_cost.split(' ')[1]
             product_cost = parseFloat(product_cost)
 
@@ -341,20 +308,7 @@
 
                 $(`#tot_unit-${product_id}`).text(priceFormat.format(tot_unit))
 
-                let IVA = $(`#IVA-${product_id}`).val()
-                let tot_iva = tot_unit * (IVA / 100)
-
-                $(`#tot-iva-${product_id}`).text(priceFormat.format(tot_iva))
-
-                let discount = $(`#discount-${product_id}`).val()
-                let tot_discount = tot_unit * (discount / 100)
-
-                $(`#tot-discount-${product_id}`).text(priceFormat.format(tot_discount))
-
-                let tot = tot_unit + tot_iva - tot_discount
-
-                $(`#tot`).text(priceFormat.format(tot))
-
+                updateTotalInLine(product_id, tot_unit)
                 updateTotals()
             })
 
@@ -365,20 +319,7 @@
 
                 $(`#tot_unit-${product_id}`).text(priceFormat.format(tot_unit))
 
-                let IVA = $(`#IVA-${product_id}`).val()
-                let tot_iva = tot_unit * (IVA / 100)
-
-                $(`#tot-iva-${product_id}`).text(priceFormat.format(tot_iva))
-
-                let discount = $(`#discount-${product_id}`).val()
-                let tot_discount = tot_unit * (discount / 100)
-
-                $(`#tot-discount-${product_id}`).text(priceFormat.format(tot_discount))
-
-                let tot = tot_unit + tot_iva - tot_discount
-
-                $(`#tot`).text(priceFormat.format(tot))
-
+                updateTotalInLine(product_id, tot_unit)
                 updateTotals()
             })
 
@@ -389,20 +330,7 @@
 
                 $(`#tot_unit-${product_id}`).text(priceFormat.format(tot_unit))
 
-                let IVA = $(e.target).val()
-                let tot_iva = tot_unit * (IVA / 100)
-
-                $(`#tot-iva-${product_id}`).text(priceFormat.format(tot_iva))
-
-                let discount = $(`#discount-${product_id}`).val()
-                let tot_discount = tot_unit * (discount / 100)
-
-                $(`#tot-discount-${product_id}`).text(priceFormat.format(tot_discount))
-
-                let tot = tot_unit + tot_iva - tot_discount
-
-                $(`#tot`).text(priceFormat.format(tot))
-
+                updateTotalInLine(product_id, tot_unit)
                 updateTotals()
             })
 
@@ -413,20 +341,7 @@
 
                 $(`#tot_unit-${product_id}`).text(priceFormat.format(tot_unit))
 
-                let IVA = $(`#IVA-${product_id}`).val()
-                let tot_iva = tot_unit * (IVA / 100)
-
-                $(`#tot-iva-${product_id}`).text(priceFormat.format(tot_iva))
-
-                let discount = $(e.target).val()
-                let tot_discount = tot_unit * (discount / 100)
-
-                $(`#tot-discount-${product_id}`).text(priceFormat.format(tot_discount))
-
-                let tot = tot_unit + tot_iva - tot_discount
-
-                $(`#tot`).text(priceFormat.format(tot))
-
+                updateTotalInLine(product_id, tot_unit)
                 updateTotals()
             })
 
@@ -481,6 +396,22 @@
             $('#total_sum_iva').text(priceFormat.format(total_sum_iva))
             $('#total_sum_desc').text(priceFormat.format(total_sum_desc))
             $('#total_sum').text(priceFormat.format(total_sum))
+        }
+
+        function updateTotalInLine(product_id, tot_unit) {
+            let IVA = $(`#IVA-${product_id}`).val()
+            let tot_iva = tot_unit * (IVA / 100)
+
+            $(`#tot-iva-${product_id}`).text(priceFormat.format(tot_iva))
+
+            let discount = $(`#discount-${product_id}`).val()
+            let tot_discount = tot_unit * (discount / 100)
+
+            $(`#tot-discount-${product_id}`).text(priceFormat.format(tot_discount))
+
+            let tot = tot_unit + tot_iva - tot_discount
+
+            $(`#tot`).text(priceFormat.format(tot))
         }
 
         function removeRowFromTable(product_id) {

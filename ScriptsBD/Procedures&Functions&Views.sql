@@ -1119,7 +1119,7 @@ CREATE OR REPLACE FUNCTION FN_Create_ProductionOrder(
     IN _id_user INTEGER,
     IN _id_product INTEGER,
     IN _equipment_quantity INTEGER,
-    IN _id_warehouse INTEGER,
+    IN _id_warehouse INTEGER DEFAULT NULL, --Não existe nenhum armazém associado à ordem de produção só aos produtos que a compõem
     IN _obs TEXT DEFAULT NULL
 )
     RETURNS INTEGER

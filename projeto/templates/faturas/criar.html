@@ -141,7 +141,7 @@
         {% if components %}
             {% for component in components %}
                 addProduct('{{ component.product.id_product }}')
-                addRowToTable({{ component.product.id_product }}, '{{ component.product.name }}', '{{ component.price_base }}', {{ component.quantity }}, {{ component.vat }}, {{ component.discount}})
+                addRowToTableWithAllData({{ component.product.id_product }}, '{{ component.product.name }}', '{{ component.price_base }}', {{ component.quantity }}, {{ component.vat }}, {{ component.discount}})
             {% endfor %}
         {% endif %}
     </script>

@@ -45,43 +45,55 @@
             currency: 'EUR',
         });
 
-        let hidden_products = [];
-
         $(document).ready(() => {
-            //see if any component is selected buttons with id select_product and get product id from 'data-product-id' attribute
             $('button#select_product').click((e) => {
+                $('.close-modal').click()
+
                 selectProduct(e)
             })
         })
 
         function selectProduct(e) {
             let product_id = $(e.target).attr('data-product-id')
-                let product_name = $(e.target).attr('data-product-name')
-                let product_cost = $(e.target).attr('data-product-cost')
+            let product_name = $(e.target).attr('data-product-name')
+            let product_cost = $(e.target).attr('data-product-cost')
 
-                $('input[name="product_' + field_number + '"]').val(product_id)
+            product_cost = product_cost.split(' ')[1]
+            product_cost = parseFloat(product_cost)
 
-                clone = $('.product-list-new').clone()
-                name = clone.attr('name')
+            if($(`#row_${product_id}`).length > 0) {
+                let quantity = $(`#quantity_${product_id}`).val()
+                quantity = parseInt(quantity) + 1
 
-                clone.attr('name', name.replace('1', field_number + 1))
+                $(`#quantity_${product_id}`).val(quantity)
 
-                clone.val('')
-                clone.removeClass('product-list-new')
-                clone.appendTo($('#product-list'))
+                let unit_value = product_cost
+                let tot_unit = quantity * unit_value
 
-                field_number++
+                $(`#tot_unit-${product_id}`).text(priceFormat.format(tot_unit))
 
-                $('#componentsModal').modal('hide')
+                updateTotals()
+                return
+            }
 
-                addRowToTable(product_id, product_name, product_cost)
+            $('input[name="product_' + field_number + '"]').val(product_id)
+
+            clone = $('.product-list-new').clone()
+            name = clone.attr('name')
+
+            clone.attr('name', name.replace('1', field_number + 1))
+
+            clone.val('')
+            clone.removeClass('product-list-new')
+            clone.appendTo($('#product-list'))
+
+            field_number++
+
+            addRowToTable(product_id, product_name, product_cost)
         }
 
         function addRowToTable(product_id, product_name, product_cost)
         {
-            product_cost = product_cost.split(' ')[1]
-            product_cost = parseFloat(product_cost)
-
             $('#products-table').prepend(`
                 <tr id="row_${product_id}">
                     <td>${product_id}</td>
@@ -142,9 +154,9 @@
             $('#total_sum').text(priceFormat.format(total_sum))
         }
 
-        function removeRowFromTable(product_id) {
+        function removeRowFromTable(product_id, ) {
             //$(`#row_${product_id}`).remove()
-            $(`tr[id="row_${product_id}"]`).remove()
+            //only that line from the table not all product_id with the same id
 
             updateTotals()
         }

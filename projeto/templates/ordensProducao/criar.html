@@ -68,7 +68,7 @@
     <script type="application/javascript">
         $('#labor').change((e) => {
             //get labor cost and sumwith tot_unit_prod
-            let labor_cost = $('#labor option:selected').text().split('-')[1].trim().split(' ')[1]
+            let labor_cost = $('#labor option:selected')[0].value > 0 ? $('#labor option:selected').text().split('-')[1].trim().split(' ')[1] : 0
             let tot_sum = $('#total_sum').text().split(' ')[0]
             let quantity = $('#equipment_quantity').val() || 1
 
@@ -78,7 +78,7 @@
 
         $('#total_sum').bind('DOMSubtreeModified', (e) => {
             //get labor cost and sumwith tot_unit_prod
-            let labor_cost = $('#labor option:selected').text().split('-')[1].trim().split(' ')[1]
+            let labor_cost = $('#labor option:selected')[0].value > 0 ? $('#labor option:selected').text().split('-')[1].trim().split(' ')[1] : 0
             let tot_sum = $('#total_sum').text().split(' ')[0]
             let quantity = $('#equipment_quantity').val() || 1
 
@@ -88,7 +88,7 @@
 
         $('#equipment_quantity').change((e) => {
             //get labor cost and sumwith tot_unit_prod
-            let labor_cost = $('#labor option:selected').text().split('-')[1].trim().split(' ')[1] || 0
+            let labor_cost = $('#labor option:selected')[0].value > 0 ? $('#labor option:selected').text().split('-')[1].trim().split(' ')[1] : 0
             let tot_sum = $('#total_sum').text().split(' ')[0] || 0
             let quantity = $('#equipment_quantity').val() || 1
 
