@@ -183,19 +183,19 @@ CALL PA_Create_Warehouse(
 
 CALL  PA_Create_Labor(
     'Montagem de Computador',
-    '80');
+    80::money);
 CALL  PA_Create_Labor(
     'Instalação de Componentes',
-    '50');
+    50::money);
 CALL  PA_Create_Labor(
     'Serviço de Manutenção',
-    '65');
+    65::money);
 CALL  PA_Create_Labor(
     'Serviço de Limpeza',
-    '30');
+    30::money);
 CALL  PA_Create_Labor(
     'Serviço de Reparação',
-    '50');
+    50::money);
 
 /*Inserir Fornecedores*/
 
@@ -329,7 +329,7 @@ CALL pa_insertline_clientorders(
                 1,
                 2,
                 2,
-                '200',
+                200::money,
                 23,
                 0);
 
@@ -337,7 +337,7 @@ CALL pa_insertline_clientorders(
                 1,
                 3,
                 1,
-                '300',
+                300::money,
                 23,
                 0);
 
@@ -345,7 +345,7 @@ CALL pa_insertline_clientorders(
                 1,
                 17,
                 1,
-                '2000',
+                2000::money,
                 23,
                 10);
 
@@ -355,7 +355,7 @@ CALL pa_insertline_clientorders(
                 2,
                 18,
                 1,
-                '3000',
+                3000::money,
                 23,
                 30);
 
@@ -365,37 +365,37 @@ CALL pa_insertline_clientorders(
                 4,
                 8,
                 1,
-                '200',
+                200::money,
                 23,
                 0);
 
 /*Encomenda realizada por Guilherme 3 componentes*/
 
 CALL pa_insertline_clientorders(
-                4,
+                5,
                 13,
                 3,
-                '100',
+                100::money,
                 23,
                 0);
 
 /*Encomenda realizada por Duarte 3 componentes */
 
 CALL pa_insertline_clientorders(
-                3,
+                6,
                 10,
                 3,
-                '180',
+                180::money,
                 23,
                 0);
 
 /*Encomenda realizada por Duarte 2 equipamentos*/
 
 CALL pa_insertline_clientorders(
-                3,
+                6,
                 17,
                 2,
-                '2000',
+                2000::money,
                 23,
                 30);
 
@@ -442,7 +442,7 @@ CALL pa_insertline_salesorder(
                 1,
                 2,
                 2,
-                '200',
+                200::money,
                 23,
                 0);
 
@@ -450,7 +450,7 @@ CALL pa_insertline_salesorder(
                 1,
                 3,
                 1,
-                '300',
+                300::money,
                 23,
                 0);
 
@@ -458,7 +458,7 @@ CALL pa_insertline_salesorder(
                 1,
                 17,
                 1,
-                '2000',
+                2000::money,
                 23,
                 10);
 
@@ -466,7 +466,7 @@ CALL pa_insertline_salesorder(
                 2,
                 18,
                 1,
-                '3000',
+                3000::money,
                 23,
                 30);
 
@@ -474,7 +474,7 @@ CALL pa_insertline_salesorder(
                 3,
                 8,
                 1,
-                '200',
+                200::money,
                 23,
                 0);
 
@@ -482,7 +482,7 @@ CALL pa_insertline_salesorder(
                 4,
                 13,
                 3,
-                '100',
+                100::money,
                 23,
                 0);
 
@@ -490,7 +490,7 @@ CALL pa_insertline_salesorder(
                 5,
                 10,
                 2,
-                '180',
+                180::money,
                 23,
                 0);
 
@@ -498,7 +498,7 @@ CALL pa_insertline_salesorder(
                 5,
                 17,
                 1,
-                '2000',
+                2000::money,
                 23,
                 30);
 
@@ -506,7 +506,7 @@ CALL pa_insertline_salesorder(
                 6,
                 10,
                 1,
-                '180',
+                180::money,
                 23,
                 0);
 
@@ -514,7 +514,7 @@ CALL pa_insertline_salesorder(
                 6,
                 17,
                 1,
-                '2000',
+                2000::money,
                 23,
                 30);
 
@@ -566,7 +566,7 @@ CALL pa_insertline_clientinvoice(
                 1,
                 2,
                 2,
-                '200',
+                200::money,
                 23,
                 0);
 
@@ -574,7 +574,7 @@ CALL pa_insertline_clientinvoice(
                 1,
                 3,
                 1,
-                '300',
+                300::money,
                 23,
                 0);
 
@@ -582,7 +582,7 @@ CALL pa_insertline_clientinvoice(
                 1,
                 17,
                 1,
-                '2000',
+                2000::money,
                 23,
                 10);
 
@@ -590,7 +590,7 @@ CALL pa_insertline_clientinvoice(
                 2,
                 18,
                 1,
-                '3000',
+                3000::money,
                 23,
                 30);
 
@@ -598,7 +598,7 @@ CALL pa_insertline_clientinvoice(
                 3,
                 8,
                 1,
-                '200',
+                200::money,
                 23,
                 0);
 
@@ -606,7 +606,7 @@ CALL pa_insertline_clientinvoice(
                 4,
                 13,
                 3,
-                '100',
+                100::money,
                 23,
                 0);
 
@@ -614,7 +614,7 @@ CALL pa_insertline_clientinvoice(
                 5,
                 10,
                 3,
-                '180',
+                180::money,
                 23,
                 0);
 
@@ -622,7 +622,7 @@ CALL pa_insertline_clientinvoice(
                 5,
                 17,
                 2,
-                '2000',
+                2000::money,
                 23,
                 30);
 
