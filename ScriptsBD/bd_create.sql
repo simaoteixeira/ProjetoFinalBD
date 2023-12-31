@@ -71,7 +71,6 @@ create table client_invoices (
    discount_total       MONEY                not null default 0,
    expire_date          TIMESTAMPTZ          not null,
    invoice_date         TIMESTAMPTZ          not null,
-   invoice_id           TEXT                 not null,
    total                MONEY                not null default 0,
    created_at           TIMESTAMPTZ                 not null default 'now()',
    constraint PK_CLIENT_INVOICES primary key (id_client_invoice),

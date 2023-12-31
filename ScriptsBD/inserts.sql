@@ -244,6 +244,406 @@ CALL PA_Create_Supplier(
     'Braga',
     '4000-500');
 
+/*Inserir Clientes*/
+
+CALL PA_Create_Client(
+    'João',
+    'joao@gmail.com',
+    '736467821',
+    '916432789',
+    'Rua do João',
+    'Porto',
+    '4000-000');
+
+CALL PA_Create_Client(
+    'Pedro',
+    'pedro@outlook.com',
+    '423483489',
+    '916432789',
+    'Rua do Pedro',
+    'Lisboa',
+    '4000-200');
+
+CALL PA_Create_Client(
+    'Duarte',
+    'duarte@gmail.com',
+    '873498234',
+    '951289123',
+    'Rua do Duarte',
+    'Viseu',
+    '4000-400');
+CALL PA_Create_Client(
+    'Guilherme',
+    'guilherme@yahoo.com',
+    '723164789',
+    '981367612',
+    'Rua do Guilherme',
+    'Braga',
+    '4000-500');
+
+CALL PA_Create_Client(
+    'Simão',
+    'simao@icloud.pt',
+    '334567456',
+    '912345678',
+    'Rua do irresponsável',
+    'Coimbra',
+    '4000-600');
+
+/*Inserir encomendas de Cliente*/
+
+SELECT * FROM fn_create_clientorders(
+              2,
+              'Encomenda de 2 componentes e 1 equipamento'
+              );
+
+SELECT * FROM fn_create_clientorders(
+                1,
+                'Encomenda  1 equipamento'
+                );
+
+SELECT * FROM fn_create_clientorders(
+                4,
+                'Encomenda de 1 componentes'
+                );
+
+SELECT * FROM fn_create_clientorders(
+                4,
+                'Encomenda de 3 componentes'
+                );
+
+SELECT * FROM fn_create_clientorders(
+                4,
+                'Encomenda de 1 componentes e 1 equipamento'
+                );
+
+SELECT * FROM fn_create_clientorders(
+                3,
+                'Encomenda de 3 componentes e 2 equipamentos'
+                );
+
+/*Inserir componentes de encomenda de cliente*/
+
+/*Encomenda realizada por Pedro 2 componentes e 1 equipamento*/
+CALL pa_insertline_clientorders(
+                1,
+                2,
+                2,
+                '200',
+                23,
+                0);
+
+CALL pa_insertline_clientorders(
+                1,
+                3,
+                1,
+                '300',
+                23,
+                0);
+
+CALL pa_insertline_clientorders(
+                1,
+                17,
+                1,
+                '2000',
+                23,
+                10);
+
+/*Encomenda realizada por João 1 equipamento*/
+
+CALL pa_insertline_clientorders(
+                2,
+                18,
+                1,
+                '3000',
+                23,
+                30);
+
+/*Encomenda realizada por Guilherme 1 componente*/
+
+CALL pa_insertline_clientorders(
+                4,
+                8,
+                1,
+                '200',
+                23,
+                0);
+
+/*Encomenda realizada por Guilherme 3 componentes*/
+
+CALL pa_insertline_clientorders(
+                4,
+                13,
+                3,
+                '100',
+                23,
+                0);
+
+/*Encomenda realizada por Duarte 3 componentes */
+
+CALL pa_insertline_clientorders(
+                3,
+                10,
+                3,
+                '180',
+                23,
+                0);
+
+/*Encomenda realizada por Duarte 2 equipamentos*/
+
+CALL pa_insertline_clientorders(
+                3,
+                17,
+                2,
+                '2000',
+                23,
+                30);
+
+/*Inserir guias de remessas*/
+
+SELECT * FROM fn_create_salesorder(
+              3,
+                ARRAY [1],
+                'Guia de Remessa  para a encomenda do cliente Pedro com 2 componentes e 1 equipamento'
+              );
+
+SELECT * FROM fn_create_salesorder(
+                1,
+                ARRAY [2],
+                'Guia de Remessa  para a encomenda do cliente João com 1 equipamento'
+                );
+
+SELECT * FROM fn_create_salesorder(
+                2,
+                ARRAY [3],
+                'Guia de Remessa  para a encomenda do cliente Guilherme com 1 componente'
+                );
+
+SELECT * FROM fn_create_salesorder(
+                2,
+                ARRAY [4],
+                'Guia de Remessa  para a encomenda do cliente Guilherme com 3 componentes'
+                );
+
+SELECT * FROM fn_create_salesorder(
+                3,
+                ARRAY [5],
+                'Guia de Remessa  para a encomenda do cliente Duarte com 2 componente e 1 equipamento'
+                );
+
+SELECT * FROM fn_create_salesorder(
+                1,
+                ARRAY [5],
+                'Guia de Remessa  para a encomenda do cliente Duarte com resto:  1 componentes e 1 equipamentos'
+                );
+
+/*Inserir componentes de guias de remessas*/
+CALL pa_insertline_salesorder(
+                1,
+                2,
+                2,
+                '200',
+                23,
+                0);
+
+CALL pa_insertline_salesorder(
+                1,
+                3,
+                1,
+                '300',
+                23,
+                0);
+
+CALL pa_insertline_salesorder(
+                1,
+                17,
+                1,
+                '2000',
+                23,
+                10);
+
+CALL pa_insertline_salesorder(
+                2,
+                18,
+                1,
+                '3000',
+                23,
+                30);
+
+CALL pa_insertline_salesorder(
+                3,
+                8,
+                1,
+                '200',
+                23,
+                0);
+
+CALL pa_insertline_salesorder(
+                4,
+                13,
+                3,
+                '100',
+                23,
+                0);
+
+CALL pa_insertline_salesorder(
+                5,
+                10,
+                2,
+                '180',
+                23,
+                0);
+
+CALL pa_insertline_salesorder(
+                5,
+                17,
+                1,
+                '2000',
+                23,
+                30);
+
+CALL pa_insertline_salesorder(
+                6,
+                10,
+                1,
+                '180',
+                23,
+                0);
+
+CALL pa_insertline_salesorder(
+                6,
+                17,
+                1,
+                '2000',
+                23,
+                30);
+
+/*Inserir faturas*/
+
+SELECT * FROM fn_create_clientinvoice(
+              ARRAY[1],
+                2,
+                '2024-06-01',
+                '2023-12-31',
+                'Fatura para a encomenda do cliente Pedro com 2 componentes e 1 equipamento'
+              );
+
+SELECT * FROM fn_create_clientinvoice(
+                ARRAY[2],
+                1,
+                '2024-06-01',
+                '2023-12-31',
+                'Fatura para a encomenda do cliente João com 1 equipamento'
+                );
+
+SELECT * FROM fn_create_clientinvoice(
+                ARRAY[3],
+                4,
+                '2024-06-01',
+                '2023-12-31',
+              'Fatura para a encomenda do cliente Guilherme com 1 componente'
+                );
+
+SELECT * FROM fn_create_clientinvoice(
+                ARRAY[4],
+                4,
+                '2024-06-01',
+                '2023-01-01',
+                'Fatura para a encomenda do cliente Guilherme com 3 componentes'
+                );
+
+SELECT * FROM fn_create_clientinvoice(
+                ARRAY[5,6],
+                3,
+                '2024-06-01',
+                '2023-12-31',
+                'Fatura para a encomenda do cliente Duarte com 3 componente e 2 equipamento'
+                );
+
+/*Inserir componentes de faturas*/
+
+CALL pa_insertline_clientinvoice(
+                1,
+                2,
+                2,
+                '200',
+                23,
+                0);
+
+CALL pa_insertline_clientinvoice(
+                1,
+                3,
+                1,
+                '300',
+                23,
+                0);
+
+CALL pa_insertline_clientinvoice(
+                1,
+                17,
+                1,
+                '2000',
+                23,
+                10);
+
+CALL pa_insertline_clientinvoice(
+                2,
+                18,
+                1,
+                '3000',
+                23,
+                30);
+
+CALL pa_insertline_clientinvoice(
+                3,
+                8,
+                1,
+                '200',
+                23,
+                0);
+
+CALL pa_insertline_clientinvoice(
+                4,
+                13,
+                3,
+                '100',
+                23,
+                0);
+
+CALL pa_insertline_clientinvoice(
+                5,
+                10,
+                3,
+                '180',
+                23,
+                0);
+
+CALL pa_insertline_clientinvoice(
+                5,
+                17,
+                2,
+                '2000',
+                23,
+                30);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
