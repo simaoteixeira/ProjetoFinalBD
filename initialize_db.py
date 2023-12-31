@@ -22,7 +22,6 @@ import os
 import sys
 from datetime import datetime
 from pathlib import Path
-
 import psycopg2
 
 # SET CONSTANTS read .env file from ./ProjetoFinal/.env
@@ -109,7 +108,6 @@ def main():
             print(f'Error creating backup: {response}')
             sys.exit(1)
 
-
         print(f'Backup created: {backup_file}')
 
     # drop all connections to database
@@ -164,6 +162,8 @@ def main():
 
     print('Inserting data into tables...')
 
+    os.system(f'python manage.py shell < create_django_users.py')
+
     # insert data into tables
     cur.execute(open('./ScriptsBD/inserts.sql', 'r').read())
 
@@ -175,8 +175,6 @@ def main():
     cur.execute(open('./ScriptsBD/create_users.sql', 'r').read())
 
     print('Users created')
-
-
 
     # close cursor
     cur.close()
