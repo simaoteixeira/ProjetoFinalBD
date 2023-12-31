@@ -12,24 +12,21 @@ $$
     BEGIN
 
         -- Inserir Produtos
-        SELECT *
-        FROM fn_create_product(
+        PERFORM fn_create_product(
                 'Intel Core i7-8700K',
                 'Intel Core i7-8700K 3.7GHz 12MB Skt1151',
                 'COMPONENT',
                 150,
                 23,
                 20);
-        SELECT *
-        FROM fn_create_product(
+        PERFORM fn_create_product(
                 'Intel Core i5-8600K',
                 'Intel Core i5-8600K 3.6GHz 9MB Skt1151',
                 'COMPONENT',
                 100,
                 23,
                 20);
-        SELECT *
-        FROM fn_create_product(
+        PERFORM fn_create_product(
                 'NVIDIA GeForce GTX 1080 Ti',
                 'NVIDIA GeForce GTX 1080 Ti 11GB GDDR5X',
                 'COMPONENT',
@@ -37,8 +34,7 @@ $$
                 23,
                 20);
 
-        SELECT *
-        FROM fn_create_product(
+        PERFORM fn_create_product(
                 'NVIDIA GeForce RTX 3070 Ti',
                 'NVIDIA GeForce RTX 3070 Ti 8GB GDDR6X',
                 'COMPONENT',
@@ -46,8 +42,7 @@ $$
                 23,
                 20);
 
-        SELECT *
-        FROM fn_create_product(
+        PERFORM fn_create_product(
                 'Memory DDR4 16GB',
                 'Memory DDR4 16GB 3200MHz',
                 'COMPONENT',
@@ -55,8 +50,7 @@ $$
                 23,
                 20);
 
-        SELECT *
-        FROM fn_create_product(
+        PERFORM fn_create_product(
                 'Memory DDR4 32GB',
                 'Memory DDR4 32GB 3200MHz',
                 'COMPONENT',
@@ -64,8 +58,7 @@ $$
                 23,
                 20);
 
-        SELECT *
-        FROM fn_create_product(
+        PERFORM fn_create_product(
                 'SSD 1TB',
                 'SSD 1TB 2.5" SATA3',
                 'COMPONENT',
@@ -73,8 +66,7 @@ $$
                 23,
                 20);
 
-        SELECT *
-        FROM fn_create_product(
+        PERFORM fn_create_product(
                 'SSD 2TB',
                 'SSD 2TB 2.5" SATA3',
                 'COMPONENT',
@@ -82,8 +74,7 @@ $$
                 23,
                 20);
 
-        SELECT *
-        FROM fn_create_product(
+        PERFORM fn_create_product(
                 'Motherboard ASUS ROG STRIX',
                 'Motherboard ASUS ROG STRIX Z390-E GAMING',
                 'COMPONENT',
@@ -91,8 +82,7 @@ $$
                 23,
                 20);
 
-        SELECT *
-        FROM fn_create_product(
+        PERFORM fn_create_product(
                 'Motherboard MSI MPG',
                 'Motherboard MSI MPG Z390 GAMING EDGE AC',
                 'COMPONENT',
@@ -100,8 +90,7 @@ $$
                 23,
                 20);
 
-        SELECT *
-        FROM fn_create_product(
+        PERFORM fn_create_product(
                 'Power Supply 750W',
                 'Power Supply 750W 80 Plus Gold',
                 'COMPONENT',
@@ -109,8 +98,7 @@ $$
                 23,
                 20);
 
-        SELECT *
-        FROM fn_create_product(
+        PERFORM fn_create_product(
                 'Power Supply 850W',
                 'Power Supply 850W 80 Plus Gold',
                 'COMPONENT',
@@ -118,8 +106,7 @@ $$
                 23,
                 20);
 
-        SELECT *
-        FROM fn_create_product(
+        PERFORM fn_create_product(
                 'Case',
                 'Case ATX',
                 'COMPONENT',
@@ -127,8 +114,7 @@ $$
                 23,
                 20);
 
-        SELECT *
-        FROM fn_create_product(
+        PERFORM fn_create_product(
                 'Case',
                 'Case ATX',
                 'COMPONENT',
@@ -136,8 +122,7 @@ $$
                 23,
                 20);
 
-        SELECT *
-        FROM fn_create_product(
+        PERFORM fn_create_product(
                 'Cooler Master MasterBox',
                 'Cooler Master MasterBox MB511 RGB',
                 'COMPONENT',
@@ -145,8 +130,7 @@ $$
                 23,
                 20);
 
-        SELECT *
-        FROM fn_create_product(
+        PERFORM fn_create_product(
                 'Cooler Noctua NH-D15',
                 'Cooler Noctua NH-D15',
                 'COMPONENT',
@@ -154,8 +138,7 @@ $$
                 23,
                 20);
 
-        SELECT *
-        FROM fn_create_product(
+        PERFORM fn_create_product(
                 'VortexEdge Gaming Builds',
                 'VortexEdge Gaming Builds',
                 'EQUIPMENT',
@@ -163,8 +146,7 @@ $$
                 23,
                 20);
 
-        SELECT *
-        FROM fn_create_product(
+        PERFORM fn_create_product(
                 'TitanForge Gaming Series',
                 'TitanForge Gaming Series',
                 'EQUIPMENT',
@@ -192,21 +174,21 @@ $$
 
 /*criar mão de obra*/
 
-CALL  PA_Create_Labor(
-    'Montagem de Computador',
-    80::money);
-CALL  PA_Create_Labor(
-    'Instalação de Componentes',
-    50::money);
-CALL  PA_Create_Labor(
-    'Serviço de Manutenção',
-    65::money);
-CALL  PA_Create_Labor(
-    'Serviço de Limpeza',
-    30::money);
-CALL  PA_Create_Labor(
-    'Serviço de Reparação',
-    50::money);
+        CALL PA_Create_Labor(
+                'Montagem de Computador',
+                80::money);
+        CALL PA_Create_Labor(
+                'Instalação de Componentes',
+                50::money);
+        CALL PA_Create_Labor(
+                'Serviço de Manutenção',
+                65::money);
+        CALL PA_Create_Labor(
+                'Serviço de Limpeza',
+                30::money);
+        CALL PA_Create_Labor(
+                'Serviço de Reparação',
+                50::money);
 
 /*Inserir Fornecedores*/
 
@@ -303,38 +285,32 @@ CALL  PA_Create_Labor(
 
 /*Inserir encomendas de Cliente*/
 
-        SELECT *
-        FROM fn_create_clientorders(
+        PERFORM fn_create_clientorders(
                 2,
                 'Encomenda de 2 componentes e 1 equipamento'
              );
 
-        SELECT *
-        FROM fn_create_clientorders(
+        PERFORM fn_create_clientorders(
                 1,
                 'Encomenda  1 equipamento'
              );
 
-        SELECT *
-        FROM fn_create_clientorders(
+        PERFORM fn_create_clientorders(
                 4,
                 'Encomenda de 1 componentes'
              );
 
-        SELECT *
-        FROM fn_create_clientorders(
+        PERFORM fn_create_clientorders(
                 4,
                 'Encomenda de 3 componentes'
              );
 
-        SELECT *
-        FROM fn_create_clientorders(
+        PERFORM fn_create_clientorders(
                 4,
                 'Encomenda de 1 componentes e 1 equipamento'
              );
 
-        SELECT *
-        FROM fn_create_clientorders(
+        PERFORM fn_create_clientorders(
                 3,
                 'Encomenda de 3 componentes e 2 equipamentos'
              );
@@ -388,7 +364,7 @@ CALL  PA_Create_Labor(
 
 /*Encomenda realizada por Guilherme 3 componentes*/
 
-CALL pa_insertline_clientorders(
+        CALL pa_insertline_clientorders(
                 5,
                 13,
                 3,
@@ -398,7 +374,7 @@ CALL pa_insertline_clientorders(
 
 /*Encomenda realizada por Duarte 3 componentes */
 
-CALL pa_insertline_clientorders(
+        CALL pa_insertline_clientorders(
                 6,
                 10,
                 3,
@@ -408,7 +384,7 @@ CALL pa_insertline_clientorders(
 
 /*Encomenda realizada por Duarte 2 equipamentos*/
 
-CALL pa_insertline_clientorders(
+        CALL pa_insertline_clientorders(
                 6,
                 17,
                 2,
@@ -418,43 +394,37 @@ CALL pa_insertline_clientorders(
 
 /*Inserir guias de remessas*/
 
-        SELECT *
-        FROM fn_create_salesorder(
+        PERFORM fn_create_salesorder(
                 id_vendas,
                 ARRAY [1],
                 'Guia de Remessa  para a encomenda do cliente Pedro com 2 componentes e 1 equipamento'
              );
 
-        SELECT *
-        FROM fn_create_salesorder(
+        PERFORM fn_create_salesorder(
                 id_vendas,
                 ARRAY [2],
                 'Guia de Remessa  para a encomenda do cliente João com 1 equipamento'
              );
 
-        SELECT *
-        FROM fn_create_salesorder(
+        PERFORM fn_create_salesorder(
                 id_admin,
                 ARRAY [3],
                 'Guia de Remessa  para a encomenda do cliente Guilherme com 1 componente'
              );
 
-        SELECT *
-        FROM fn_create_salesorder(
+        PERFORM fn_create_salesorder(
                 id_admin,
                 ARRAY [4],
                 'Guia de Remessa  para a encomenda do cliente Guilherme com 3 componentes'
              );
 
-        SELECT *
-        FROM fn_create_salesorder(
+        PERFORM fn_create_salesorder(
                 id_vendas,
                 ARRAY [5],
                 'Guia de Remessa  para a encomenda do cliente Duarte com 2 componente e 1 equipamento'
              );
 
-        SELECT *
-        FROM fn_create_salesorder(
+        PERFORM fn_create_salesorder(
                 id_vendas,
                 ARRAY [5],
                 'Guia de Remessa  para a encomenda do cliente Duarte com resto:  1 componentes e 1 equipamentos'
@@ -543,8 +513,7 @@ CALL pa_insertline_clientorders(
 
 /*Inserir faturas*/
 
-        SELECT *
-        FROM fn_create_clientinvoice(
+        PERFORM fn_create_clientinvoice(
                 ARRAY [1],
                 2,
                 '2024-06-01',
@@ -552,8 +521,7 @@ CALL pa_insertline_clientorders(
                 'Fatura para a encomenda do cliente Pedro com 2 componentes e 1 equipamento'
              );
 
-        SELECT *
-        FROM fn_create_clientinvoice(
+        PERFORM fn_create_clientinvoice(
                 ARRAY [2],
                 1,
                 '2024-06-01',
@@ -561,8 +529,7 @@ CALL pa_insertline_clientorders(
                 'Fatura para a encomenda do cliente João com 1 equipamento'
              );
 
-        SELECT *
-        FROM fn_create_clientinvoice(
+        PERFORM fn_create_clientinvoice(
                 ARRAY [3],
                 4,
                 '2024-06-01',
@@ -570,8 +537,7 @@ CALL pa_insertline_clientorders(
                 'Fatura para a encomenda do cliente Guilherme com 1 componente'
              );
 
-        SELECT *
-        FROM fn_create_clientinvoice(
+        PERFORM fn_create_clientinvoice(
                 ARRAY [4],
                 4,
                 '2024-06-01',
@@ -579,8 +545,7 @@ CALL pa_insertline_clientorders(
                 'Fatura para a encomenda do cliente Guilherme com 3 componentes'
              );
 
-        SELECT *
-        FROM fn_create_clientinvoice(
+        PERFORM fn_create_clientinvoice(
                 ARRAY [5,6],
                 3,
                 '2024-06-01',
