@@ -8,7 +8,7 @@ media
 
 # Backup files # 
 *.bak
-./backups
+backups
 ./backups/*
 
 # If you are using PyCharm # 
