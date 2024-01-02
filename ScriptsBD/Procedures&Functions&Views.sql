@@ -279,8 +279,9 @@ FROM stock s
          RIGHT JOIN products p ON s.id_product = p.id_product;
 
 -- View stock_movements V_Stock
-DROP VIEW IF EXISTS V_Stock;
-CREATE OR REPLACE VIEW V_Stock
+
+DROP VIEW IF EXISTS V_Movements;
+CREATE OR REPLACE VIEW V_Movements
             (
              id_stock_movement,
              quantity,

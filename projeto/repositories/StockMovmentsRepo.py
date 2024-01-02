@@ -8,7 +8,7 @@ class StockMovmentsRepo:
         self.cursor = connections[connection].cursor()
 
     def find_all(self):
-        self.cursor.execute("SELECT * FROM V_Stock")
+        self.cursor.execute("SELECT * FROM V_Movements")
         data = self.cursor.fetchall()
 
         return [

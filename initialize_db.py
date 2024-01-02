@@ -120,7 +120,7 @@ def main():
     cur.execute(f'DROP DATABASE IF EXISTS {DB_NAME};')
 
     # create database
-    cur.execute(f'CREATE DATABASE {DB_NAME};')
+    cur.execute(f"CREATE DATABASE {DB_NAME} LC_COLLATE = 'Portuguese_Portugal.1252' LC_CTYPE = 'Portuguese_Portugal.1252' ENCODING = 'UTF8'")
 
     # close connection to default database
     cur.close()
