@@ -39,10 +39,6 @@
         <div id="salesOrder-list" class="flex items-center gap-4">
             <input type="text" class="hidden salesOrder-list-new" name="sales_order_1"></input>
         </div>
-        <div class="w-full">
-            <span class="mb-2">Numero Fatura</span>
-            {% component "Input" type="text" placeholder="Numero da Fatura" inputName="invoice_id" value=form.invoice_id.value error=errors.invoice_id %}
-        </div>
         <div class="flex gap-4">
             <div class="w-full">
                 <span class="mb-2">Data Fatura</span>

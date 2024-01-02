@@ -86,6 +86,7 @@ class ClientInvoiceComponents(models.Model):
     vat = models.IntegerField()
     vat_value = models.TextField()  # This field type is a guess.
     discount = models.FloatField()
+    total_unit = models.TextField()  # This field type is a guess.
     discount_value = models.TextField()  # This field type is a guess.
     line_total = models.TextField()  # This field type is a guess.
 
@@ -103,7 +104,6 @@ class ClientInvoices(models.Model):
     discount_total = models.TextField()  # This field type is a guess.
     expire_date = models.DateTimeField()
     invoice_date = models.DateTimeField()
-    invoice_id = models.TextField()
     total = models.TextField()  # This field type is a guess.
     created_at = models.DateTimeField()
 

@@ -4,7 +4,7 @@ from projeto.models import Suppliers, ClientInvoices
 
 
 class ClientInvoicesTable(tables.Table):
-    number = tables.Column(accessor='invoice_id', verbose_name='Fatura Nº')
+    number = tables.Column(accessor='id_client_invoice', verbose_name='Fatura Nº')
     client = tables.Column(accessor='client.name', verbose_name='Cliente')
     total = tables.Column(accessor='total', verbose_name='Valor')
     created_at = tables.DateColumn(accessor='created_at', verbose_name='Data de Criação')
