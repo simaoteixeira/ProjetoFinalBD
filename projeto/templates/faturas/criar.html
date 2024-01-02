@@ -118,6 +118,8 @@
         }
 
         function addProduct(product_id) {
+            if($(`#row_${product_id}`).length > 0) return;
+
             $('input[name="product_' + product_number + '"]').val(product_id)
 
             clone = $('.product-list-new').clone()

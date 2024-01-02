@@ -6,9 +6,9 @@ from ..models import PurchasingOrders, PurchasingOrderComponents
 class PurchasingOrdersTable(tables.Table):
     supplier = tables.Column(accessor='supplier.name', verbose_name='Fornecedor')
     total = tables.Column(accessor='total', verbose_name='Valor')
-    delivery_date = tables.Column(accessor='delivery_date', verbose_name='Data Possivel de entrega')
+    delivery_date = tables.DateColumn(accessor='delivery_date', verbose_name='Data Possivel de entrega')
     user = tables.Column(accessor='user.username', verbose_name='Registado por')
-    created_at = tables.Column(accessor='created_at', verbose_name='Data de Criação do Pedido')
+    created_at = tables.DateColumn(accessor='created_at', verbose_name='Data de Criação do Pedido')
     see = tables.TemplateColumn(
         verbose_name="",
         template_name="core/_column_eye.html",

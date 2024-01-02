@@ -20,7 +20,7 @@ class StockMovmentsTable(tables.Table):
     prev_quantity = tables.Column(verbose_name="Stock Anterior", accessor="prev_quantity")
     pos_quantity = tables.Column(verbose_name="Stock Posterior", accessor="pos_quantity")
     reason = tables.Column(verbose_name="Motivo", accessor="reason")
-    created_at = tables.Column(verbose_name="Data Movimento", accessor="created_at")
+    created_at = tables.DateColumn(verbose_name="Data Movimento", accessor="created_at")
 
     class Meta:
         model = StockMovements

@@ -70,7 +70,7 @@
 
     <script type="application/javascript">
         field_number = 1
-        var product_number = 0
+        var product_number = 1
 
         $(document).ready(function() {
             $("button#select_salesOrder").click((e) => {
@@ -112,6 +112,8 @@
         }
 
         function addProduct(product_id) {
+            if($(`#row_${product_id}`).length > 0) return;
+
             $('input[name="product_' + product_number + '"]').val(product_id)
 
             clone = $('.product-list-new').clone()
@@ -135,7 +137,7 @@
         {% if components %}
             {% for component in components %}
                 addProduct('{{ component.product.id_product }}')
-                addRowToTable({{ component.product.id_product }}, '{{ component.product.name }}', '{{ component.price_base }}', {{ component.quantity }}, {{ component.vat }}, {{ component.discount}})
+                addRowToTableWithAllData({{ component.product.id_product }}, '{{ component.product.name }}', '{{ component.price_base }}', {{ component.quantity }}, {{ component.vat }}, {{ component.discount}})
             {% endfor %}
         {% endif %}
     </script>

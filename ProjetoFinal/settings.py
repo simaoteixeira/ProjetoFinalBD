@@ -39,7 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    #'django.contrib.staticfiles',
+    # 'django.contrib.staticfiles',
     'projeto',
     'crispy_forms',
     'crispy_tailwind',
@@ -68,7 +68,7 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [],
-        #'APP_DIRS': True,
+        # 'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.debug',
@@ -76,7 +76,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
             ],
-            'loaders':[(
+            'loaders': [(
                 'django.template.loaders.cached.Loader', [
                     'django.template.loaders.filesystem.Loader',
                     'django.template.loaders.app_directories.Loader',
@@ -96,14 +96,14 @@ WSGI_APPLICATION = 'ProjetoFinal.wsgi.application'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 DATABASES = {
-    #'default': {
+    # 'default': {
     #    'ENGINE': 'django.db.backends.postgresql_psycopg2',
     #    'HOST': 'localhost',
     #    'PORT': '15432',
     #    'NAME': 'aluno4',
     #    'USER': 'aluno4',
     #    'PASSWORD': 'Aluno4#5733',
-    #}
+    # }
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'HOST': env('DB_HOST'),
@@ -135,7 +135,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'pt-PT'
 
 TIME_ZONE = 'UTC'
 
@@ -159,3 +159,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 LOGIN_REDIRECT_URL = '/home'
 LOGOUT_REDIRECT_URL = '/login'
+
+DATE_FORMAT = 'dd/mm/YYYY'
+SHORT_DATE_FORMAT = 'dd/mm/YYYY'
+DATETIME_FORMAT = 'dd/mm/YYYY HH:MM'

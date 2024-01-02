@@ -19,7 +19,7 @@ urlpatterns = [
     path('compras/recessao/criar', RecessaoMaterialView.create, name='criarRecessao'),
     path('compras/recessao/<slug:id>', RecessaoMaterialView.view, name='recessaoMaterial'),
 
-    path('vendas', GuiasRemessaView.home, name='vendas'),
+    path('vendas', EncomendasClienteView.home, name='vendas'),
     path('vendas/clientes', ClientesView.home, name='clientes'),
     path('vendas/clientes/criar', ClientesView.create, name='criarCliente'),
     path('vendas/encomendas', EncomendasClienteView.home, name='encomendasCliente'),

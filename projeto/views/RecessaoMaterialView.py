@@ -82,7 +82,7 @@ def create(request):
                 "id_product": component.product.id_product,
                 "name": component.product.name,
                 "quantity": component.quantity,
-                "price_cost": component.total_unit,
+                "price_cost": component.price_base,
                 "vat": component.vat,
                 "discount": component.discount,
             } for component in components]

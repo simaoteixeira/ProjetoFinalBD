@@ -44,7 +44,7 @@ def create(request):
         'selectProductsTable': productsTable,
         'selectClientsTable': clientsTable,
         'navSection': 'vendas',
-        'navSubSection': 'guiasRemessa',
+        'navSubSection': 'encomendas',
     }
 
     if request.method == 'GET' and "selected_client" in request.GET or form['client'].value() is not None:

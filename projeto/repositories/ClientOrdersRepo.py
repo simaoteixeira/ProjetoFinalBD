@@ -74,7 +74,7 @@ class ClientOrdersRepo:
                     product['quantity'],
                     product['price_base'],
                     product['vat'],
-                    product['discount'],
+                    product['discount'] or 0,
                 ])
 
             return True

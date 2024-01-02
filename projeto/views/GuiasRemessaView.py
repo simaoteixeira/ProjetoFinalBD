@@ -78,20 +78,21 @@ def create(request):
     if request.method == 'POST':
         form = SalesOrdersForm(request.POST)
 
-        if form.is_valid():
-            data = form.cleaned_data
+        if ("submit" in form.data):
+            if form.is_valid():
+                data = form.cleaned_data
 
-            SalesOrdersRepo().create(
-                id_user=request.user.id,
-                id_client_order=data["client_orders"],
-                obs=data["obs"],
-                products=data["products"],
-            )
+                SalesOrdersRepo().create(
+                    id_user=request.user.id,
+                    id_client_order=data["client_orders"],
+                    obs=data["obs"],
+                    products=data["products"],
+                )
 
-            return redirect('guiasRemessa')
-        else:
-            errors = getErrorsObject(form.errors.get_context())
+                return redirect('guiasRemessa')
+            else:
+                errors = getErrorsObject(form.errors.get_context())
 
-            context['errors'] = errors
+                context['errors'] = errors
 
     return render(request, 'guiasRemessa/criar.html', context)
