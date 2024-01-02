@@ -672,6 +672,7 @@ $$
         PERFORM fn_create_supplierinvoice(
                 ARRAY [1,2],
                 1,
+                'F4812FV81',
                 '2024-01-01',
                 '2024-12-31',
                 'Fatura para a encomenda do pedido de compra de placas gráficas e motherboards'
@@ -680,6 +681,7 @@ $$
         PERFORM fn_create_supplierinvoice(
                 ARRAY [3,4],
                 2,
+            'F82187LK81',
                 '2024-01-01',
                 '2024-12-31',
                 'Fatura para a encomenda do pedido de compra de RAM e discos SSD'
@@ -688,6 +690,7 @@ $$
         PERFORM fn_create_supplierinvoice(
                 ARRAY [5],
                 3,
+                'F54647PQ81',
                 '2024-01-01',
                 '2024-12-31',
                 'Fatura para a encomenda do pedido de compra de fontes de alimentação e caixas'
@@ -696,6 +699,7 @@ $$
         PERFORM fn_create_supplierinvoice(
                 ARRAY [6,7,8],
                 4,
+                'F39486734HG1',
                 '2024-01-01',
                 '2024-12-31',
                 'Fatura para a encomenda do pedido de compra de processadores'
@@ -704,6 +708,7 @@ $$
         PERFORM fn_create_supplierinvoice(
                 ARRAY [9],
                 5,
+                'F39487ZK81',
                 '2024-01-01',
                 '2024-12-31',
                 'Fatura para a encomenda do pedido de compra de coolers'
@@ -1420,6 +1425,7 @@ $$
         PERFORM fn_create_clientinvoice(
                 ARRAY [2],
                 1,
+
                 '2024-06-01',
                 '2023-12-31',
                 'Fatura para a encomenda do cliente João com 1 equipamento'
@@ -1428,6 +1434,7 @@ $$
         PERFORM fn_create_clientinvoice(
                 ARRAY [3],
                 4,
+
                 '2024-06-01',
                 '2023-12-31',
                 'Fatura para a encomenda do cliente Guilherme com 1 componente'
@@ -1436,6 +1443,7 @@ $$
         PERFORM fn_create_clientinvoice(
                 ARRAY [4],
                 4,
+
                 '2024-06-01',
                 '2023-01-01',
                 'Fatura para a encomenda do cliente Guilherme com 3 componentes'

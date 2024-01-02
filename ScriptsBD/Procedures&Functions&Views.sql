@@ -873,6 +873,7 @@ FROM material_receipt_components mrc
 CREATE OR REPLACE FUNCTION FN_Create_SupplierInvoice(
     _id_material_receipt INT[],
     _id_supplier INT,
+    _invoice_id TEXT,
     _invoice_date DATE,
     _expire_date DATE,
     _obs TEXT = NULL
@@ -883,8 +884,8 @@ DECLARE
     _id_supplier_invoice INT;
     _id                  INT;
 BEGIN
-    INSERT INTO supplier_invoices (id_supplier, invoice_date, expire_date, obs)
-    VALUES (_id_supplier,  _invoice_date, _expire_date, _obs)
+    INSERT INTO supplier_invoices (id_supplier,invoice_id, invoice_date, expire_date, obs)
+    VALUES (_id_supplier, _invoice_id, _invoice_date, _expire_date, _obs)
     RETURNING id_supplier_invoice INTO _id_supplier_invoice;
 
     FOR _id IN SELECT unnest(_id_material_receipt)
@@ -986,6 +987,7 @@ CREATE OR REPLACE VIEW V_SupplierInvoices
              supplier_postal_code,
              supplier_nif,
              material_receptions,
+             invoice_id,
              invoice_date,
              expire_date,
              obs,
@@ -1004,6 +1006,7 @@ SELECT si.id_supplier_invoice,
        s.postal_code                     AS supplier_postal_code,
        s.nif                             AS supplier_nif,
        ARRAY_AGG(mr.id_material_receipt) AS material_receptions,
+       si.invoice_id,
        si.invoice_date,
        si.expire_date,
        si.obs,
@@ -1024,6 +1027,7 @@ GROUP BY si.id_supplier_invoice,
          s.locality,
          s.postal_code,
          s.nif,
+         si.invoice_id,
          si.invoice_date,
          si.expire_date,
          si.obs;
