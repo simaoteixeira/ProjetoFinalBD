@@ -1778,10 +1778,9 @@ FROM client_order_components coc
 CREATE OR REPLACE FUNCTION FN_Create_ClientInvoice(
     IN _id_sale_orders INT[],
     IN _id_client INT,
-    IN _obs TEXT,
     IN _expire_date TIMESTAMPTZ,
     IN _invoice_date TIMESTAMPTZ,
-    IN _invoice_id TEXT
+    IN _obs TEXT DEFAULT NULL
 )
     RETURNS INT
     LANGUAGE plpgsql
@@ -1790,8 +1789,8 @@ $$
 DECLARE
     _id_client_invoice INT;
 BEGIN
-    INSERT INTO client_invoices (id_client, obs, invoice_id, invoice_date, expire_date)
-    VALUES (_id_client, _obs, _invoice_id, _invoice_date, _expire_date)
+    INSERT INTO client_invoices (id_client, obs, invoice_date, expire_date)
+    VALUES (_id_client, _obs, _invoice_date, _expire_date)
     RETURNING id_client_invoice INTO _id_client_invoice;
 
     UPDATE sales_orders
@@ -1907,7 +1906,6 @@ CREATE OR REPLACE VIEW V_ClientInvoices
              client_postal_code,
              client_nif,
              sales_orders,
-             invoice_id,
              invoice_date,
              expire_date,
              obs,
@@ -1926,7 +1924,7 @@ SELECT ci.id_client_invoice,
        c.postal_code               AS client_postal_code,
        c.nif                       AS client_nif,
        ARRAY_AGG(so.id_sale_order) AS sales_orders,
-       ci.invoice_id,
+
        ci.invoice_date,
        ci.expire_date,
        ci.obs,
@@ -1938,7 +1936,7 @@ SELECT ci.id_client_invoice,
 FROM client_invoices ci
          INNER JOIN clients c USING (id_client)
          INNER JOIN sales_orders so ON ci.id_client_invoice = so.id_client_invoice
-GROUP BY ci.id_client_invoice, ci.id_client, c.name, c.address, c.locality, c.postal_code, c.nif, ci.invoice_id,
+GROUP BY ci.id_client_invoice, ci.id_client, c.name, c.address, c.locality, c.postal_code, c.nif,
          ci.invoice_date, ci.expire_date, ci.obs;
 
 

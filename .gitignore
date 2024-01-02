@@ -7,7 +7,9 @@ db.sqlite3
 media
 
 # Backup files # 
-*.bak 
+*.bak
+backups
+./backups/*
 
 # If you are using PyCharm # 
 # User-specific stuff
