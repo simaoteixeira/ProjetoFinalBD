@@ -23,15 +23,14 @@ class ClientInvoicesRepo:
                     postal_code=row[5],
                     nif=row[6],
                 ),
-                invoice_id=row[8],
-                invoice_date=row[9],
-                expire_date=row[10],
-                obs=row[11],
-                total_base=row[12],
-                vat_total=row[13],
-                discount_total=row[14],
-                total=row[15],
-                created_at=row[16],
+                invoice_date=row[8],
+                expire_date=row[9],
+                obs=row[10],
+                total_base=row[11],
+                vat_total=row[12],
+                discount_total=row[13],
+                total=row[14],
+                created_at=row[15]
             ) for row in data
         ]
 
@@ -49,15 +48,14 @@ class ClientInvoicesRepo:
                     postal_code=data[5],
                     nif=data[6],
                 ),
-                invoice_id=data[8],
-                invoice_date=data[9],
-                expire_date=data[10],
-                obs=data[11],
-                total_base=data[12],
-                vat_total=data[13],
-                discount_total=data[14],
-                total=data[15],
-                created_at=data[16],
+                invoice_date=data[8],
+                expire_date=data[9],
+                obs=data[10],
+                total_base=data[11],
+                vat_total=data[12],
+                discount_total=data[13],
+                total=data[14],
+                created_at=data[15],
         )
 
     def find_components(self, id):
@@ -85,8 +83,8 @@ class ClientInvoicesRepo:
             ) for row in data
         ]
 
-    def create(self, id_client, invoice_id, invoice_date, expire_date, obs, products, id_sales_order=[]):
-        self.cursor.execute("SELECT * FROM FN_Create_ClientInvoice(%s, %s, %s, %s, %s, %s)", [id_sales_order, id_client, int(invoice_id), invoice_date, expire_date, obs])
+    def create(self, id_client, invoice_date, expire_date, obs, products, id_sales_order=[]):
+        self.cursor.execute("SELECT * FROM FN_Create_ClientInvoice(%s, %s, %s, %s, %s, %s)", [id_sales_order, id_client, invoice_date, expire_date, obs])
 
         result = self.cursor.fetchone()
 

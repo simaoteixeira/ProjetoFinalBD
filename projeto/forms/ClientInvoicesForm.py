@@ -3,7 +3,6 @@ from django import forms
 
 class ClientInvoicesForm(forms.Form):
     client = forms.IntegerField(required=True, error_messages={'required': 'Campo obrigatório'})
-    invoice_id = forms.CharField(required=True, error_messages={'required': 'Campo obrigatório'})
     invoice_date = forms.DateField(required=True, error_messages={'required': 'Campo obrigatório'})
     expire_date = forms.DateField(required=True, error_messages={'required': 'Campo obrigatório'})
     obs = forms.CharField(required=False, max_length=500, error_messages={'max_length': 'Máximo de 500 caracteres'})
@@ -70,4 +69,4 @@ class ClientInvoicesForm(forms.Form):
 
 
     class Meta:
-        fields = ['client', 'invoice_id', 'invoice_date', 'expire_date', 'obs']
+        fields = ['client', 'invoice_date', 'expire_date', 'obs']

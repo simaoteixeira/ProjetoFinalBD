@@ -873,7 +873,7 @@ FROM material_receipt_components mrc
 CREATE OR REPLACE FUNCTION FN_Create_SupplierInvoice(
     _id_material_receipt INT[],
     _id_supplier INT,
-    _invoice_id INT,
+    _invoice_id TEXT,
     _invoice_date DATE,
     _expire_date DATE,
     _obs TEXT = NULL
@@ -884,7 +884,7 @@ DECLARE
     _id_supplier_invoice INT;
     _id                  INT;
 BEGIN
-    INSERT INTO supplier_invoices (id_supplier, invoice_id, invoice_date, expire_date, obs)
+    INSERT INTO supplier_invoices (id_supplier,invoice_id, invoice_date, expire_date, obs)
     VALUES (_id_supplier, _invoice_id, _invoice_date, _expire_date, _obs)
     RETURNING id_supplier_invoice INTO _id_supplier_invoice;
 
