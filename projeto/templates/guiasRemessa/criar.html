@@ -41,7 +41,7 @@
         </div>
         {% component "ProductsBaseTable" errors=errors canAddProducts=False %}
         {% component "TextArea" name="obs" label="Observações" %}
-        <button class="button !bg-green-500 text-white w-full hover:opacity-80">
+        <button id="submitButton" class="button !bg-green-500 text-white w-full hover:opacity-80">
             <i class="ph-fill ph-check-circle !text-white"></i>
             Criar Guia de Remessa
         </button>
@@ -59,6 +59,12 @@
         var product_number = 1
 
         $(document).ready(function() {
+            $("#submitButton").click((e) => {
+                $("form").append(`<input type="text" class="hidden" name="submit" value={{ True }}>`)
+
+                $('form').submit()
+            })
+
             $("button#select_clientOrder").click((e) => {
                 let client_order_id = $(e.target).attr('data-clientOrder-id')
 
@@ -101,6 +107,8 @@
         }
 
         function addProduct(product_id) {
+            if($(`#row_${product_id}`).length > 0) return;
+
             $('input[name="product_' + product_number + '"]').val(product_id)
 
             clone = $('.product-list-new').clone()
@@ -124,7 +132,7 @@
         {% if components %}
             {% for component in components %}
                 addProduct('{{ component.product.id_product }}')
-                addRowToTable({{ component.product.id_product }}, '{{ component.product.name }}', '{{ component.price_base }}', {{ component.quantity }}, {{ component.vat }}, {{ component.discount}})
+                addRowToTableWithAllData({{ component.product.id_product }}, '{{ component.product.name }}', '{{ component.price_base }}', {{ component.quantity }}, {{ component.vat }}, {{ component.discount}})
             {% endfor %}
         {% endif %}
     </script>

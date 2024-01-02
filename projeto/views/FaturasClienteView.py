@@ -1,5 +1,5 @@
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 
 from projeto.forms.ClientInvoicesForm import ClientInvoicesForm
 
@@ -29,8 +29,10 @@ def home(request):
 
 
 def create(request):
+    clientRepo = ClientRepo()
     form = ClientInvoicesForm(request.POST or None)
-    clients = ClientRepo().find_all()
+
+    clients = clientRepo.find_all()
 
     clientsTable = SelectClientTable(clients)
     clientsTable.paginate(page=request.GET.get('page', 1), per_page=10)
@@ -45,6 +47,7 @@ def create(request):
 
     if request.method == 'GET' and "selected_client" in request.GET or form['client'].value() is not None:
         selected_client = request.GET["selected_client"] or form.client.value
+        salesOrdersRepo = SalesOrdersRepo()
 
         selected_client_name = ""
 
@@ -56,7 +59,7 @@ def create(request):
         context["selected_client"] = selected_client_name
         context["selected_client_id"] = selected_client
 
-        salesOrders = SalesOrdersRepo().find_by_client(selected_client)
+        salesOrders = salesOrdersRepo.find_by_client(selected_client)
         salesOrdersTable = SelectSalesOrdersTable(salesOrders)
 
         context["salesOrders"] = salesOrders
@@ -72,17 +75,14 @@ def create(request):
         if len(sales_orders) > 0 and sales_orders[0] is not None:
             context["selected_sales_orders"] = sales_orders
 
-            components = SalesOrdersRepo().find_components_by_ids(sales_orders)
+            components = salesOrdersRepo.find_components_by_ids(sales_orders)
             context["components"] = components
 
     if request.method == 'POST':
         form = ClientInvoicesForm(request.POST)
-        data = form.data
-        print(data)
 
         if form.is_valid():
             data = form.cleaned_data
-            print(data)
 
             ClientInvoicesRepo().create(
                 data['client'],
@@ -94,21 +94,22 @@ def create(request):
                 data['sales_orders']
             )
 
-            #return redirect('faturas')
+            return redirect('faturasCliente')
         else:
             errors = getErrorsObject(form.errors.get_context())
-            print(errors)
 
             context['errors'] = errors
 
     return render(request, 'faturasCliente/criar.html', context)
 
 def view(request, id):
-    if request.method == 'POST' and request.POST.get('observations'):
-        ClientInvoicesRepo().update_obs(id, request.POST.get('observations'))
+    repo = ClientInvoicesRepo()
 
-    data = ClientInvoicesRepo().find_by_id(id)
-    components = ClientInvoicesRepo().find_components(id)
+    if request.method == 'POST' and request.POST.get('observations'):
+        repo.update_obs(id, request.POST.get('observations'))
+
+    data = repo.find_by_id(id)
+    components = repo.find_components(id)
 
     componentsTable = PurchasingOrdersProductsTable(components)
 
@@ -121,7 +122,5 @@ def view(request, id):
 
     if data is None:
         return render(request, '404.html', status=404)
-
-    print(data.material_receptions)
 
     return render(request, 'faturasCliente/fatura.html', context)

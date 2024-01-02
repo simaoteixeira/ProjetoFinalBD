@@ -66,34 +66,26 @@
     {% component "SelectTableModal" id="componentsModal" title="Seleciona um Componente" table=selectComponentsTable %}
 
     <script type="application/javascript">
-        $('#labor').change((e) => {
+        function calcValues() {
             //get labor cost and sumwith tot_unit_prod
-            let labor_cost = $('#labor option:selected').text().split('-')[1].trim().split(' ')[1]
-            let tot_sum = $('#total_sum').text().split(' ')[0]
+            let labor_cost = $('#labor option:selected')[0].value > 0 ? $('#labor option:selected').text().split('-')[1].trim().split(' ')[1] : 0
+            let tot_sum = parseFloat($('#total_sum').text().split(' ')[0]) || 0
             let quantity = $('#equipment_quantity').val() || 1
 
-            $('#tot_unit_prod').text(`${parseFloat(labor_cost) + (parseFloat(tot_sum) || 0)} €`)
-            $("#tot_base_prod").text(`${(parseFloat(labor_cost) + (parseFloat(tot_sum) || 0)) * quantity} €`)
+            $('#tot_unit_prod').text(`${parseFloat(labor_cost) + tot_sum} €`)
+            $("#tot_base_prod").text(`${(parseFloat(labor_cost) + tot_sum) * quantity} €`)
+        }
+
+        $('#labor').change((e) => {
+            calcValues()
         })
 
         $('#total_sum').bind('DOMSubtreeModified', (e) => {
-            //get labor cost and sumwith tot_unit_prod
-            let labor_cost = $('#labor option:selected').text().split('-')[1].trim().split(' ')[1]
-            let tot_sum = $('#total_sum').text().split(' ')[0]
-            let quantity = $('#equipment_quantity').val() || 1
-
-            $('#tot_unit_prod').text(`${(parseFloat(labor_cost) || 0) + parseFloat(tot_sum)} €`)
-            $("#tot_base_prod").text(`${(parseFloat(labor_cost) || 0) + parseFloat(tot_sum) * quantity} €`)
+            calcValues()
         })
 
         $('#equipment_quantity').change((e) => {
-            //get labor cost and sumwith tot_unit_prod
-            let labor_cost = $('#labor option:selected').text().split('-')[1].trim().split(' ')[1] || 0
-            let tot_sum = $('#total_sum').text().split(' ')[0] || 0
-            let quantity = $('#equipment_quantity').val() || 1
-
-            $('#tot_unit_prod').text(`${parseFloat(labor_cost) + parseFloat(tot_sum)} €`)
-            $("#tot_base_prod").text(`${parseFloat(labor_cost) + parseFloat(tot_sum) * quantity} €`)
+            calcValues()
         })
     </script>
 {% endblock %}

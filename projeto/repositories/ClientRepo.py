@@ -27,3 +27,18 @@ class ClientRepo:
                 postal_code=client[7]
             ) for client in data
         ]
+
+    def find_by_id(self, id):
+        self.cursor.execute(f"SELECT * FROM V_Clients WHERE id_client = {id}")
+        data = self.cursor.fetchone()
+
+        return Clients(
+            id_client=data[0],
+            name=data[1],
+            email=data[2],
+            nif=data[3],
+            phone=data[4],
+            address=data[5],
+            locality=data[6],
+            postal_code=data[7]
+        )

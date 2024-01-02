@@ -26,9 +26,12 @@ def home(request):
 
 
 def create(request):
+    clientsRepo = ClientRepo()
+    productsRepo = ProductsRepo()
     form = ClientOrdersForm(request.POST or None)
-    clients = ClientRepo().find_all()
-    products = ProductsRepo().find_all()
+
+    clients = clientsRepo.find_all()
+    products = productsRepo.find_all()
 
     clientsTable = SelectClientTable(clients)
 
@@ -41,7 +44,7 @@ def create(request):
         'selectProductsTable': productsTable,
         'selectClientsTable': clientsTable,
         'navSection': 'vendas',
-        'navSubSection': 'guiasRemessa',
+        'navSubSection': 'encomendas',
     }
 
     if request.method == 'GET' and "selected_client" in request.GET or form['client'].value() is not None:
@@ -59,11 +62,9 @@ def create(request):
 
     if request.method == 'POST':
         form = ClientOrdersForm(request.POST)
-        data = form.data
-        print(data)
+
         if form.is_valid():
             data = form.cleaned_data
-            print(data)
 
             ClientOrdersRepo().create(
                 client=data["client"],
@@ -75,7 +76,6 @@ def create(request):
 
         else:
             errors = getErrorsObject(form.errors.get_context())
-            print(errors)
 
             context['errors'] = errors
 

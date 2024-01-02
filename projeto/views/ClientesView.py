@@ -22,7 +22,23 @@ def home(request):
     return render(request, 'clientes/index.html', context)
 
 @login_required(login_url='/login')
+def view(request, id):
+    data = ClientRepo().find_by_id(id)
+
+    if data is None:
+        return render(request, '404.html', status=404)
+
+    context = {
+        'data': data,
+        'navSection': 'compras',
+        'navSubSection': 'fornecedores',
+    }
+
+    return render(request, 'clientes/cliente.html', context)
+
+@login_required(login_url='/login')
 def create(request):
+    repo = ClientRepo()
     form = ClientsForm(request.POST or None)
 
     context = {
@@ -38,7 +54,7 @@ def create(request):
 
             data = form.cleaned_data
 
-            ClientRepo().create(data['name'], data['email'], data['nif'], data['phone'], data['address'], data['locality'], data['postal_code'])
+            repo.create(data['name'], data['email'], data['nif'], data['phone'], data['address'], data['locality'], data['postal_code'])
 
             return redirect('/vendas/clientes')
         else:

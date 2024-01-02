@@ -21,6 +21,20 @@ def home(request):
 
     return render(request, 'fornecedores/index.html', context)
 
+@login_required(login_url='/login')
+def view(request, id):
+    data = SupplierRepo().find_by_id(id)
+
+    if data is None:
+        return render(request, '404.html', status=404)
+
+    context = {
+        'data': data,
+        'navSection': 'compras',
+        'navSubSection': 'fornecedores',
+    }
+
+    return render(request, 'fornecedores/fornecedor.html', context)
 
 @login_required(login_url='/login')
 def create(request):
@@ -34,15 +48,12 @@ def create(request):
 
     if request.method == 'POST':
         if form.is_valid():
-            print('valid')
-            print(form.cleaned_data)
             data = form.cleaned_data
 
             SupplierRepo().create(data['name'], data['email'], data['nif'], data['phone'], data['address'], data['locality'], data['postal_code'])
 
             return redirect('/compras/fornecedores')
         else:
-            print('invalid')
             errors = getErrorsObject(form.errors.get_context())
 
             context['errors'] = errors

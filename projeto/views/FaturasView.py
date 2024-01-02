@@ -1,5 +1,5 @@
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 
 from projeto.forms.SupplierInvoicesForm import SupplierInvoicesForm
 from projeto.repositories.MaterialReceiptsRepo import MaterialReceiptsRepo
@@ -27,8 +27,10 @@ def home(request):
 
 
 def create(request):
+    supplierRepo = SupplierRepo()
     form = SupplierInvoicesForm(request.POST or None)
-    suppliers = SupplierRepo().find_all()
+
+    suppliers = supplierRepo.find_all()
 
     suppliersTable = SelectSupplierTable(suppliers)
     suppliersTable.paginate(page=request.GET.get('page', 1), per_page=10)
@@ -43,6 +45,7 @@ def create(request):
 
     if request.method == 'GET' and "selected_supplier" in request.GET or form['supplier'].value() is not None:
         selected_supplier = request.GET["selected_supplier"] or form.supplier.value
+        materialReceiptsRepo = MaterialReceiptsRepo()
 
         selected_supplier_name = ""
 
@@ -54,7 +57,7 @@ def create(request):
         context["selected_supplier"] = selected_supplier_name
         context["selected_supplier_id"] = selected_supplier
 
-        materialReceipts = MaterialReceiptsRepo().find_by_supplier(selected_supplier)
+        materialReceipts = materialReceiptsRepo.find_by_supplier(selected_supplier)
         materialReceiptsTable = SelectMaterialReceiptsTable(materialReceipts)
 
         context["materialReceipts"] = materialReceipts
@@ -64,49 +67,52 @@ def create(request):
 
         for field in form.data:
             if (field.startswith("material_receipt_")):
-                if (form.data[field] is not None and form.data[field] != ""):
-                    material_receipts.append(form.data[field])
+                fieldData = form.data[field]
+
+                if (fieldData is not None and fieldData != "" and fieldData not in material_receipts):
+                    material_receipts.append(fieldData)
 
         if len(material_receipts) > 0 and material_receipts[0] is not None:
             context["selected_material_receipts"] = material_receipts
 
-            components = MaterialReceiptsRepo().find_components_by_ids(material_receipts)
+            components = materialReceiptsRepo.find_components_by_ids(material_receipts)
             context["components"] = components
 
     if request.method == 'POST':
         form = SupplierInvoicesForm(request.POST)
-        data = form.data
-        print(data)
 
-        if form.is_valid():
-            data = form.cleaned_data
-            print(data)
+        if("submit" in form.data):
+            if form.is_valid():
+                print("valid")
+                data = form.cleaned_data
 
-            SupplierInvoicesRepo().create(
-                data['supplier'],
-                data['invoice_id'],
-                data['invoice_date'],
-                data['expire_date'],
-                data['obs'],
-                data['products'],
-                data['material_receipts']
-            )
+                SupplierInvoicesRepo().create(
+                    data['supplier'],
+                    data['invoice_id'],
+                    data['invoice_date'],
+                    data['expire_date'],
+                    data['obs'],
+                    data['products'],
+                    data['material_receipts']
+                )
 
-            #return redirect('faturas')
-        else:
-            errors = getErrorsObject(form.errors.get_context())
-            print(errors)
+                return redirect('faturas')
+            else:
+                print(form.data)
+                errors = getErrorsObject(form.errors.get_context())
 
-            context['errors'] = errors
+                context['errors'] = errors
 
     return render(request, 'faturas/criar.html', context)
 
 def view(request, id):
-    if request.method == 'POST' and request.POST.get('observations'):
-        SupplierInvoicesRepo().update_obs(id, request.POST.get('observations'))
+    repo = SupplierInvoicesRepo()
 
-    data = SupplierInvoicesRepo().find_by_id(id)
-    components = SupplierInvoicesRepo().find_components(id)
+    if request.method == 'POST' and request.POST.get('observations'):
+        repo.update_obs(id, request.POST.get('observations'))
+
+    data = repo.find_by_id(id)
+    components = repo.find_components(id)
 
     componentsTable = PurchasingOrdersProductsTable(components)
 

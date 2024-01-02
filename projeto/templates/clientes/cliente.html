@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% load render_table from django_tables2 %}
+
+{% block title %}Clientes{% endblock %}
+
+{% block content %}
+    <h1 class="font-extrabold text-4xl leading-10">{{ data.name }}</h1>
+    <div class="flex flex-col gap-4 mt-4">
+        <div class="grid grid-cols-2 gap-2 [&>span]:font-bold text-lg max-w-lg">
+            <span>NIF:</span>
+            <p>{{ data.nif }}</p>
+            <span>Telefone:</span>
+            <a href="tel:{{ data.phone }}">{{ data.phone }}</a>
+            <span>Email:</span>
+            <a href="mailto:{{ data.email }}">{{ data.email }}</a>
+        </div>
+    </div>
+    <div class="flex flex-col gap-2 mt-8 text-lg">
+        <h2 class="font-bold text-xl">Morada:</h2>
+        <p class="font-medium">
+            {{ data.address }}, {{ data.locality }}, {{ data.postal_code }}
+        </p>
+    </div>
+{% endblock %}
+```

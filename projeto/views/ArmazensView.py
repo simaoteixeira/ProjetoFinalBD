@@ -20,12 +20,13 @@ def home(request):
     return render(request, 'armazens/index.html', context)
 
 def view(request, id):
-    data = WarehousesRepo().get_stock(id)
+    repo = WarehousesRepo()
+    data = repo.get_stock(id)
 
     if data is None:
         return render(request, '404.html', status=404)
 
-    table = WarehousesStockTable(WarehousesRepo().get_stock(id))
+    table = WarehousesStockTable(data)
     table.paginate(page=request.GET.get('page', 1), per_page=10)
 
     context = {

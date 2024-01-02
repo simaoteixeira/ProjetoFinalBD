@@ -4,7 +4,7 @@ class MaterialReceiptsTable(tables.Table):
     supplier = tables.Column(accessor='supplier.name', verbose_name='Fornecedor')
     purchase_order = tables.Column(accessor='purchasing_order.id_purchasing_order', verbose_name='Ordem de Compra')
     n_delivery_note = tables.Column(accessor='n_delivery_note', verbose_name='N Guia')
-    created_at = tables.Column(accessor='created_at', verbose_name='Criada a')
+    created_at = tables.DateColumn(accessor='created_at', verbose_name='Criada a')
     see = tables.TemplateColumn(
         verbose_name="",
         template_name="core/_column_eye.html",

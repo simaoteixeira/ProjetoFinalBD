@@ -31,9 +31,6 @@ def create(request):
 
     if request.method == 'POST':
         if form.is_valid():
-            print('valid')
-            print(form.cleaned_data)
-
             data = form.cleaned_data
 
             ProductsRepo().create(
@@ -48,18 +45,19 @@ def create(request):
             return redirect('/inventario/produtos')
         else:
             errors = getErrorsObject(form.errors.get_context())
-            print('invalid', errors)
 
             context['errors'] = errors
 
     return render(request, 'produtos/criar.html', context)
 
 def view(request, id):
-    if request.method == 'POST' and request.POST.get('observations'):
-        ProductsRepo().update_obs(id, request.POST.get('observations'))
+    repo = ProductsRepo()
 
-    product = ProductsRepo().find_by_id(id)
-    productsPerWarehouse = ProductsRepo().find_product_stock_by_warehouse(id)
+    if request.method == 'POST' and request.POST.get('observations'):
+        repo.update_obs(id, request.POST.get('observations'))
+
+    product = repo.find_by_id(id)
+    productsPerWarehouse = repo.find_product_stock_by_warehouse(id)
 
     productsPerWarehouseTable = ProductsPerWarehouseTable(productsPerWarehouse)
 

@@ -26,8 +26,10 @@ def home(request):
     return render(request, 'guiasRemessa/index.html', context)
 
 def create(request):
+    clientRepo = ClientRepo()
     form = SalesOrdersForm(request.POST or None)
-    clients = ClientRepo().find_all()
+
+    clients = clientRepo.find_all()
 
     clientsTable = SelectClientTable(clients)
     clientsTable.paginate(page=request.GET.get('page', 1), per_page=10)
@@ -42,6 +44,7 @@ def create(request):
 
     if request.method == 'GET' and "selected_client" in request.GET or form['client'].value() is not None:
         selected_client = request.GET["selected_client"] or form.client.value
+        clientOrdersRepo = ClientOrdersRepo()
 
         selected_client_name = ""
 
@@ -53,9 +56,7 @@ def create(request):
         context["selected_client"] = selected_client_name
         context["selected_client_id"] = selected_client
 
-        print(selected_client)
-
-        clientOrders = ClientOrdersRepo().find_by_client(selected_client)
+        clientOrders = clientOrdersRepo.find_by_client(selected_client)
         clientOrdersTable = SelectClientOrdersTable(clientOrders)
 
         context["clientOrders"] = clientOrders
@@ -69,34 +70,29 @@ def create(request):
                     client_orders.append(form.data[field])
 
         if len(client_orders) > 0 and client_orders[0] is not None:
-            print(client_orders)
             context["selected_client_orders"] = client_orders
 
-            components = ClientOrdersRepo().find_components_by_ids(client_orders)
-            print(components)
+            components = clientOrdersRepo.find_components_by_ids(client_orders)
             context["components"] = components
 
     if request.method == 'POST':
         form = SalesOrdersForm(request.POST)
-        data = form.data
-        print(data)
 
-        if form.is_valid():
-            data = form.cleaned_data
-            print(data)
+        if ("submit" in form.data):
+            if form.is_valid():
+                data = form.cleaned_data
 
-            SalesOrdersRepo().create(
-                id_user=request.user.id,
-                id_client_order=data["client_orders"],
-                obs=data["obs"],
-                products=data["products"],
-            )
+                SalesOrdersRepo().create(
+                    id_user=request.user.id,
+                    id_client_order=data["client_orders"],
+                    obs=data["obs"],
+                    products=data["products"],
+                )
 
-            return redirect('guiasRemessa')
-        else:
-            errors = getErrorsObject(form.errors.get_context())
-            print(errors)
+                return redirect('guiasRemessa')
+            else:
+                errors = getErrorsObject(form.errors.get_context())
 
-            context['errors'] = errors
+                context['errors'] = errors
 
     return render(request, 'guiasRemessa/criar.html', context)

@@ -8,10 +8,11 @@ class ClientsTable(tables.Table):
     phone = tables.Column(verbose_name="Telefone", accessor="phone")
     address = tables.Column(verbose_name="Morada", accessor="address")
     email = tables.Column(verbose_name="Email", accessor="email")
-    tools = tables.TemplateColumn(
+    see = tables.TemplateColumn(
         verbose_name="",
-        template_name="fornecedores/_tools.html",
+        template_name="core/_column_eye.html",
         orderable=False,
+        linkify=('cliente', {'id': tables.A('id_client')}),
     )
 
     class Meta:

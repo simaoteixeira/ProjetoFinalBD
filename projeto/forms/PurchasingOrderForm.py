@@ -1,4 +1,9 @@
+import datetime
+
 from django import forms
+from django.utils import timezone
+
+from projeto.utils import compareDates
 
 
 class PurchasingOrdersForm(forms.Form):
@@ -43,6 +48,16 @@ class PurchasingOrdersForm(forms.Form):
             }
 
         self.cleaned_data['products'] = products
+
+        date = self.data['date']
+
+        if not date:
+            self.add_error('date', 'Campo obrigatório')
+            return
+
+        if not compareDates(date, str(datetime.date.today())):
+            self.add_error('date', 'Data deve ser posterior à data atual')
+
 
     def get_products_fields(self):
         for field_name in self.fields:

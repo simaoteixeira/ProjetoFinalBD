@@ -31,9 +31,12 @@ def home(request):
 
 @login_required(login_url='/login')
 def create(request):
+    supplierRepo = SupplierRepo()
+    warehousesRepo = WarehousesRepo()
     form = MaterialReceiptsForm(request.POST or None)
-    suppliers = SupplierRepo().find_all()
-    warehouses = WarehousesRepo().find_all()
+
+    suppliers = supplierRepo.find_all()
+    warehouses = warehousesRepo.find_all()
 
     suppliersTable = SelectSupplierTable(suppliers)
     suppliersTable.paginate(page=request.GET.get('page', 1), per_page=10)
@@ -53,6 +56,7 @@ def create(request):
 
     if request.method == 'GET' and "selected_supplier" in request.GET or form['supplier'].value() is not None:
         selected_supplier = request.GET["selected_supplier"] or form.supplier.value
+        purchasingOrderRepo = PurchasingOrdersRepo()
 
         selected_supplier_name = ""
 
@@ -64,7 +68,7 @@ def create(request):
         context["selected_supplier"] = selected_supplier_name
         context["selected_supplier_id"] = selected_supplier
 
-        purchasingOrders = PurchasingOrdersRepo().find_by_supplier(selected_supplier)
+        purchasingOrders = purchasingOrderRepo.find_by_supplier(selected_supplier)
         purchasingOrdersTable = SelectPurchasingOrdersTable(purchasingOrders)
 
         context["purchasingOrders"] = purchasingOrders
@@ -72,14 +76,13 @@ def create(request):
 
         if form['purchasing_order'].value() is not None:
             purchasingOrder = form['purchasing_order'].value()
-            print("here", purchasingOrder)
 
-            components = PurchasingOrdersRepo().find_components(purchasingOrder)
+            components = purchasingOrderRepo.find_components(purchasingOrder)
             componentsProducts = [{
                 "id_product": component.product.id_product,
                 "name": component.product.name,
                 "quantity": component.quantity,
-                "price_cost": component.total_unit,
+                "price_cost": component.price_base,
                 "vat": component.vat,
                 "discount": component.discount,
             } for component in components]
@@ -90,11 +93,9 @@ def create(request):
 
         if request.method == 'POST':
             form = MaterialReceiptsForm(request.POST)
-            data = form.data
-            print(data)
+
             if form.is_valid():
                 data = form.cleaned_data
-                print(data)
 
                 MaterialReceiptsRepo().create(
                     request.user.id,
@@ -107,7 +108,6 @@ def create(request):
                 return redirect('recessao')
             else:
                 errors = getErrorsObject(form.errors.get_context())
-                print(errors)
 
                 context['errors'] = errors
 
@@ -115,15 +115,15 @@ def create(request):
     return render(request, 'recessaoMaterial/criar.html', context)
 
 def view(request, id):
-    if request.method == 'POST' and request.POST.get('observations'):
-        MaterialReceiptsRepo().update_obs(id, request.POST.get('observations'))
+    repo = MaterialReceiptsRepo()
 
-    data = MaterialReceiptsRepo().find_by_id(id)
-    components = MaterialReceiptsRepo().find_components(id)
+    if request.method == 'POST' and request.POST.get('observations'):
+        repo.update_obs(id, request.POST.get('observations'))
+
+    data = repo.find_by_id(id)
+    components = repo.find_components(id)
 
     componentsTable = PurchasingOrdersProductsTable(components)
-
-    print(data.total)
 
     context = {
         'data': data,
