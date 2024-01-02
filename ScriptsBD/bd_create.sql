@@ -316,7 +316,6 @@ create table supplier_invoices (
    total                MONEY                not null default 0,
    expire_date          TIMESTAMPTZ          not null,
    invoice_date         TIMESTAMPTZ          not null,
-   invoice_id           TEXT                 not null,
    created_at           TIMESTAMPTZ                 not null default 'now()',
    constraint PK_SUPPLIER_INVOICES primary key (id_supplier_invoice),
    constraint FK_SUPPLIER_INVOICE_HAS_SUPPLIER foreign key (id_supplier)
