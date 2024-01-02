@@ -1,6 +1,6 @@
 from django.db import connections
 
-from projeto.models import ProductionOrders, Labors, AuthUser, Products
+from projeto.models import ProductionOrders, Labors, AuthUser, Products, ProductionOrderComponents
 
 
 class ProductionOrdersRepo:
@@ -36,6 +36,54 @@ class ProductionOrdersRepo:
             ) for row in data
         ]
 
+    def find_by_id(self, id):
+        self.cursor.execute("SELECT * FROM V_ProductionOrders WHERE id_order_production = %s", [id])
+        data = self.cursor.fetchone()
+
+        return ProductionOrders(
+            id_order_production=data[0],
+            labor=Labors(
+                id_labor=data[1],
+                cost=data[2],
+            ),
+            user=AuthUser(
+                id=data[3],
+                username=data[4],
+            ),
+            product=Products(
+                id_product=data[5],
+                name=data[6],
+            ),
+            equipment_quantity=data[7],
+            production_cost=data[8],
+            unit_cost=data[9],
+            status=data[10],
+            created_at=data[11],
+            last_updated=data[12],
+            obs=data[13]
+        )
+
+    def find_components(self, id):
+        self.cursor.execute("SELECT * FROM V_ProductionOrderComponents WHERE id_order_production = %s", [id])
+        data = self.cursor.fetchall()
+
+        return [
+            ProductionOrderComponents(
+                id_production_order_components=row[0],
+                id_order_production=ProductionOrders(
+                    id_order_production=row[1],
+                ),
+                product=Products(
+                    id_product=row[2],
+                    name=row[3],
+                ),
+                quantity=row[6],
+                price_base=row[7],
+                total_unit=row[8],
+                line_total=row[9],
+            ) for row in data
+        ]
+
     def create(self, id_labor, id_user, id_product, equipment_quantity, obs, products):
         print(id_labor, id_user, id_product, equipment_quantity, obs, products)
 
@@ -55,3 +103,11 @@ class ProductionOrdersRepo:
                 self.cursor.execute('Call PA_InsertLine_ProductionOrder(%s, %s, %s, %s)', [id_production_order, product["id"], product["warehouse"], product["quantity"]])
 
             return True
+
+    def update_obs(self, id, obs):
+        self.cursor.execute('UPDATE production_orders SET obs = %s WHERE id_order_production = %s', [obs, id])
+        return True
+
+    def update_status(self, id, status):
+        self.cursor.execute('Call PA_Update_ProductionOrderStatus(%s, %s)', [id, status])
+        return True

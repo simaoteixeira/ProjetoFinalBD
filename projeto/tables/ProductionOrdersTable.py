@@ -9,10 +9,11 @@ class ProductionOrdersTable(tables.Table):
     production_cost = tables.Column(verbose_name="Custo de produção", accessor="production_cost")
     labor_cost = tables.Column(verbose_name="Mão de obra (€)", accessor="labor.cost")
     status = tables.Column(verbose_name="Estado", accessor="status")
-    tools = tables.TemplateColumn(
+    see = tables.TemplateColumn(
         verbose_name="",
-        template_name="core/_tools_column.html",
-        orderable=False
+        template_name="core/_column_eye.html",
+        orderable=False,
+        linkify=('ordemProducao', {'id': tables.A('id_order_production')}),
     )
 
     class Meta:

@@ -257,10 +257,11 @@ class ProductionOrderComponents(models.Model):
     id_production_order_components = models.AutoField(primary_key=True)
     id_warehouse = models.ForeignKey('Warehouses', models.DO_NOTHING, db_column='id_warehouse')
     id_order_production = models.ForeignKey('ProductionOrders', models.DO_NOTHING, db_column='id_order_production')
-    id_product = models.ForeignKey('Products', models.DO_NOTHING, db_column='id_product')
+    product = models.ForeignKey('Products', models.DO_NOTHING, db_column='id_product')
     quantity = models.IntegerField()
     price_base = models.TextField()  # This field type is a guess.
     line_total = models.TextField(blank=True, null=True)  # This field type is a guess.
+    total_unit = models.TextField(blank=True, null=True)  # This field type is a guess.
 
     class Meta:
         managed = False

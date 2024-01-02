@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% load render_table from django_tables2 %}
+
+{% block title %}Ordens de Produção{% endblock %}
+
+{% block content %}
+    <h1 class="font-extrabold text-4xl leading-10">Ordem de Produção</h1>
+    <div class="flex flex-col gap-4 mt-8">
+        <div class="flex flex-col gap-4">
+            <div class="flex items-center gap-2">
+                <h2 class="text-2xl font-extrabold">{{ data.product.name }}</h2>
+                <span class="text-xs px-2 py-1 bg-white rounded border border-gray-300 font-medium">{{ data.status }}</span>
+            </div>
+            <div class="bg-white p-6 border border-gray-300 flex flex-col gap-2 rounded-lg w-fit">
+                <h3 class="text-4xl font-extrabold text-gray-600">{{ data.equipment_quantity }}x</h3>
+                <p class="text-xl leading-6 font-semibold text-gray-900 whitespace-nowrap"><span class="font-bold">Quantidade</p>
+            </div>
+        </div>
+        <div class="flex flex-col gap-2">
+            <span class="text-sm leading-5 font-medium">Componentes</span>
+            {% render_table componentsTable %}
+        </div>
+        <div class="flex items-center gap-4">
+            <div class="bg-white p-6 border border-gray-300 flex flex-col gap-2 rounded-lg">
+                <i class="ph-fill ph-hand-coins text-5xl"></i>
+                <p class="text-xl leading-6 font-semibold text-gray-900 whitespace-nowrap"><span class="font-bold">Mão de Obra:</span> {{ data.labor.cost }}</p>
+            </div>
+            <div class="bg-white p-6 border border-gray-300 flex flex-col gap-2 rounded-lg">
+                <i class="ph-fill ph-currency-dollar text-5xl"></i>
+                <p class="text-xl leading-6 font-semibold text-gray-900 whitespace-nowrap"><span class="font-bold">Custo Produção Total:</span> {{ data.production_cost }}</p>
+            </div>
+            <div class="bg-white p-6 border border-gray-300 flex flex-col gap-2 rounded-lg">
+                <h3 class="text-5xl font-extrabold text-gray-600">x1</h3>
+                <p class="text-xl leading-6 font-semibold text-gray-900 whitespace-nowrap"><span class="font-bold">Custo Unitario:</span> {{ data.unit_cost }}</p>
+            </div>
+        </div>
+    </div> 
+    <form method="post" class="flex flex-col gap-2">
+        {% csrf_token %}
+        {% component "TextArea" name="observations" label="Observações" value=data.obs %}
+        <button type="submit" class="button w-fit self-end">
+            Adicionar Observações
+        </button>
+    </form>
+    {% if data.status != 'COMPLETED' and data.status != 'CANCELED' %}
+        <div class="flex gap-4 items-center gap-4">
+            {% if data.status == 'WAITING_PROD' %}
+                <a href="{{ request.path }}?status=IN_PROD" class="button !bg-yellow-500 text-white w-full hover:opacity-80">Começar Produção</a>
+            {% elif data.status == 'IN_PROD' %}
+                <a href="{{ request.path }}?status=COMPLETED" class="button bg-white border !border-green-500 w-full">Completar Produção</a>
+            {% endif %}
+            <a href="{{ request.path }}?status=CANCELED" class="button bg-white border !border-red-500 !w-fit whitespace-nowrap">Cancelar Produção</a>
+        </div>
+    {% endif %}
+{% endblock %}
+```

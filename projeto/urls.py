@@ -34,6 +34,7 @@ urlpatterns = [
 
     path('producao', OrdensProducaoView.home, name='producao'),
     path('producao/ordens-producao', OrdensProducaoView.home, name='ordensProducao'),
+    path('producao/ordens-producao/<slug:id>', OrdensProducaoView.view, name='ordemProducao'),
     path('producao/ordens-producao/criar', OrdensProducaoView.create, name='criarOrdemProducao'),
     path('producao/mao-obra', MaoObraView.home, name='maoObra'),
     path('producao/mao-obra/criar', MaoObraView.create, name='criarMaoObra'),

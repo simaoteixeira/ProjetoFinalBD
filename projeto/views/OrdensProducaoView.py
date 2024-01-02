@@ -1,12 +1,15 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 
+from projeto.enums import PRODUCTIONORDERSTATUS
 from projeto.forms.ProductionOrdersForm import ProductionOrdersForm
 from projeto.repositories.LaborRepo import LaborRepo
 from projeto.repositories.ProductionOrdersRepo import ProductionOrdersRepo
 from projeto.repositories.ProductsRepo import ProductsRepo
 from projeto.repositories.WarehousesRepo import WarehousesRepo
+from projeto.tables.ProductionOrdersComponentsTable import ProductionOrdersComponentsTable
 from projeto.tables.ProductionOrdersTable import ProductionOrdersTable
+from projeto.tables.PurchasingOrdersTable import PurchasingOrdersProductsTable
 from projeto.tables.SelectTables.SelectEquipmentsTable import SelectEquipmentsTable
 from projeto.tables.SelectTables.SelectProductsTable import SelectProductsTable
 from projeto.utils import getErrorsObject
@@ -25,6 +28,31 @@ def home(request):
 
     return render(request, 'ordensProducao/index.html', context)
 
+@login_required(login_url='/login')
+def view(request, id):
+    repo = ProductionOrdersRepo()
+
+    if request.method == 'GET' and request.GET.get('status'):
+        status = request.GET.get('status')
+        if status in PRODUCTIONORDERSTATUS:
+            repo.update_status(id, status)
+
+    if request.method == 'POST' and request.POST.get('observations'):
+        repo.update_obs(id, request.POST.get('observations'))
+
+    data = repo.find_by_id(id)
+    components = repo.find_components(id)
+
+    componentsTable = ProductionOrdersComponentsTable(components)
+
+    context = {
+        'data': data,
+        'componentsTable': componentsTable,
+        'navSection': 'producao',
+        'navSubSection': 'ordensProducao',
+    }
+
+    return render(request, 'ordensProducao/ordemProducao.html', context)
 
 @login_required(login_url='/login')
 def create(request):
