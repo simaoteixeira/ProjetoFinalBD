@@ -104,6 +104,11 @@
             });
             return false;
         });
+
+        function convert(currency){
+             var temp = currency.replace(/[^0-9.-]+/g,"");
+             return parseFloat(temp);
+        }
     </script>
 </body>
 </html>
