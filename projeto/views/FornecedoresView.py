@@ -21,6 +21,20 @@ def home(request):
 
     return render(request, 'fornecedores/index.html', context)
 
+@login_required(login_url='/login')
+def view(request, id):
+    data = SupplierRepo().find_by_id(id)
+
+    if data is None:
+        return render(request, '404.html', status=404)
+
+    context = {
+        'data': data,
+        'navSection': 'compras',
+        'navSubSection': 'fornecedores',
+    }
+
+    return render(request, 'fornecedores/fornecedor.html', context)
 
 @login_required(login_url='/login')
 def create(request):

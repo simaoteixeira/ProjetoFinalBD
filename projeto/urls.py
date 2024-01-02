@@ -14,6 +14,7 @@ urlpatterns = [
     path('compras/faturas/criar', FaturasView.create, name='criarFatura'),
     path('compras/faturas/<slug:id>', FaturasView.view, name='fatura'),
     path('compras/fornecedores', FornecedoresView.home, name='fornecedores'),
+    path('compras/fornecedores/<int:id>', FornecedoresView.view, name='fornecedor'),
     path('compras/fornecedores/criar', FornecedoresView.create, name='criarFornecedor'),
     path('compras/recessao', RecessaoMaterialView.home, name='recessao'),
     path('compras/recessao/criar', RecessaoMaterialView.create, name='criarRecessao'),
@@ -21,6 +22,7 @@ urlpatterns = [
 
     path('vendas', EncomendasClienteView.home, name='vendas'),
     path('vendas/clientes', ClientesView.home, name='clientes'),
+    path('vendas/clientes/<int:id>', ClientesView.view, name='cliente'),
     path('vendas/clientes/criar', ClientesView.create, name='criarCliente'),
     path('vendas/encomendas', EncomendasClienteView.home, name='encomendasCliente'),
     path('vendas/encomendas/criar', EncomendasClienteView.create, name='criarEncomendaCliente'),

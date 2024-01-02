@@ -22,6 +22,21 @@ def home(request):
     return render(request, 'clientes/index.html', context)
 
 @login_required(login_url='/login')
+def view(request, id):
+    data = ClientRepo().find_by_id(id)
+
+    if data is None:
+        return render(request, '404.html', status=404)
+
+    context = {
+        'data': data,
+        'navSection': 'compras',
+        'navSubSection': 'fornecedores',
+    }
+
+    return render(request, 'clientes/cliente.html', context)
+
+@login_required(login_url='/login')
 def create(request):
     repo = ClientRepo()
     form = ClientsForm(request.POST or None)

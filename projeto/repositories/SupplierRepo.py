@@ -26,3 +26,18 @@ class SupplierRepo:
                 postal_code=supplier[7]
             ) for supplier in data
         ]
+
+    def find_by_id(self, id):
+        self.cursor.execute(f"SELECT * FROM V_Suppliers WHERE id_supplier = {id}")
+        data = self.cursor.fetchone()
+
+        return Suppliers(
+            id_supplier=data[0],
+            name=data[1],
+            email=data[2],
+            nif=data[3],
+            phone=data[4],
+            address=data[5],
+            locality=data[6],
+            postal_code=data[7]
+        )
