@@ -22,7 +22,7 @@ def home(request):
     context = {
         'table': table,
         'navSection': 'vendas',
-        'navSubSection': 'faturas',
+        'navSubSection': 'faturasCliente',
     }
 
     return render(request, 'faturasCliente/index.html', context)
@@ -42,7 +42,7 @@ def create(request):
         'clients': clients,
         'selectClientTable': clientsTable,
         'navSection': 'vendas',
-        'navSubSection': 'faturas',
+        'navSubSection': 'faturasCliente',
     }
 
     if request.method == 'GET' and "selected_client" in request.GET or form['client'].value() is not None:
@@ -86,7 +86,6 @@ def create(request):
 
             ClientInvoicesRepo().create(
                 data['client'],
-                data['invoice_id'],
                 data['invoice_date'],
                 data['expire_date'],
                 data['obs'],
@@ -116,8 +115,8 @@ def view(request, id):
     context = {
         'data': data,
         'componentsTable': componentsTable,
-        'navSection': 'compras',
-        'navSubSection': 'faturas',
+        'navSection': 'vendas',
+        'navSubSection': 'faturasCliente',
     }
 
     if data is None:

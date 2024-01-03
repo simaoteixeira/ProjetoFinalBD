@@ -104,6 +104,10 @@
             });
             return false;
         });
+
+        function convert(currency){
+            return parseFloat(currency.replace(/[^\d,]/g, ''));
+        }
     </script>
 </body>
 </html>

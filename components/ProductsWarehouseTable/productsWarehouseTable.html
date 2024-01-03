@@ -58,8 +58,7 @@
             let product_name = $(e.target).attr('data-product-name')
             let product_cost = $(e.target).attr('data-product-cost')
 
-            product_cost = product_cost.split(' ')[1]
-            product_cost = parseFloat(product_cost)
+            product_cost = convert(product_cost)
 
             if($(`#row_${product_id}`).length > 0) {
                 let quantity = $(`#quantity_${product_id}`).val()

@@ -84,7 +84,7 @@ class ClientInvoicesRepo:
         ]
 
     def create(self, id_client, invoice_date, expire_date, obs, products, id_sales_order=[]):
-        self.cursor.execute("SELECT * FROM FN_Create_ClientInvoice(%s, %s, %s, %s, %s, %s)", [id_sales_order, id_client, invoice_date, expire_date, obs])
+        self.cursor.execute("SELECT * FROM FN_Create_ClientInvoice(%s, %s, %s, %s, %s)", [id_sales_order, id_client, invoice_date, expire_date, obs])
 
         result = self.cursor.fetchone()
 

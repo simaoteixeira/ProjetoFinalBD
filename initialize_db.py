@@ -37,6 +37,8 @@ DB_USER = env('DB_USER')
 DB_PASSWORD = env('DB_PASSWORD')
 DB_PORT = env("DB_PORT")
 
+print(DB_HOST, DB_NAME, DB_USER, DB_PASSWORD, DB_PORT)
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 BACKUP_DIR = './backups'
@@ -120,7 +122,7 @@ def main():
     cur.execute(f'DROP DATABASE IF EXISTS {DB_NAME};')
 
     # create database
-    cur.execute(f"CREATE DATABASE {DB_NAME} LC_COLLATE = 'Portuguese_Portugal.1252' LC_CTYPE = 'Portuguese_Portugal.1252' ENCODING = 'UTF8'")
+    cur.execute(f"CREATE DATABASE {DB_NAME} locale_provider icu icu_locale 'pt-PT-x-icu'  ENCODING = 'UTF8' template template0 ")
 
     # close connection to default database
     cur.close()
