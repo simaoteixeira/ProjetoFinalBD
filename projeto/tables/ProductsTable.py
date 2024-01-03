@@ -7,6 +7,14 @@ class ProductsTable(tables.Table):
     weight = tables.Column(verbose_name="Peso", accessor="weight")
     type = tables.Column(verbose_name="Tipo", accessor="type")
     price_base = tables.Column(verbose_name="Preço Base", accessor="price_base")
+    vat = tables.Column(verbose_name="IVA", accessor="vat")
+    profit_margin = tables.Column(verbose_name="Margem de Lucro", accessor="profit_margin")
+    see = tables.TemplateColumn(
+        verbose_name="",
+        template_name="core/_column_eye.html",
+        orderable=False,
+        linkify=('produto', {'id': tables.A('id_product')}),
+    )
 
     class Meta:
         model = Products

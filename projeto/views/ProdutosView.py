@@ -3,12 +3,12 @@ from django.shortcuts import render, redirect
 
 from projeto.forms.ProductForm import ProductForm
 from projeto.repositories.ProductsRepo import ProductsRepo
-from projeto.tables.ProductsTable import StockProductsTable, ProductsPerWarehouseTable
+from projeto.tables.ProductsTable import StockProductsTable, ProductsPerWarehouseTable, ProductsTable
 from projeto.utils import getErrorsObject
 
 @login_required(login_url='/login')
 def home(request):
-    table = StockProductsTable(ProductsRepo().find_all_stock())
+    table = ProductsTable(ProductsRepo().find_all())
     table.paginate(page=request.GET.get('page', 1), per_page=10)
 
     context = {

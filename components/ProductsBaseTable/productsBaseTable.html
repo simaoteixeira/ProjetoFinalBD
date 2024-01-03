@@ -104,6 +104,7 @@
             let product_quantity = $(e.target).attr('data-product-quantity') || 1
 
             product_cost = convert(product_cost)
+            console.log(product_cost)
 
             if($(`#row_${product_id}`).length > 0) {
                 let quantity = $(`#quantity_${product_id}`).val()

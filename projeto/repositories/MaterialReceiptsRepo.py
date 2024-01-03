@@ -92,12 +92,15 @@ class MaterialReceiptsRepo:
             ) for row in data
         ]
 
-    def find_components_by_ids(self, ids=[]):
+    def find_components_by_ids(self, ids):
         #Convert ids to tuple
-        ids = tuple(ids)
-        print(ids)
-        self.cursor.execute("SELECT * FROM V_MaterialReceiptComponents WHERE id_material_receipt IN %s", [ids])
+        #ids = tuple(ids)
+        #print(ids)
+
+        self.cursor.execute("SELECT * FROM V_MaterialReceiptComponents WHERE id_material_receipt = ANY(%s)", [ids])
         data = self.cursor.fetchall()
+
+        print(data)
 
         return [
             MaterialReceiptComponents(

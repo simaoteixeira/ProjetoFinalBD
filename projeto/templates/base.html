@@ -106,8 +106,7 @@
         });
 
         function convert(currency){
-             var temp = currency.replace(/[^0-9.-]+/g,"");
-             return parseFloat(temp);
+            return parseFloat(currency.replace(/[^\d,]/g, ''));
         }
     </script>
 </body>

@@ -43,13 +43,13 @@ class SalesOrdersRepo:
         ]
 
     def find_components_by_ids(self, ids):
-        self.cursor.execute("SELECT * FROM V_SalesOrderComponents WHERE id_sale_order IN %s", [tuple(ids)])
+        self.cursor.execute("SELECT * FROM V_SalesOrderComponents WHERE id_sale_order = ANY(%s)", [ids])
         data = self.cursor.fetchall()
 
         return [
             SalesOrderComponents(
                 id_sales_order_component=row[0],
-                sales_order=SalesOrders(
+                sale_order=SalesOrders(
                     id_sale_order=row[1]
                 ),
                 product=Products(

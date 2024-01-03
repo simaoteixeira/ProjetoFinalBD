@@ -37,6 +37,8 @@ DB_USER = env('DB_USER')
 DB_PASSWORD = env('DB_PASSWORD')
 DB_PORT = env("DB_PORT")
 
+print(DB_HOST, DB_NAME, DB_USER, DB_PASSWORD, DB_PORT)
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 BACKUP_DIR = './backups'
