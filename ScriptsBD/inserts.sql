@@ -14,7 +14,7 @@ $$
         --=================================== STOCK ===================================
         -- Inserir Produtos
         PERFORM fn_create_product(
-                'Intel Core i7-8700K',
+                'Intel Core i7-8700K 3.7GHz 12MB Skt1151',
                 'Intel Core i7-8700K 3.7GHz 12MB Skt1151',
                 'COMPONENT',
                 150,
@@ -22,7 +22,7 @@ $$
                 20);
 
         PERFORM fn_create_product(
-                'Intel Core i5-8600K',
+                'Intel Core i5-8600K 3.6GHz 9MB Skt1151',
                 'Intel Core i5-8600K 3.6GHz 9MB Skt1151',
                 'COMPONENT',
                 100,
@@ -30,7 +30,7 @@ $$
                 20);
 
         PERFORM fn_create_product(
-                'NVIDIA GeForce GTX 1080 Ti',
+                'NVIDIA GeForce GTX 1080 Ti 11GB GDDR5X',
                 'NVIDIA GeForce GTX 1080 Ti 11GB GDDR5X',
                 'COMPONENT',
                 300,
@@ -38,7 +38,7 @@ $$
                 20);
 
         PERFORM fn_create_product(
-                'NVIDIA GeForce RTX 3070 Ti',
+                'NVIDIA GeForce RTX 3070 Ti 8GB GDDR6X',
                 'NVIDIA GeForce RTX 3070 Ti 8GB GDDR6X',
                 'COMPONENT',
                 400,
@@ -46,7 +46,7 @@ $$
                 20);
 
         PERFORM fn_create_product(
-                'Memory DDR4 16GB',
+                'Memory DDR4 16GB 3200MHz',
                 'Memory DDR4 16GB 3200MHz',
                 'COMPONENT',
                 100,
@@ -54,7 +54,7 @@ $$
                 20);
 
         PERFORM fn_create_product(
-                'Memory DDR4 32GB',
+                'Memory DDR4 32GB 3200MHz',
                 'Memory DDR4 32GB 3200MHz',
                 'COMPONENT',
                 200,
@@ -62,7 +62,7 @@ $$
                 20);
 
         PERFORM fn_create_product(
-                'SSD 1TB',
+                'SSD 1TB 2.5" SATA3',
                 'SSD 1TB 2.5" SATA3',
                 'COMPONENT',
                 100,
@@ -70,7 +70,7 @@ $$
                 20);
 
         PERFORM fn_create_product(
-                'SSD 2TB',
+                'SSD 2TB 2.5" SATA3',
                 'SSD 2TB 2.5" SATA3',
                 'COMPONENT',
                 200,
@@ -78,7 +78,7 @@ $$
                 20);
 
         PERFORM fn_create_product(
-                'Motherboard ASUS ROG STRIX',
+                'Motherboard ASUS ROG STRIX Z390-E GAMING',
                 'Motherboard ASUS ROG STRIX Z390-E GAMING',
                 'COMPONENT',
                 400,
@@ -86,7 +86,7 @@ $$
                 20);
 
         PERFORM fn_create_product(
-                'Motherboard MSI MPG',
+                'Motherboard MSI MPG Z390 GAMING EDGE AC',
                 'Motherboard MSI MPG Z390 GAMING EDGE AC',
                 'COMPONENT',
                 500,
@@ -94,7 +94,7 @@ $$
                 20);
 
         PERFORM fn_create_product(
-                'Power Supply 750W',
+                'Power Supply 750W 80 Plus Gold',
                 'Power Supply 750W 80 Plus Gold',
                 'COMPONENT',
                 100,
@@ -102,7 +102,7 @@ $$
                 20);
 
         PERFORM fn_create_product(
-                'Power Supply 850W',
+                'Power Supply 850W 80 Plus Gold',
                 'Power Supply 850W 80 Plus Gold',
                 'COMPONENT',
                 200,
@@ -110,23 +110,23 @@ $$
                 20);
 
         PERFORM fn_create_product(
-                'Case',
-                'Case ATX',
+                'Case Flare ATX',
+                'Case Flare ATX',
                 'COMPONENT',
                 100,
                 23,
                 20);
 
         PERFORM fn_create_product(
-                'Case',
-                'Case ATX',
+                'Case Haki ATX',
+                'Case Haki ATX',
                 'COMPONENT',
                 100,
                 23,
                 20);
 
         PERFORM fn_create_product(
-                'Cooler Master MasterBox',
+                'Cooler Master MasterBox MB511 RGB',
                 'Cooler Master MasterBox MB511 RGB',
                 'COMPONENT',
                 300,
@@ -681,7 +681,7 @@ $$
         PERFORM fn_create_supplierinvoice(
                 ARRAY [3,4],
                 2,
-            'F82187LK81',
+                'F82187LK81',
                 '2024-01-01',
                 '2024-12-31',
                 'Fatura para a encomenda do pedido de compra de RAM e discos SSD'
@@ -845,7 +845,7 @@ $$
                 20);
 
 
--- ==================================== FIM COMPRAS ===================================
+        -- ==================================== FIM COMPRAS ===================================
 
 -- ==================================== PRODUÇÃO ======================================
         /*criar mão de obra*/
@@ -1013,6 +1013,62 @@ $$
 
         CALL pa_insertline_productionorder(
                 2,
+                14,
+                4,
+                1
+             );
+
+        CALL pa_insertline_productionorder(
+                2,
+                1,
+                5,
+                1
+             );
+
+        CALL pa_insertline_productionorder(
+                3,
+                2,
+                4,
+                1
+             );
+
+        CALL pa_insertline_productionorder(
+                3,
+                4,
+                2,
+                1
+             );
+
+        CALL pa_insertline_productionorder(
+                3,
+                6,
+                2,
+                1
+             );
+
+        CALL pa_insertline_productionorder(
+                3,
+                8,
+                3,
+                1
+             );
+
+        CALL pa_insertline_productionorder(
+                3,
+                10,
+                5,
+                1
+             );
+
+        CALL pa_insertline_productionorder(
+                3,
+                12,
+                3,
+                1
+             );
+
+        CALL pa_insertline_productionorder(
+                3,
                 14,
                 4,
                 1
@@ -1425,7 +1481,6 @@ $$
         PERFORM fn_create_clientinvoice(
                 ARRAY [2],
                 1,
-
                 '2024-06-01',
                 '2023-12-31',
                 'Fatura para a encomenda do cliente João com 1 equipamento'
@@ -1434,7 +1489,6 @@ $$
         PERFORM fn_create_clientinvoice(
                 ARRAY [3],
                 4,
-
                 '2024-06-01',
                 '2023-12-31',
                 'Fatura para a encomenda do cliente Guilherme com 1 componente'
@@ -1443,7 +1497,6 @@ $$
         PERFORM fn_create_clientinvoice(
                 ARRAY [4],
                 4,
-
                 '2024-06-01',
                 '2023-01-01',
                 'Fatura para a encomenda do cliente Guilherme com 3 componentes'
@@ -1522,9 +1575,6 @@ $$
                 2000::money,
                 23,
                 30);
-
-
-
 
 
     END
