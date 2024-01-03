@@ -43,6 +43,7 @@ class SalesOrdersRepo:
         ]
 
     def find_components_by_ids(self, ids):
+        print(ids)
         self.cursor.execute("SELECT * FROM V_SalesOrderComponents WHERE id_sale_order = ANY(%s)", [ids])
         data = self.cursor.fetchall()
 
@@ -67,10 +68,8 @@ class SalesOrdersRepo:
             ) for row in data
         ]
 
-    def create(self, id_user, id_client_order, obs, products):
-        id_client_order = list(map(int, id_client_order))
-
-        self.cursor.callproc("FN_Create_SalesOrder", [id_user, id_client_order, obs])
+    def create(self, id_user, obs, products, id_client_order=[]):
+        self.cursor.execute("SELECT * FROM FN_Create_SalesOrder(%s, %s, %s)", [id_user, id_client_order, obs or ''])
         result = self.cursor.fetchone()
 
         if result[0]:

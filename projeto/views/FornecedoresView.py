@@ -1,16 +1,22 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 
+from projeto.enums.USERGROUPS import USERGROUPS
 from projeto.forms.SuppliersForm import SuppliersForm
 from projeto.models import Suppliers
 from projeto.repositories.SupplierRepo import SupplierRepo
 from projeto.tables.SuppliersTable import SuppliersTable
-from projeto.utils import getErrorsObject
+from projeto.utils import getErrorsObject, permission_required
 
 
 @login_required(login_url='/login')
+@permission_required(USERGROUPS.ADMIN.value, USERGROUPS.COMPRAS.value)
 def home(request):
-    table = SuppliersTable(SupplierRepo().find_all())
+    userGroup = request.user.groups.all()[0].name
+
+    table = SuppliersTable(SupplierRepo(
+        connection=userGroup
+    ).find_all())
     table.paginate(page=request.GET.get('page', 1), per_page=10)
 
     context = {
@@ -22,8 +28,13 @@ def home(request):
     return render(request, 'fornecedores/index.html', context)
 
 @login_required(login_url='/login')
+@permission_required(USERGROUPS.ADMIN.value, USERGROUPS.COMPRAS.value)
 def view(request, id):
-    data = SupplierRepo().find_by_id(id)
+    userGroup = request.user.groups.all()[0].name
+
+    data = SupplierRepo(
+        connection=userGroup
+    ).find_by_id(id)
 
     if data is None:
         return render(request, '404.html', status=404)
@@ -37,7 +48,10 @@ def view(request, id):
     return render(request, 'fornecedores/fornecedor.html', context)
 
 @login_required(login_url='/login')
+@permission_required(USERGROUPS.ADMIN.value, USERGROUPS.COMPRAS.value)
 def create(request):
+    userGroup = request.user.groups.all()[0].name
+
     form = SuppliersForm(request.POST or None)
 
     context = {
@@ -50,7 +64,9 @@ def create(request):
         if form.is_valid():
             data = form.cleaned_data
 
-            SupplierRepo().create(data['name'], data['email'], data['nif'], data['phone'], data['address'], data['locality'], data['postal_code'])
+            SupplierRepo(
+                connection=userGroup
+            ).create(data['name'], data['email'], data['nif'], data['phone'], data['address'], data['locality'], data['postal_code'])
 
             return redirect('/compras/fornecedores')
         else:

@@ -1,16 +1,22 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 
+from projeto.enums.USERGROUPS import USERGROUPS
 from projeto.forms.ClientsForm import ClientsForm
 from projeto.models import Clients
 from projeto.repositories.ClientRepo import ClientRepo
 from projeto.tables.ClientsTable import ClientsTable
-from projeto.utils import getErrorsObject
+from projeto.utils import getErrorsObject, permission_required
 
 
 @login_required(login_url='/login')
+@permission_required(USERGROUPS.ADMIN.value, USERGROUPS.VENDAS.value)
 def home(request):
-    table = ClientsTable(ClientRepo().find_all())
+    userGroup = request.user.groups.all()[0].name
+
+    table = ClientsTable(ClientRepo(
+        connection=userGroup
+    ).find_all())
     table.paginate(page=request.GET.get('page', 1), per_page=10)
 
     context = {
@@ -22,23 +28,33 @@ def home(request):
     return render(request, 'clientes/index.html', context)
 
 @login_required(login_url='/login')
+@permission_required(USERGROUPS.ADMIN.value, USERGROUPS.VENDAS.value)
 def view(request, id):
-    data = ClientRepo().find_by_id(id)
+    userGroup = request.user.groups.all()[0].name
+
+    data = ClientRepo(
+        connection=userGroup
+    ).find_by_id(id)
 
     if data is None:
         return render(request, '404.html', status=404)
 
     context = {
         'data': data,
-        'navSection': 'compras',
-        'navSubSection': 'fornecedores',
+        'navSection': 'vendas',
+        'navSubSection': 'clientes',
     }
 
     return render(request, 'clientes/cliente.html', context)
 
 @login_required(login_url='/login')
+@permission_required(USERGROUPS.ADMIN.value, USERGROUPS.VENDAS.value)
 def create(request):
-    repo = ClientRepo()
+    userGroup = request.user.groups.all()[0].name
+
+    repo = ClientRepo(
+        connection=userGroup
+    )
     form = ClientsForm(request.POST or None)
 
     context = {

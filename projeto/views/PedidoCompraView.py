@@ -1,22 +1,28 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 
+from projeto.enums.USERGROUPS import USERGROUPS
 from projeto.forms.PurchasingOrderForm import PurchasingOrdersForm
-from projeto.models import AuthUser
 from projeto.repositories.ProductsRepo import ProductsRepo
 from projeto.repositories.PurchasingOrdersRepo import PurchasingOrdersRepo
 from projeto.repositories.SupplierRepo import SupplierRepo
 from projeto.tables.PurchasingOrdersTable import PurchasingOrdersTable, PurchasingOrdersProductsTable
 from projeto.tables.SelectTables.SelectProductsTable import SelectProductsTable
 from projeto.tables.SelectTables.SelectSupplierTable import SelectSupplierTable
-from projeto.tables.UsersTable import UsersTable
-from projeto.utils import getErrorsObject
+from projeto.utils import getErrorsObject, permission_required
 
 
 @login_required(login_url='/login')
+@permission_required(USERGROUPS.ADMIN.value, USERGROUPS.COMPRAS.value)
 def home(request):
-    table = PurchasingOrdersTable(PurchasingOrdersRepo().find_all())
+    userGroup = request.user.groups.all()[0].name
+
+    table = PurchasingOrdersTable(PurchasingOrdersRepo(
+        connection=userGroup
+    ).find_all())
     table.paginate(page=request.GET.get('page', 1), per_page=10)
+
+    print(request.user.groups.values_list('name', flat=True))
 
     context = {
         'table': table,
@@ -28,8 +34,13 @@ def home(request):
 
 
 @login_required(login_url='/login')
+@permission_required(USERGROUPS.ADMIN.value, USERGROUPS.COMPRAS.value)
 def view(request, id):
-    repo = PurchasingOrdersRepo()
+    userGroup = request.user.groups.all()[0].name
+
+    repo = PurchasingOrdersRepo(
+        connection=userGroup
+    )
 
     if request.method == 'POST' and request.POST.get('observations'):
         repo.update_obs(id, request.POST.get('observations'))
@@ -53,9 +64,16 @@ def view(request, id):
 
 
 @login_required(login_url='/login')
+@permission_required(USERGROUPS.ADMIN.value, USERGROUPS.COMPRAS.value)
 def create(request):
-    supplierRepo = SupplierRepo()
-    productsRepo = ProductsRepo()
+    userGroup = request.user.groups.all()[0].name
+
+    supplierRepo = SupplierRepo(
+        connection=userGroup
+    )
+    productsRepo = ProductsRepo(
+        connection=userGroup
+    )
     form = PurchasingOrdersForm(request.POST or None)
 
     suppliers = supplierRepo.find_all()
@@ -96,7 +114,9 @@ def create(request):
         if form.is_valid():
             data = form.cleaned_data
 
-            PurchasingOrdersRepo().create(
+            PurchasingOrdersRepo(
+                connection=userGroup
+            ).create(
                 id_supplier=data["supplier"],
                 id_user=request.user.id,
                 delivery_date=data["date"],

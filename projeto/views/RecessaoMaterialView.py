@@ -1,9 +1,9 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 
+from projeto.enums.USERGROUPS import USERGROUPS
 from projeto.forms.MaterialReceiptsForm import MaterialReceiptsForm
 from projeto.repositories.MaterialReceiptsRepo import MaterialReceiptsRepo
-from projeto.repositories.ProductsRepo import ProductsRepo
 from projeto.repositories.PurchasingOrdersRepo import PurchasingOrdersRepo
 from projeto.repositories.SupplierRepo import SupplierRepo
 from projeto.repositories.WarehousesRepo import WarehousesRepo
@@ -13,12 +13,17 @@ from projeto.tables.SelectTables.SelectProductsTable import SelectProductsTable
 from projeto.tables.SelectTables.SelectPurchasingOrdersTable import SelectPurchasingOrdersTable
 from projeto.tables.SelectTables.SelectSupplierTable import SelectSupplierTable
 from projeto.tables.SelectTables.SelectWarehousesTable import SelectWarehousesTable
-from projeto.utils import getErrorsObject
+from projeto.utils import getErrorsObject, permission_required
 
 
 @login_required(login_url='/login')
+@permission_required(USERGROUPS.ADMIN.value, USERGROUPS.COMPRAS.value)
 def home(request):
-    table = MaterialReceiptsTable(MaterialReceiptsRepo().find_all())
+    userGroup = request.user.groups.all()[0].name
+
+    table = MaterialReceiptsTable(MaterialReceiptsRepo(
+        connection=userGroup
+    ).find_all())
     table.paginate(page=request.GET.get('page', 1), per_page=10)
 
     context = {
@@ -30,9 +35,16 @@ def home(request):
     return render(request, 'recessaoMaterial/index.html', context)
 
 @login_required(login_url='/login')
+@permission_required(USERGROUPS.ADMIN.value, USERGROUPS.COMPRAS.value)
 def create(request):
-    supplierRepo = SupplierRepo()
-    warehousesRepo = WarehousesRepo()
+    userGroup = request.user.groups.all()[0].name
+
+    supplierRepo = SupplierRepo(
+        connection=userGroup
+    )
+    warehousesRepo = WarehousesRepo(
+        connection=userGroup
+    )
     form = MaterialReceiptsForm(request.POST or None)
 
     suppliers = supplierRepo.find_all()
@@ -97,7 +109,9 @@ def create(request):
             if form.is_valid():
                 data = form.cleaned_data
 
-                MaterialReceiptsRepo().create(
+                MaterialReceiptsRepo(
+                    connection=userGroup
+                ).create(
                     request.user.id,
                     data['purchasing_order'],
                     data['n_delivery_note'],
@@ -114,8 +128,14 @@ def create(request):
 
     return render(request, 'recessaoMaterial/criar.html', context)
 
+@login_required(login_url='/login')
+@permission_required(USERGROUPS.ADMIN.value, USERGROUPS.COMPRAS.value)
 def view(request, id):
-    repo = MaterialReceiptsRepo()
+    userGroup = request.user.groups.all()[0].name
+
+    repo = MaterialReceiptsRepo(
+        connection=userGroup
+    )
 
     if request.method == 'POST' and request.POST.get('observations'):
         repo.update_obs(id, request.POST.get('observations'))

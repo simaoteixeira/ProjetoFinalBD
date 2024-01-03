@@ -32,44 +32,53 @@
     <title>Projeto BD2 - {% block title %}{% endblock %}</title>
 </head>
 <body class="text-gray-700 flex bg-gray-200">
+    {% load user_tags %}
     {% if user.is_authenticated %}
         <aside
             class="w-80 h-screen bg-white shadow-md py-8 flex flex-col gap-8 text-gray-600"
         >
             <i class="ph-fill ph-list text-4xl font-bold ml-8"></i>
             <div class="flex flex-col gap-2">
-                {% component "NavSection" title="Compras" sectionSelected=navSection navSection='compras' icon="shopping-cart" linkTo="home" %}
-                {% if navSubSection and navSection == 'compras' %}
-                    <div class="flex flex-col gap-2 ml-8">
-                        {% component "NavSubsection" title="Pedidos de compra" subSectionSelected=navSubSection navSubSection='pedidosCompra' icon="shopping-cart" linkTo="home" %}
-                        {% component "NavSubsection" title="Faturas" subSectionSelected=navSubSection navSubSection='faturas' icon="scroll" linkTo="faturas" %}
-                        {% component "NavSubsection" title="Fornecedores" subSectionSelected=navSubSection navSubSection='fornecedores' icon="truck" linkTo="fornecedores" %}
-                        {% component "NavSubsection" title="Receções de material" subSectionSelected=navSubSection navSubSection='rececaoMaterial' icon="warehouse" linkTo="recessao" %}
-                    </div>
+                {% if request.user|has_group:'admin' or request.user|has_group:'compras' %}
+                    {% component "NavSection" title="Compras" sectionSelected=navSection navSection='compras' icon="shopping-cart" linkTo="home" %}
+                    {% if navSubSection and navSection == 'compras' %}
+                        <div class="flex flex-col gap-2 ml-8">
+                            {% component "NavSubsection" title="Pedidos de compra" subSectionSelected=navSubSection navSubSection='pedidosCompra' icon="shopping-cart" linkTo="home" %}
+                            {% component "NavSubsection" title="Faturas" subSectionSelected=navSubSection navSubSection='faturas' icon="scroll" linkTo="faturas" %}
+                            {% component "NavSubsection" title="Fornecedores" subSectionSelected=navSubSection navSubSection='fornecedores' icon="truck" linkTo="fornecedores" %}
+                            {% component "NavSubsection" title="Receções de material" subSectionSelected=navSubSection navSubSection='rececaoMaterial' icon="warehouse" linkTo="recessao" %}
+                        </div>
+                    {% endif %}
                 {% endif %}
-                {% component "NavSection" title="Inventario" sectionSelected=navSection navSection='inventario' icon="warehouse" linkTo="inventario" %}
-                {% if navSubSection and navSection == 'inventario' %}
-                    <div class="flex flex-col gap-2 ml-8">
-                        {% component "NavSubsection" title="Movimentos" subSectionSelected=navSubSection navSubSection='movimentos' icon="arrows-left-right" linkTo="movimentos" %}
-                        {% component "NavSubsection" title="Armazens" subSectionSelected=navSubSection navSubSection='armazens' icon="warehouse" linkTo="armazens" %}
-                        {% component "NavSubsection" title="Produtos" subSectionSelected=navSubSection navSubSection='produtos' icon="archive" linkTo="produtos" %}
-                    </div>
+                {% if request.user|has_group:'admin' or request.user|has_group:'stock' %}
+                    {% component "NavSection" title="Inventario" sectionSelected=navSection navSection='inventario' icon="warehouse" linkTo="inventario" %}
+                    {% if navSubSection and navSection == 'inventario' %}
+                        <div class="flex flex-col gap-2 ml-8">
+                            {% component "NavSubsection" title="Movimentos" subSectionSelected=navSubSection navSubSection='movimentos' icon="arrows-left-right" linkTo="movimentos" %}
+                            {% component "NavSubsection" title="Armazens" subSectionSelected=navSubSection navSubSection='armazens' icon="warehouse" linkTo="armazens" %}
+                            {% component "NavSubsection" title="Produtos" subSectionSelected=navSubSection navSubSection='produtos' icon="archive" linkTo="produtos" %}
+                        </div>
+                    {% endif %}
                 {% endif %}
-                {% component "NavSection" title="Produção" sectionSelected=navSection navSection='producao' icon="package" linkTo="producao" %}
-                {% if navSubSection and navSection == 'producao' %}
-                    <div class="flex flex-col gap-2 ml-8">
-                        {% component "NavSubsection" title="Ordens de Produção" subSectionSelected=navSubSection navSubSection='ordensProducao' icon="shopping-cart" linkTo="ordensProducao" %}
-                        {% component "NavSubsection" title="Mão de Obra" subSectionSelected=navSubSection navSubSection='maoObra' icon="hand-coins" linkTo="maoObra" %}
-                    </div>
+                {% if request.user|has_group:'admin' or request.user|has_group:'producao' %}
+                    {% component "NavSection" title="Produção" sectionSelected=navSection navSection='producao' icon="package" linkTo="producao" %}
+                    {% if navSubSection and navSection == 'producao' %}
+                        <div class="flex flex-col gap-2 ml-8">
+                            {% component "NavSubsection" title="Ordens de Produção" subSectionSelected=navSubSection navSubSection='ordensProducao' icon="shopping-cart" linkTo="ordensProducao" %}
+                            {% component "NavSubsection" title="Mão de Obra" subSectionSelected=navSubSection navSubSection='maoObra' icon="hand-coins" linkTo="maoObra" %}
+                        </div>
+                    {% endif %}
                 {% endif %}
-                {% component "NavSection" title="Vendas" sectionSelected=navSection navSection='vendas' icon="currency-dollar" linkTo="vendas" %}
-                {% if navSubSection and navSection == 'vendas' %}
-                    <div class="flex flex-col gap-2 ml-8">
-                        {% component "NavSubsection" title="Encomendas Cliente" subSectionSelected=navSubSection navSubSection='encomendas' icon="package" linkTo="encomendasCliente" %}
-                        {% component "NavSubsection" title="Guias de Remessa" subSectionSelected=navSubSection navSubSection='guiasRemessa' icon="hand-coins" linkTo="guiasRemessa" %}
-                        {% component "NavSubsection" title="Clientes" subSectionSelected=navSubSection navSubSection='clientes' icon="users-three" linkTo="clientes" %}
-                        {% component "NavSubsection" title="Faturas Cliente" subSectionSelected=navSubSection navSubSection='faturasCliente' icon="scroll" linkTo="faturasCliente" %}
-                    </div>
+                {% if request.user|has_group:'admin' or request.user|has_group:'vendas' %}
+                    {% component "NavSection" title="Vendas" sectionSelected=navSection navSection='vendas' icon="currency-dollar" linkTo="vendas" %}
+                    {% if navSubSection and navSection == 'vendas' %}
+                        <div class="flex flex-col gap-2 ml-8">
+                            {% component "NavSubsection" title="Encomendas Cliente" subSectionSelected=navSubSection navSubSection='encomendas' icon="package" linkTo="encomendasCliente" %}
+                            {% component "NavSubsection" title="Guias de Remessa" subSectionSelected=navSubSection navSubSection='guiasRemessa' icon="hand-coins" linkTo="guiasRemessa" %}
+                            {% component "NavSubsection" title="Clientes" subSectionSelected=navSubSection navSubSection='clientes' icon="users-three" linkTo="clientes" %}
+                            {% component "NavSubsection" title="Faturas Cliente" subSectionSelected=navSubSection navSubSection='faturasCliente' icon="scroll" linkTo="faturasCliente" %}
+                        </div>
+                    {% endif %}
                 {% endif %}
             </div>
         </aside>

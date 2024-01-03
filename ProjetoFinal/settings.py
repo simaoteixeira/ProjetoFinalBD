@@ -111,6 +111,46 @@ DATABASES = {
         'USER': env('DB_USER'),
         'PASSWORD': env('DB_PASSWORD'),
         'PORT': env("DB_PORT")
+    },
+    'admin': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'HOST': env('DB_HOST'),
+        'NAME': env('DB_NAME'),
+        'USER': env('DB_USER'),
+        'PASSWORD': env('DB_PASSWORD'),
+        'PORT': env("DB_PORT")
+    },
+    'compras': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'HOST': env('DB_HOST'),
+        'NAME': env('DB_NAME'),
+        'USER': 'compras',
+        'PASSWORD': 'compras',
+        'PORT': env("DB_PORT")
+    },
+    'vendas': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'HOST': env('DB_HOST'),
+        'NAME': env('DB_NAME'),
+        'USER': 'vendas',
+        'PASSWORD': 'vendas',
+        'PORT': env("DB_PORT")
+    },
+    'stock': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'HOST': env('DB_HOST'),
+        'NAME': env('DB_NAME'),
+        'USER': 'stock',
+        'PASSWORD': 'stock',
+        'PORT': env("DB_PORT")
+    },
+    'producao': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'HOST': env('DB_HOST'),
+        'NAME': env('DB_NAME'),
+        'USER': 'producao',
+        'PASSWORD': 'producao',
+        'PORT': env("DB_PORT")
     }
 }
 

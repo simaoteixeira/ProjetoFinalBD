@@ -1,6 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 
+from projeto.enums.USERGROUPS import USERGROUPS
 from projeto.forms.ClientOrdersForm import ClientOrdersForm
 from projeto.forms.SalesOrdersForm import SalesOrdersForm
 from projeto.repositories.ClientOrdersRepo import ClientOrdersRepo
@@ -9,12 +10,17 @@ from projeto.repositories.SalesOrdersRepo import SalesOrdersRepo
 from projeto.tables.SalesOrdersTable import SalesOrdersTable
 from projeto.tables.SelectTables.SelectClientOrdersTable import SelectClientOrdersTable
 from projeto.tables.SelectTables.SelectClientTable import SelectClientTable
-from projeto.utils import getErrorsObject
+from projeto.utils import getErrorsObject, permission_required
 
 
 @login_required(login_url='/login')
+@permission_required(USERGROUPS.ADMIN.value, USERGROUPS.VENDAS.value)
 def home(request):
-    table = SalesOrdersTable(SalesOrdersRepo().find_all())
+    userGroup = request.user.groups.all()[0].name
+
+    table = SalesOrdersTable(SalesOrdersRepo(
+        connection=userGroup
+    ).find_all())
     table.paginate(page=request.GET.get('page', 1), per_page=10)
 
     context = {
@@ -25,8 +31,14 @@ def home(request):
 
     return render(request, 'guiasRemessa/index.html', context)
 
+@login_required(login_url='/login')
+@permission_required(USERGROUPS.ADMIN.value, USERGROUPS.VENDAS.value)
 def create(request):
-    clientRepo = ClientRepo()
+    userGroup = request.user.groups.all()[0].name
+
+    clientRepo = ClientRepo(
+        connection=userGroup
+    )
     form = SalesOrdersForm(request.POST or None)
 
     clients = clientRepo.find_all()
@@ -44,7 +56,9 @@ def create(request):
 
     if request.method == 'GET' and "selected_client" in request.GET or form['client'].value() is not None:
         selected_client = request.GET["selected_client"] or form.client.value
-        clientOrdersRepo = ClientOrdersRepo()
+        clientOrdersRepo = ClientOrdersRepo(
+            connection=userGroup
+        )
 
         selected_client_name = ""
 
@@ -66,8 +80,10 @@ def create(request):
 
         for field in form.data:
             if field.startswith("client_order_"):
-                if form.data[field] is not None and form.data[field] != "":
-                    client_orders.append(form.data[field])
+                fieldData = form.data[field]
+
+                if fieldData is not None and fieldData != "" and fieldData not in client_orders:
+                    client_orders.append(fieldData)
 
         if len(client_orders) > 0 and client_orders[0] is not None:
             context["selected_client_orders"] = client_orders
@@ -82,7 +98,9 @@ def create(request):
             if form.is_valid():
                 data = form.cleaned_data
 
-                SalesOrdersRepo().create(
+                SalesOrdersRepo(
+                    connection=userGroup
+                ).create(
                     id_user=request.user.id,
                     id_client_order=data["client_orders"],
                     obs=data["obs"],

@@ -1,7 +1,8 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 
-from projeto.enums import PRODUCTIONORDERSTATUS
+from projeto.enums.PRODUCTIONORDERSTATUS import PRODUCTIONORDERSTATUS
+from projeto.enums.USERGROUPS import USERGROUPS
 from projeto.forms.ProductionOrdersForm import ProductionOrdersForm
 from projeto.repositories.LaborRepo import LaborRepo
 from projeto.repositories.ProductionOrdersRepo import ProductionOrdersRepo
@@ -12,12 +13,17 @@ from projeto.tables.ProductionOrdersTable import ProductionOrdersTable
 from projeto.tables.PurchasingOrdersTable import PurchasingOrdersProductsTable
 from projeto.tables.SelectTables.SelectEquipmentsTable import SelectEquipmentsTable
 from projeto.tables.SelectTables.SelectProductsTable import SelectProductsTable
-from projeto.utils import getErrorsObject
+from projeto.utils import getErrorsObject, permission_required
 
 
 @login_required(login_url='/login')
+@permission_required(USERGROUPS.ADMIN.value, USERGROUPS.PRODUCAO.value)
 def home(request):
-    table = ProductionOrdersTable(ProductionOrdersRepo().find_all())
+    userGroup = request.user.groups.all()[0].name
+
+    table = ProductionOrdersTable(ProductionOrdersRepo(
+        connection=userGroup
+    ).find_all())
     table.paginate(page=request.GET.get('page', 1), per_page=10)
 
     context = {
@@ -29,8 +35,13 @@ def home(request):
     return render(request, 'ordensProducao/index.html', context)
 
 @login_required(login_url='/login')
+@permission_required(USERGROUPS.ADMIN.value, USERGROUPS.PRODUCAO.value)
 def view(request, id):
-    repo = ProductionOrdersRepo()
+    userGroup = request.user.groups.all()[0].name
+
+    repo = ProductionOrdersRepo(
+        connection=userGroup
+    )
 
     if request.method == 'GET' and request.GET.get('status'):
         status = request.GET.get('status')
@@ -55,10 +66,19 @@ def view(request, id):
     return render(request, 'ordensProducao/ordemProducao.html', context)
 
 @login_required(login_url='/login')
+@permission_required(USERGROUPS.ADMIN.value, USERGROUPS.PRODUCAO.value)
 def create(request):
-    productsRepo = ProductsRepo()
-    laborsRepo = LaborRepo()
-    warehousesRepo = WarehousesRepo()
+    userGroup = request.user.groups.all()[0].name
+
+    productsRepo = ProductsRepo(
+        connection=userGroup
+    )
+    laborsRepo = LaborRepo(
+        connection=userGroup
+    )
+    warehousesRepo = WarehousesRepo(
+        connection=userGroup
+    )
     form = ProductionOrdersForm(request.POST or None)
 
     equipments = productsRepo.find_all_products()
@@ -100,7 +120,9 @@ def create(request):
         if form.is_valid():
             data = form.cleaned_data
 
-            ProductionOrdersRepo().create(
+            ProductionOrdersRepo(
+                connection=userGroup
+            ).create(
                 id_labor=data["labor"],
                 id_user=request.user.id,
                 id_product=data["product"],

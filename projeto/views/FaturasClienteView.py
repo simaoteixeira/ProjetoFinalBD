@@ -1,6 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 
+from projeto.enums.USERGROUPS import USERGROUPS
 from projeto.forms.ClientInvoicesForm import ClientInvoicesForm
 
 from projeto.repositories.ClientInvoicesRepo import ClientInvoicesRepo
@@ -12,11 +13,17 @@ from projeto.tables.PurchasingOrdersTable import PurchasingOrdersProductsTable
 from projeto.tables.SelectTables.SelectClientTable import SelectClientTable
 
 from projeto.tables.SelectTables.SelectSalesOrdersTable import SelectSalesOrdersTable
-from projeto.utils import getErrorsObject
+from projeto.utils import getErrorsObject, permission_required
+
 
 @login_required(login_url='/login')
+@permission_required(USERGROUPS.ADMIN.value, USERGROUPS.VENDAS.value)
 def home(request):
-    table = ClientInvoicesTable(ClientInvoicesRepo().find_all())
+    userGroup = request.user.groups.all()[0].name
+
+    table = ClientInvoicesTable(ClientInvoicesRepo(
+        connection=userGroup
+    ).find_all())
     table.paginate(page=request.GET.get('page', 1), per_page=10)
 
     context = {
@@ -28,8 +35,14 @@ def home(request):
     return render(request, 'faturasCliente/index.html', context)
 
 
+@login_required(login_url='/login')
+@permission_required(USERGROUPS.ADMIN.value, USERGROUPS.VENDAS.value)
 def create(request):
-    clientRepo = ClientRepo()
+    userGroup = request.user.groups.all()[0].name
+
+    clientRepo = ClientRepo(
+        connection=userGroup
+    )
     form = ClientInvoicesForm(request.POST or None)
 
     clients = clientRepo.find_all()
@@ -47,7 +60,9 @@ def create(request):
 
     if request.method == 'GET' and "selected_client" in request.GET or form['client'].value() is not None:
         selected_client = request.GET["selected_client"] or form.client.value
-        salesOrdersRepo = SalesOrdersRepo()
+        salesOrdersRepo = SalesOrdersRepo(
+            connection=userGroup
+        )
 
         selected_client_name = ""
 
@@ -84,7 +99,9 @@ def create(request):
         if form.is_valid():
             data = form.cleaned_data
 
-            ClientInvoicesRepo().create(
+            ClientInvoicesRepo(
+                connection=userGroup
+            ).create(
                 data['client'],
                 data['invoice_date'],
                 data['expire_date'],
@@ -101,8 +118,15 @@ def create(request):
 
     return render(request, 'faturasCliente/criar.html', context)
 
+
+@login_required(login_url='/login')
+@permission_required(USERGROUPS.ADMIN.value, USERGROUPS.VENDAS.value)
 def view(request, id):
-    repo = ClientInvoicesRepo()
+    userGroup = request.user.groups.all()[0].name
+
+    repo = ClientInvoicesRepo(
+        connection=userGroup
+    )
 
     if request.method == 'POST' and request.POST.get('observations'):
         repo.update_obs(id, request.POST.get('observations'))

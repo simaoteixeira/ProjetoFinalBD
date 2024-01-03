@@ -1,5 +1,9 @@
 from datetime import datetime
 
+from django.shortcuts import render, redirect
+
+from projeto.enums.USERGROUPS import USERGROUPS
+
 
 def getErrorsObject(errorsContext):
     errorsList = list(errorsContext['errors'])
@@ -11,6 +15,7 @@ def getErrorsObject(errorsContext):
 
     return errors
 
+
 def compareDates(date1, date2):
     datetime_format = "%Y-%m-%d"
 
@@ -19,6 +24,20 @@ def compareDates(date1, date2):
 
     return date1 > date2
 
+
 def forDjango(cls):
     cls.do_not_call_in_templates = True
     return cls
+
+
+def permission_required(*permissions: USERGROUPS):
+    def decorator(view_func):
+        def wrap(request, *args, **kwargs):
+            if request.user.groups.filter(name__in=permissions).exists():
+                return view_func(request, *args, **kwargs)
+            else:
+                return redirect('login')
+
+        return wrap
+
+    return decorator

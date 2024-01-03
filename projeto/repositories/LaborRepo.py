@@ -8,8 +8,7 @@ class LaborRepo:
         self.cursor = connections[connection].cursor()
 
     def create(self, title, cost):
-        self.cursor.execute(f"Call pa_create_labor(%s, %s)", [title, cost])
-        #self.cursor.callproc("pa_create_labor", [title, cost])
+        self.cursor.execute(f"Call PA_Create_Labor(%s, %s::MONEY)", [title, cost])
 
     def find_all(self):
         self.cursor.execute(f"SELECT * FROM V_Labors")

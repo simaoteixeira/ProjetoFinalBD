@@ -1,14 +1,20 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 
-from projeto.models import Warehouses
+from projeto.enums.USERGROUPS import USERGROUPS
 from projeto.repositories.WarehousesRepo import WarehousesRepo
 from projeto.tables.WarehousesTable import WarehousesTable, WarehousesStockTable
+from projeto.utils import permission_required
 
 
 @login_required(login_url='/login')
+@permission_required(USERGROUPS.ADMIN.value, USERGROUPS.STOCK.value)
 def home(request):
-    table = WarehousesTable(WarehousesRepo().find_all())
+    userGroup = request.user.groups.all()[0].name
+
+    table = WarehousesTable(WarehousesRepo(
+        connection=userGroup
+    ).find_all())
     table.paginate(page=request.GET.get('page', 1), per_page=10)
 
     context = {
@@ -19,8 +25,14 @@ def home(request):
 
     return render(request, 'armazens/index.html', context)
 
+@login_required(login_url='/login')
+@permission_required(USERGROUPS.ADMIN.value, USERGROUPS.STOCK.value)
 def view(request, id):
-    repo = WarehousesRepo()
+    userGroup = request.user.groups.all()[0].name
+
+    repo = WarehousesRepo(
+        connection=userGroup
+    )
     data = repo.get_stock(id)
 
     if data is None:

@@ -7,7 +7,7 @@ from projeto.utils import compareDates
 
 class SupplierInvoicesForm(forms.Form):
     supplier = forms.IntegerField(required=True, error_messages={'required': 'Campo obrigatório'})
-    invoice_id = forms.IntegerField(required=True, error_messages={'required': 'Campo obrigatório'})
+    invoice_id = forms.CharField(required=True, error_messages={'required': 'Campo obrigatório'})
     invoice_date = forms.DateField(required=True, error_messages={'required': 'Campo obrigatório'})
     expire_date = forms.DateField(required=True, error_messages={'required': 'Campo obrigatório'})
     obs = forms.CharField(required=False, max_length=500, error_messages={'max_length': 'Máximo de 500 caracteres'})

@@ -1,14 +1,21 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 
+from projeto.enums.USERGROUPS import USERGROUPS
 from projeto.forms.ProductForm import ProductForm
 from projeto.repositories.ProductsRepo import ProductsRepo
 from projeto.tables.ProductsTable import StockProductsTable, ProductsPerWarehouseTable, ProductsTable
-from projeto.utils import getErrorsObject
+from projeto.utils import getErrorsObject, permission_required
+
 
 @login_required(login_url='/login')
+@permission_required(USERGROUPS.ADMIN.value, USERGROUPS.STOCK.value)
 def home(request):
-    table = ProductsTable(ProductsRepo().find_all())
+    userGroup = request.user.groups.all()[0].name
+
+    table = ProductsTable(ProductsRepo(
+        connection=userGroup
+    ).find_all())
     table.paginate(page=request.GET.get('page', 1), per_page=10)
 
     context = {
@@ -20,7 +27,10 @@ def home(request):
     return render(request, 'produtos/index.html', context)
 
 @login_required(login_url='/login')
+@permission_required(USERGROUPS.ADMIN.value, USERGROUPS.STOCK.value)
 def create(request):
+    userGroup = request.user.groups.all()[0].name
+
     form = ProductForm(request.POST or None)
 
     context = {
@@ -33,7 +43,9 @@ def create(request):
         if form.is_valid():
             data = form.cleaned_data
 
-            ProductsRepo().create(
+            ProductsRepo(
+                connection=userGroup
+            ).create(
                 name=data['name'],
                 type=data['type'],
                 description=data['description'],
@@ -50,8 +62,14 @@ def create(request):
 
     return render(request, 'produtos/criar.html', context)
 
+@login_required(login_url='/login')
+@permission_required(USERGROUPS.ADMIN.value, USERGROUPS.STOCK.value)
 def view(request, id):
-    repo = ProductsRepo()
+    userGroup = request.user.groups.all()[0].name
+
+    repo = ProductsRepo(
+        connection=userGroup
+    )
 
     if request.method == 'POST' and request.POST.get('observations'):
         repo.update_obs(id, request.POST.get('observations'))

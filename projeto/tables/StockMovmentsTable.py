@@ -1,6 +1,6 @@
 import django_tables2 as tables
 
-from projeto.enums import MOVEMENTTYPES
+from projeto.enums.MOVEMENTTYPES import MOVEMENTTYPES
 from projeto.models import ProductionOrders, StockMovements
 
 

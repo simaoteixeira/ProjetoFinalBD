@@ -1,6 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 
+from projeto.enums.USERGROUPS import USERGROUPS
 from projeto.forms.SupplierInvoicesForm import SupplierInvoicesForm
 from projeto.repositories.MaterialReceiptsRepo import MaterialReceiptsRepo
 from projeto.repositories.SupplierInvoicesRepo import SupplierInvoicesRepo
@@ -9,12 +10,17 @@ from projeto.tables.PurchasingOrdersTable import PurchasingOrdersProductsTable
 from projeto.tables.SelectTables.SelectMaterialReceiptsTable import SelectMaterialReceiptsTable
 from projeto.tables.SelectTables.SelectSupplierTable import SelectSupplierTable
 from projeto.tables.SupplierInvoicesTable import SupplierInvoicesTable
-from projeto.utils import getErrorsObject
+from projeto.utils import getErrorsObject, permission_required
 
 
 @login_required(login_url='/login')
+@permission_required(USERGROUPS.ADMIN.value, USERGROUPS.COMPRAS.value)
 def home(request):
-    table = SupplierInvoicesTable(SupplierInvoicesRepo().find_all())
+    userGroup = request.user.groups.all()[0].name
+
+    table = SupplierInvoicesTable(SupplierInvoicesRepo(
+        connection=userGroup
+    ).find_all())
     table.paginate(page=request.GET.get('page', 1), per_page=10)
 
     context = {
@@ -26,8 +32,14 @@ def home(request):
     return render(request, 'faturas/index.html', context)
 
 
+@login_required(login_url='/login')
+@permission_required(USERGROUPS.ADMIN.value, USERGROUPS.COMPRAS.value)
 def create(request):
-    supplierRepo = SupplierRepo()
+    userGroup = request.user.groups.all()[0].name
+
+    supplierRepo = SupplierRepo(
+        connection=userGroup
+    )
     form = SupplierInvoicesForm(request.POST or None)
 
     suppliers = supplierRepo.find_all()
@@ -45,7 +57,9 @@ def create(request):
 
     if request.method == 'GET' and "selected_supplier" in request.GET or form['supplier'].value() is not None:
         selected_supplier = request.GET["selected_supplier"] or form.supplier.value
-        materialReceiptsRepo = MaterialReceiptsRepo()
+        materialReceiptsRepo = MaterialReceiptsRepo(
+            connection=userGroup
+        )
 
         selected_supplier_name = ""
 
@@ -86,7 +100,9 @@ def create(request):
                 print("valid")
                 data = form.cleaned_data
 
-                SupplierInvoicesRepo().create(
+                SupplierInvoicesRepo(
+                    connection=userGroup
+                ).create(
                     data['supplier'],
                     data['invoice_id'],
                     data['invoice_date'],
@@ -105,8 +121,14 @@ def create(request):
 
     return render(request, 'faturas/criar.html', context)
 
+@login_required(login_url='/login')
+@permission_required(USERGROUPS.ADMIN.value, USERGROUPS.COMPRAS.value)
 def view(request, id):
-    repo = SupplierInvoicesRepo()
+    userGroup = request.user.groups.all()[0].name
+
+    repo = SupplierInvoicesRepo(
+        connection=userGroup
+    )
 
     if request.method == 'POST' and request.POST.get('observations'):
         repo.update_obs(id, request.POST.get('observations'))

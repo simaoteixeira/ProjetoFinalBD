@@ -38,8 +38,9 @@ class ClientOrdersRepo:
         ) for row in data]
 
     def find_components_by_ids(self, ids):
-        self.cursor.execute("SELECT * FROM V_ClientOrdersComponents WHERE id_client_order IN %s", [tuple(ids)])
+        self.cursor.execute("SELECT * FROM V_ClientOrdersComponents WHERE id_client_order = ANY(%s)", [ids])
         data = self.cursor.fetchall()
+
 
         return [ClientOrderComponents(
             id_client_order_components=row[0],

@@ -877,7 +877,7 @@ CREATE OR REPLACE FUNCTION FN_Create_SupplierInvoice(
     _invoice_id TEXT,
     _invoice_date DATE,
     _expire_date DATE,
-    _obs TEXT = NULL
+    _obs TEXT DEFAULT NULL
 )
     RETURNS INT AS
 $$

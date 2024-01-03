@@ -1,11 +1,11 @@
 from django.urls import path
 from .views import RegisterView, PedidoCompraView, FaturasView, FornecedoresView, RecessaoMaterialView, ClientesView, \
     MaoObraView, ArmazensView, ProdutosView, MovimentosView, OrdensProducaoView, EncomendasClienteView, \
-    GuiasRemessaView, FaturasClienteView
+    GuiasRemessaView, FaturasClienteView, InitialView
 
 urlpatterns = [
-    path('', PedidoCompraView.home, name='home'),
-    path('home', PedidoCompraView.home, name='home'),
+    path('', InitialView.home, name='home'),
+    path('home', InitialView.home, name='home'),
     path('compras', PedidoCompraView.home, name='home'),
 
     path('compras/pedido/<slug:id>', PedidoCompraView.view, name='pedidoCompra'),

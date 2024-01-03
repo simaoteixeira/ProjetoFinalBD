@@ -16,7 +16,7 @@
                         <input name="client" class="hidden" value="{{ selected_client_id }}">
                         {{ selected_client }}
                     {% else %}
-                        Seleciona um Fornecedor
+                        Seleciona um Cliente
                     {% endif %}
                 </a>
                 {% if errors.client %}
@@ -130,10 +130,12 @@
         {% endif %}
 
         {% if components %}
-            {% for component in components %}
-                addProduct('{{ component.product.id_product }}')
-                addRowToTableWithAllData({{ component.product.id_product }}, '{{ component.product.name }}', '{{ component.price_base }}', {{ component.quantity }}, {{ component.vat }}, {{ component.discount}})
-            {% endfor %}
+            $(document).ready(() => {
+                {% for component in components %}
+                    addProduct('{{ component.product.id_product }}')
+                    addRowToTableWithAllData({{ component.product.id_product }}, '{{ component.product.name }}', '{{ component.price_base }}', {{ component.quantity }}, {{ component.vat }}, {{ component.discount}})
+                {% endfor %}
+            })
         {% endif %}
     </script>
 {% endblock %}
