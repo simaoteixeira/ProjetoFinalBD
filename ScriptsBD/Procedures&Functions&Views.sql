@@ -98,21 +98,29 @@ CREATE OR REPLACE FUNCTION FN_Create_Product_From_JSON(
 AS
 $$
 DECLARE
-    product_data JSONB;
+    product_data RECORD;
 BEGIN
-    FOR product_data IN SELECT * FROM jsonb_array_elements(json_data)
+    FOR product_data IN SELECT * FROM jsonb_to_recordset(json_data) AS x (
+        name TEXT,
+        description TEXT,
+        type products_type,
+        weight REAL,
+        vat INT,
+        profit_margin REAL
+    )
     LOOP
         PERFORM FN_Create_Product(
-            product_data->>'name',
-            product_data->>'description',
-            (product_data->>'type')::products_type,
-            (product_data->>'weight')::REAL,
-            (product_data->>'vat')::INT,
-            (product_data->>'profit_margin')::REAL
+            product_data.name,
+            product_data.description,
+            product_data.type,
+            product_data.weight,
+            product_data.vat,
+            product_data.profit_margin
         );
     END LOOP;
 END;
 $$;
+
 
 -- ProcArmazenado	stock	PA_Update_Product(id_product,name,description TEXT,type products_type,weight,vat,profit_margin)	Atualiza um produto
 CREATE OR REPLACE PROCEDURE PA_Update_Product(
@@ -462,31 +470,29 @@ CREATE OR REPLACE FUNCTION FN_Export_PurchasingOrders_To_JSON()
     LANGUAGE plpgsql
 AS
 $$
-DECLARE
-    orders_json JSONB;
 BEGIN
-    SELECT jsonb_agg(
-               jsonb_build_object(
-                   'id_purchasing_order', po.id_purchasing_order,
-                   'id_supplier', po.id_supplier,
-                   'supplier_name', s.name,
-                   'id_user', po.id_user,
-                   'user_name', u.username,
-                   'delivery_date', po.delivery_date,
-                   'created_at', po.created_at,
-                   'obs', po.obs,
-                   'total_base', po.total_base,
-                   'vat_total', po.vat_total,
-                   'discount_total', po.discount_total,
-                   'total', po.total
-               )
-           )
-    INTO orders_json
-    FROM purchasing_orders po
-             INNER JOIN suppliers s USING (id_supplier)
-             INNER JOIN auth_user u ON po.id_user = u.id;
-
-    RETURN orders_json;
+    RETURN (
+        SELECT json_agg(row_to_json(po))
+        FROM (
+            SELECT
+                po.id_purchasing_order,
+                po.id_supplier,
+                s.name AS supplier_name,
+                po.id_user,
+                u.username AS user_name,
+                po.delivery_date,
+                po.created_at,
+                po.obs,
+                po.total_base,
+                po.vat_total,
+                po.discount_total,
+                po.total
+            FROM
+                purchasing_orders po
+                INNER JOIN suppliers s USING (id_supplier)
+                INNER JOIN auth_user u ON po.id_user = u.id
+        ) po
+    );
 END;
 $$;
 
