@@ -50,6 +50,7 @@ GRANT EXECUTE ON FUNCTION FN_Create_MaterialReceipts TO compras;
 GRANT EXECUTE ON FUNCTION FN_Create_PurchasingOrder TO compras;
 GRANT EXECUTE ON FUNCTION FN_Create_SupplierInvoice TO compras;
 GRANT EXECUTE ON FUNCTION FN_GetProductAveragePriceByMaterialReceipts TO compras;
+GRANT EXECUTE ON FUNCTION FN_AddProductToStock TO compras;
 
 GRANT SELECT ON V_Suppliers TO compras;
 GRANT SELECT ON V_PurchasingOrders TO compras;
@@ -58,6 +59,8 @@ GRANT SELECT ON V_MaterialReceipts TO compras;
 GRANT SELECT ON V_MaterialReceiptComponents TO compras;
 GRANT SELECT ON V_SupplierInvoices TO compras;
 GRANT SELECT ON V_SupplierInvoiceComponents TO compras;
+GRANT SELECT ON V_Products TO compras;
+GRANT SELECT ON V_Warehouses TO compras;
 
 GRANT SELECT, INSERT, UPDATE ON TABLE suppliers TO compras;
 GRANT SELECT, INSERT, UPDATE ON TABLE purchasing_orders TO compras;
@@ -68,6 +71,8 @@ GRANT SELECT, INSERT, UPDATE ON TABLE products TO compras;
 GRANT SELECT, INSERT, UPDATE ON TABLE warehouses TO compras;
 GRANT SELECT, INSERT, UPDATE ON TABLE supplier_invoices TO compras;
 GRANT SELECT, INSERT, UPDATE ON TABLE supplier_invoice_components TO compras;
+GRANT SELECT, INSERT, UPDATE ON TABLE stock TO compras;
+GRANT SELECT, INSERT, UPDATE ON TABLE stock_movements TO compras;
 
 -- Block 'vendas' from accessing everything
 REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA public FROM vendas;
@@ -93,6 +98,15 @@ GRANT SELECT ON V_ClientOrders TO vendas;
 GRANT SELECT ON V_ClientOrdersComponents TO vendas;
 GRANT SELECT ON V_ClientInvoices TO vendas;
 GRANT SELECT ON V_ClientInvoicesComponents TO vendas;
+GRANT SELECT ON V_Products TO vendas;
+
+GRANT SELECT, INSERT, UPDATE ON TABLE client_orders TO vendas;
+GRANT SELECT, INSERT, UPDATE ON TABLE client_order_components TO vendas;
+GRANT SELECT, INSERT, UPDATE ON TABLE sales_orders TO vendas;
+GRANT SELECT, INSERT, UPDATE ON TABLE sales_order_components TO vendas;
+GRANT SELECT, INSERT, UPDATE ON TABLE clients TO vendas;
+GRANT SELECT, INSERT, UPDATE ON TABLE client_invoices TO vendas;
+GRANT SELECT, INSERT, UPDATE ON TABLE client_invoice_components TO vendas;
 
 -- Block 'stock' from accessing everything
 REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA public FROM stock;
@@ -115,6 +129,9 @@ GRANT SELECT ON TABLE V_Warehouses TO stock;
 GRANT SELECT ON TABLE V_Stock TO stock;
 GRANT SELECT ON TABLE V_StockPerProduct TO stock;
 GRANT SELECT ON TABLE V_Products TO stock;
+GRANT SELECT ON TABLE V_Movements TO stock;
+
+GRANT SELECT, INSERT, UPDATE ON TABLE products TO stock;
 
 -- Block 'producao' from accessing everything
 REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA public FROM producao;
@@ -133,5 +150,10 @@ GRANT EXECUTE ON FUNCTION FN_Create_ProductionOrder TO producao;
 GRANT SELECT ON TABLE V_Labors TO producao;
 GRANT SELECT ON TABLE V_ProductionOrders TO producao;
 GRANT SELECT ON TABLE V_ProductionOrderComponents TO producao;
+GRANT SELECT ON TABLE V_Products TO producao;
+GRANT SELECT ON TABLE V_Warehouses TO producao;
 
-
+GRANT SELECT, INSERT, UPDATE ON TABLE production_orders TO producao;
+GRANT SELECT, INSERT, UPDATE ON TABLE production_order_components TO producao;
+GRANT SELECT, INSERT, UPDATE ON TABLE products TO producao;
+GRANT SELECT, INSERT, UPDATE ON TABLE labors TO producao;

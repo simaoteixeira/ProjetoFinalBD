@@ -1604,6 +1604,7 @@ FROM sales_order_components soc
          INNER JOIN products p USING (id_product);
 
 
+
 --FN_Create_ClientOrders(id_client,obs<O>) : id_client_order Criar cabeçalho da encomenda do cliente, devolve id da encomenda do cliente
 
 CREATE OR REPLACE FUNCTION FN_Create_ClientOrders(

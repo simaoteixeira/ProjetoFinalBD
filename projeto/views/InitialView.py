@@ -1,8 +1,9 @@
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect
 
 from projeto.enums.USERGROUPS import USERGROUPS
 
-
+@login_required(login_url='/login')
 def home(request):
     userGroup = request.user.groups.all()[0].name
 

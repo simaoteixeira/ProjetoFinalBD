@@ -38,22 +38,22 @@ class PurchasingOrdersRepo:
         dataPurchasingOrder = self.cursor.fetchone()
 
         data = PurchasingOrders(
-                    id_purchasing_order=dataPurchasingOrder[0],
-                    supplier=Suppliers(
-                        id_supplier=dataPurchasingOrder[1],
-                        name=dataPurchasingOrder[2],
-                    ),
-                    user=AuthUser(
-                        username=dataPurchasingOrder[4],
-                    ),
-                    delivery_date=dataPurchasingOrder[5],
-                    created_at=dataPurchasingOrder[6],
-                    obs=dataPurchasingOrder[7],
-                    total_base=dataPurchasingOrder[8],
-                    vat_total=dataPurchasingOrder[9],
-                    discount_total=dataPurchasingOrder[10],
-                    total=dataPurchasingOrder[11],
-                )
+            id_purchasing_order=dataPurchasingOrder[0],
+            supplier=Suppliers(
+                id_supplier=dataPurchasingOrder[1],
+                name=dataPurchasingOrder[2],
+            ),
+            user=AuthUser(
+                username=dataPurchasingOrder[4],
+            ),
+            delivery_date=dataPurchasingOrder[5],
+            created_at=dataPurchasingOrder[6],
+            obs=dataPurchasingOrder[7],
+            total_base=dataPurchasingOrder[8],
+            vat_total=dataPurchasingOrder[9],
+            discount_total=dataPurchasingOrder[10],
+            total=dataPurchasingOrder[11],
+        )
 
         return data
 
@@ -63,22 +63,22 @@ class PurchasingOrdersRepo:
 
         data = [
             PurchasingOrders(
-                    id_purchasing_order=row[0],
-                    supplier=Suppliers(
-                        id_supplier=row[1],
-                        name=row[2],
-                    ),
-                    user=AuthUser(
-                        username=row[4],
-                    ),
-                    delivery_date=row[5],
-                    created_at=row[6],
-                    obs=row[7],
-                    total_base=row[8],
-                    vat_total=row[9],
-                    discount_total=row[10],
-                    total=row[11],
-                ) for row in dataPurchasingOrder
+                id_purchasing_order=row[0],
+                supplier=Suppliers(
+                    id_supplier=row[1],
+                    name=row[2],
+                ),
+                user=AuthUser(
+                    username=row[4],
+                ),
+                delivery_date=row[5],
+                created_at=row[6],
+                obs=row[7],
+                total_base=row[8],
+                vat_total=row[9],
+                discount_total=row[10],
+                total=row[11],
+            ) for row in dataPurchasingOrder
         ]
 
         return data
@@ -113,10 +113,9 @@ class PurchasingOrdersRepo:
         self.cursor.execute("UPDATE purchasing_orders SET obs = %s WHERE id_purchasing_order = %s", [obs.strip(), id])
 
     def create(self, id_supplier, id_user, delivery_date, obs, products=[]):
-        self.cursor.execute('SELECT * FROM FN_Create_PurchasingOrder(%s,%s,%s,%s)', [id_supplier, id_user, delivery_date, obs])
+        self.cursor.execute('SELECT * FROM FN_Create_PurchasingOrder(%s,%s,%s,%s)',
+                            [id_supplier, id_user, delivery_date, obs])
         reponse = self.cursor.fetchone()
-
-        print()
 
         if reponse[0]:
             id_purchasing_order = reponse[0]

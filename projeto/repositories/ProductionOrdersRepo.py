@@ -87,7 +87,7 @@ class ProductionOrdersRepo:
     def create(self, id_labor, id_user, id_product, equipment_quantity, obs, products):
         print(id_labor, id_user, id_product, equipment_quantity, obs, products)
 
-        self.cursor.callproc('FN_Create_ProductionOrder', [id_labor, id_user, id_product, equipment_quantity, products[0]["warehouse"],  obs])
+        self.cursor.execute('SELECT * FROM FN_Create_ProductionOrder(%s, %s, %s, %s, %s, %s)', [id_labor, id_user, id_product, equipment_quantity, products[0]["warehouse"], obs])
         response = self.cursor.fetchone()
 
         if response[0]:

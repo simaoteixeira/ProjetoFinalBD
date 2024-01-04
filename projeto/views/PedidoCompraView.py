@@ -53,6 +53,8 @@ def view(request, id):
     if data is None:
         return render(request, '404.html', status=404)
 
+    print(data.obs)
+
     context = {
         'data': data,
         'componentsTable': componentsTable,
@@ -113,6 +115,7 @@ def create(request):
 
         if form.is_valid():
             data = form.cleaned_data
+            print(data)
 
             PurchasingOrdersRepo(
                 connection=userGroup

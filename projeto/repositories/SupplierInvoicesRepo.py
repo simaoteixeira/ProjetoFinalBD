@@ -104,4 +104,4 @@ class SupplierInvoicesRepo:
                 ])
 
     def update_obs(self, id, obs):
-        self.cursor.execute("UPDATE SupplierInvoices SET obs = %s WHERE id_supplier_invoice = %s", [obs, id])
+        self.cursor.execute("UPDATE supplier_invoices SET obs = %s WHERE id_supplier_invoice = %s", [obs, id])

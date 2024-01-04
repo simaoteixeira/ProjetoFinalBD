@@ -62,7 +62,7 @@ class ClientOrdersRepo:
         ) for row in data]
 
     def create(self, client, obs, products):
-        self.cursor.callproc("FN_Create_ClientOrders", [client, obs])
+        self.cursor.execute("SELECT * FROM FN_Create_ClientOrders(%s, %s)", [client, obs or ''])
         response = self.cursor.fetchone()
 
         if response[0]:
