@@ -51,6 +51,8 @@ GRANT EXECUTE ON FUNCTION FN_Create_PurchasingOrder TO compras;
 GRANT EXECUTE ON FUNCTION FN_Create_SupplierInvoice TO compras;
 GRANT EXECUTE ON FUNCTION FN_GetProductAveragePriceByMaterialReceipts TO compras;
 GRANT EXECUTE ON FUNCTION FN_AddProductToStock TO compras;
+GRANT EXECUTE ON FUNCTION FN_Create_Product_From_Json TO compras;
+GRANT EXECUTE ON FUNCTION FN_Export_PurchasingOrders_To_JSON TO compras;
 
 GRANT SELECT ON V_Suppliers TO compras;
 GRANT SELECT ON V_PurchasingOrders TO compras;
@@ -89,24 +91,29 @@ GRANT EXECUTE ON PROCEDURE PA_InsertLine_ClientInvoice TO vendas;
 GRANT EXECUTE ON FUNCTION FN_Create_SalesOrder TO vendas;
 GRANT EXECUTE ON FUNCTION FN_Create_ClientOrders TO vendas;
 GRANT EXECUTE ON FUNCTION FN_Create_ClientInvoice TO vendas;
+GRANT EXECUTE ON FUNCTION FN_Create_SalesOrder TO vendas;
 
 -- Grant select on views to vendas
 GRANT SELECT ON V_Clients TO vendas;
+GRANT SELECT ON V_Products TO vendas;
 GRANT SELECT ON V_SalesOrders TO vendas;
 GRANT SELECT ON V_SalesOrderComponents TO vendas;
 GRANT SELECT ON V_ClientOrders TO vendas;
 GRANT SELECT ON V_ClientOrdersComponents TO vendas;
 GRANT SELECT ON V_ClientInvoices TO vendas;
 GRANT SELECT ON V_ClientInvoicesComponents TO vendas;
-GRANT SELECT ON V_Products TO vendas;
 
-GRANT SELECT, INSERT, UPDATE ON TABLE client_orders TO vendas;
-GRANT SELECT, INSERT, UPDATE ON TABLE client_order_components TO vendas;
+-- Grant SELECT, INSERT, UPDATE on the necessary tables to 'vendas'
+GRANT SELECT, INSERT, UPDATE ON TABLE clients TO vendas;
 GRANT SELECT, INSERT, UPDATE ON TABLE sales_orders TO vendas;
 GRANT SELECT, INSERT, UPDATE ON TABLE sales_order_components TO vendas;
-GRANT SELECT, INSERT, UPDATE ON TABLE clients TO vendas;
+GRANT SELECT, INSERT, UPDATE ON TABLE client_orders TO vendas;
+GRANT SELECT, INSERT, UPDATE ON TABLE client_order_components TO vendas;
 GRANT SELECT, INSERT, UPDATE ON TABLE client_invoices TO vendas;
 GRANT SELECT, INSERT, UPDATE ON TABLE client_invoice_components TO vendas;
+
+
+
 
 -- Block 'stock' from accessing everything
 REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA public FROM stock;
@@ -125,13 +132,18 @@ GRANT EXECUTE ON FUNCTION FN_Create_Product TO stock;
 GRANT EXECUTE ON FUNCTION FN_ExistsStock TO stock;
 
 -- Grant select on views to stock
+GRANT SELECT ON Table V_Movements TO stock;
 GRANT SELECT ON TABLE V_Warehouses TO stock;
 GRANT SELECT ON TABLE V_Stock TO stock;
 GRANT SELECT ON TABLE V_StockPerProduct TO stock;
 GRANT SELECT ON TABLE V_Products TO stock;
-GRANT SELECT ON TABLE V_Movements TO stock;
 
+GRANT SELECT, INSERT, UPDATE ON TABLE warehouses TO stock;
+GRANT SELECT, INSERT, UPDATE ON TABLE stock TO stock;
+GRANT SELECT, INSERT, UPDATE ON TABLE stock_movements TO stock;
 GRANT SELECT, INSERT, UPDATE ON TABLE products TO stock;
+GRANT SELECT, INSERT, UPDATE ON TABLE supplier_invoice_components TO stock;
+
 
 -- Block 'producao' from accessing everything
 REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA public FROM producao;
@@ -142,18 +154,23 @@ GRANT EXECUTE ON PROCEDURE PA_Create_Labor TO producao;
 GRANT EXECUTE ON PROCEDURE PA_Update_Labor TO producao;
 GRANT EXECUTE ON PROCEDURE PA_InsertLine_ProductionOrder TO producao;
 GRANT EXECUTE ON PROCEDURE PA_Update_ProductionOrderStatus TO producao;
+GRANT EXECUTE ON PROCEDURE PA_Create_Labor TO producao;
 
 -- Grant execute on functions to producao
 GRANT EXECUTE ON FUNCTION FN_Create_ProductionOrder TO producao;
 
 -- Grant select on views to producao
+GRANT SELECT ON TABLE V_Products TO producao;
+GRANT SELECT ON TABLE V_Warehouses TO producao;
 GRANT SELECT ON TABLE V_Labors TO producao;
 GRANT SELECT ON TABLE V_ProductionOrders TO producao;
 GRANT SELECT ON TABLE V_ProductionOrderComponents TO producao;
-GRANT SELECT ON TABLE V_Products TO producao;
-GRANT SELECT ON TABLE V_Warehouses TO producao;
 
+GRANT SELECT, INSERT, UPDATE ON TABLE labors TO producao;
 GRANT SELECT, INSERT, UPDATE ON TABLE production_orders TO producao;
 GRANT SELECT, INSERT, UPDATE ON TABLE production_order_components TO producao;
 GRANT SELECT, INSERT, UPDATE ON TABLE products TO producao;
-GRANT SELECT, INSERT, UPDATE ON TABLE labors TO producao;
+GRANT SELECT, INSERT, UPDATE ON TABLE warehouses TO producao;
+
+
+
