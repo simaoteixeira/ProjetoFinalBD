@@ -71,10 +71,11 @@ def view(request, id):
         connection=userGroup
     )
 
-    if request.method == 'POST' and request.POST.get('observations'):
-        repo.update_obs(id, request.POST.get('observations'))
-
     product = repo.find_by_id(id)
+
+    if product is None:
+        return render(request, '404.html', status=404)
+
     productsPerWarehouse = repo.find_product_stock_by_warehouse(id)
 
     productsPerWarehouseTable = ProductsPerWarehouseTable(productsPerWarehouse)
@@ -87,3 +88,55 @@ def view(request, id):
     }
 
     return render(request, 'produtos/produto.html', context)
+
+@login_required(login_url='/login')
+@permission_required(USERGROUPS.ADMIN.value, USERGROUPS.STOCK.value)
+def edit(request, id):
+    userGroup = request.user.groups.all()[0].name
+
+    repo = ProductsRepo(
+        connection=userGroup
+    )
+
+    product = repo.find_by_id(id)
+
+    if product is None:
+        return render(request, '404.html', status=404)
+
+    form = ProductForm(request.POST or None, initial={
+        'name': product.name,
+        'type': product.type,
+        'description': product.description,
+        'weight': product.weight,
+        'vat': product.vat,
+        'profit_margin': product.profit_margin,
+    })
+
+    context = {
+        'form': form,
+        'edit': True,
+        'navSection': 'inventario',
+        'navSubSection': 'produtos',
+    }
+
+    if request.method == 'POST':
+        if form.is_valid():
+            data = form.cleaned_data
+
+            repo.edit(
+                id_product=id,
+                name=data['name'],
+                description=data['description'],
+                weight=data['weight'],
+                vat=data['vat'],
+                profit_margin=data['profit_margin'],
+            )
+
+            return redirect('/inventario/produtos')
+        else:
+            errors = getErrorsObject(form.errors.get_context())
+            print(errors)
+
+            context['errors'] = errors
+
+    return render(request, 'produtos/criar.html', context)

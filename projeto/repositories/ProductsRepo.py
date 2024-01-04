@@ -133,3 +133,8 @@ class ProductsRepo:
 
     def update_obs(self, id, description):
         self.cursor.execute("UPDATE products SET description = %s WHERE  = %s", [description, id])
+
+    def edit(self, id_product, name, description, weight, vat, profit_margin):
+        self.cursor.execute("Call PA_Update_Product(%s,%s,%s,%s,%s,%s)",
+                            [id_product, name, description, weight, vat, profit_margin])
+        return True
