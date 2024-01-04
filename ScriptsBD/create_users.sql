@@ -75,6 +75,7 @@ GRANT SELECT, INSERT, UPDATE ON TABLE supplier_invoices TO compras;
 GRANT SELECT, INSERT, UPDATE ON TABLE supplier_invoice_components TO compras;
 GRANT SELECT, INSERT, UPDATE ON TABLE stock TO compras;
 GRANT SELECT, INSERT, UPDATE ON TABLE stock_movements TO compras;
+GRANT SELECT, INSERT, UPDATE ON TABLE auth_user TO compras;
 
 -- Block 'vendas' from accessing everything
 REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA public FROM vendas;
@@ -111,6 +112,7 @@ GRANT SELECT, INSERT, UPDATE ON TABLE client_orders TO vendas;
 GRANT SELECT, INSERT, UPDATE ON TABLE client_order_components TO vendas;
 GRANT SELECT, INSERT, UPDATE ON TABLE client_invoices TO vendas;
 GRANT SELECT, INSERT, UPDATE ON TABLE client_invoice_components TO vendas;
+GRANT SELECT, INSERT, UPDATE ON TABLE auth_user TO vendas;
 
 
 
@@ -143,6 +145,7 @@ GRANT SELECT, INSERT, UPDATE ON TABLE stock TO stock;
 GRANT SELECT, INSERT, UPDATE ON TABLE stock_movements TO stock;
 GRANT SELECT, INSERT, UPDATE ON TABLE products TO stock;
 GRANT SELECT, INSERT, UPDATE ON TABLE supplier_invoice_components TO stock;
+GRANT SELECT, INSERT, UPDATE ON TABLE auth_user TO stock;
 
 
 -- Block 'producao' from accessing everything
@@ -171,6 +174,7 @@ GRANT SELECT, INSERT, UPDATE ON TABLE production_orders TO producao;
 GRANT SELECT, INSERT, UPDATE ON TABLE production_order_components TO producao;
 GRANT SELECT, INSERT, UPDATE ON TABLE products TO producao;
 GRANT SELECT, INSERT, UPDATE ON TABLE warehouses TO producao;
+GRANT SELECT, INSERT, UPDATE ON TABLE auth_user TO producao;
 
 
 
