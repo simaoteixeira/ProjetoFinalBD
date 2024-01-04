@@ -16,4 +16,8 @@
         </a>
     </div>
     {% render_table table %}
+    <a  href="{% url "exportarPedidosCompra" %}"  class="button self-end">
+        <i class="ph-fill ph-cloud-arrow-down text-xl"></i>
+        <span>Exportar Pedidos</span>
+    </a>
 {% endblock %}

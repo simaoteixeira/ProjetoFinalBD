@@ -1,4 +1,5 @@
 from django.contrib.auth.decorators import login_required
+from django.http import HttpResponse
 from django.shortcuts import render, redirect
 
 from projeto.enums.USERGROUPS import USERGROUPS
@@ -134,3 +135,20 @@ def create(request):
             context['errors'] = errors
 
     return render(request, 'pedidoCompra/criar.html', context)
+
+@login_required(login_url='/login')
+@permission_required(USERGROUPS.ADMIN.value, USERGROUPS.COMPRAS.value)
+def export(request):
+    userGroup = request.user.groups.all()[0].name
+
+    repo = PurchasingOrdersRepo(
+        connection=userGroup
+    )
+
+    data = repo.export()
+
+    response = HttpResponse(data, content_type='application/json')
+    response['Content-Disposition'] = 'attachment; filename="pedidosCompra.json"'
+    response['Location'] = '/compras'
+
+    return response

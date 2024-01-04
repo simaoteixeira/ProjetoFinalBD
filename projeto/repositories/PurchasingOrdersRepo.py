@@ -133,3 +133,8 @@ class PurchasingOrdersRepo:
                 ])
 
             return True
+
+    def export(self):
+        self.cursor.execute('SELECT * FROM FN_Export_PurchasingOrders_To_JSON()')
+
+        return self.cursor.fetchone()[0]

@@ -9,6 +9,7 @@ urlpatterns = [
     path('compras', PedidoCompraView.home, name='home'),
 
     path('compras/pedido/<slug:id>', PedidoCompraView.view, name='pedidoCompra'),
+    path('compras/exportar', PedidoCompraView.export, name='exportarPedidosCompra'),
     path('compras/criar', PedidoCompraView.create, name='criarPedidoCompra'),
     path('compras/faturas', FaturasView.home, name='faturas'),
     path('compras/faturas/criar', FaturasView.create, name='criarFatura'),
