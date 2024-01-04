@@ -5,11 +5,49 @@
 
 {% block content %}
     <h1 class="font-extrabold text-4xl leading-10">Produtos</h1>
-    <div class="flex items-center justify-end">
+    <div class="flex items-center justify-between">
+        <button id="btn-file" class="button">
+            <i class="ph-fill ph-cloud-arrow-up text-xl"></i>
+            <span>Importar Produtos</span>
+        </button>
         <a href="{% url "criarProduto" %}" class="button">
             <i class="ph-bold ph-plus text-xl"></i>
             <span>Criar Produto</span>
         </a>
     </div>
     {% render_table table %}
+    <input type="file" id="selectFile" class="sr-only" accept="application/json">
+
+    <script type="application/javascript">
+        $(document).ready((e) => {
+            $('#btn-file').click((e) => {
+                $('#selectFile').click()
+            })
+
+            $('#selectFile').change((e) => {
+                let file = e.target.files[0]
+
+                if (file.type !== 'application/json') {
+                    alert('O arquivo deve ser do tipo JSON')
+                    return
+                }
+
+                let formData = new FormData()
+
+                formData.append('product_data', file)
+                formData.append('csrfmiddlewaretoken', '{{ csrf_token }}')
+
+                $.ajax({
+                    url: "{% url 'importarProdutos' %}",
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: (data) => {
+                        location.reload()
+                    }
+                })
+            })
+        })
+    </script>
 {% endblock %}

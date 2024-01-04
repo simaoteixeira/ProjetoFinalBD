@@ -138,3 +138,9 @@ class ProductsRepo:
         self.cursor.execute("Call PA_Update_Product(%s,%s,%s,%s,%s,%s)",
                             [id_product, name, description, weight, vat, profit_margin])
         return True
+
+    def import_products(self, file):
+        print(file)
+        self.cursor.execute("SELECT FN_Create_Product_From_JSON(%t)", [file])
+        data = self.cursor.fetchall()
+        return data[0][0]

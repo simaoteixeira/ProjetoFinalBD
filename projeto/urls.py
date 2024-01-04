@@ -54,6 +54,8 @@ urlpatterns = [
     path('inventario/produtos/criar', ProdutosView.create, name='criarProduto'),
     path('inventario/produtos/<int:id>', ProdutosView.view, name='produto'),
     path('inventario/produtos/<int:id>/editar', ProdutosView.edit, name='editarProduto'),
+    path('inventario/produtos/importar', ProdutosView.import_products, name='importarProdutos'),
 
     path('registo', RegisterView.register, name='registo'),
+
 ]

@@ -140,3 +140,25 @@ def edit(request, id):
             context['errors'] = errors
 
     return render(request, 'produtos/criar.html', context)
+
+@login_required(login_url='/login')
+@permission_required(USERGROUPS.ADMIN.value, USERGROUPS.STOCK.value)
+def import_products(request):
+    userGroup = request.user.groups.all()[0].name
+
+    if request.method == 'POST':
+        file = request.FILES['product_data']
+
+        if not file:
+            return render(request, '404.html', status=404)
+
+        if not file.name.endswith('.json'):
+            return redirect('/inventario/produtos')
+
+        ProductsRepo(
+            connection=userGroup
+        ).import_products(file.read().decode('utf-8'))
+
+        return redirect('/inventario/produtos')
+
+    return render(request, '404.html', status=404)
