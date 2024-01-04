@@ -8,7 +8,8 @@ class SupplierRepo:
         self.cursor = connections[connection].cursor()
 
     def create(self, name, email, nif, phone, address, locality, postal_code):
-        self.cursor.execute(f"Call PA_Create_Supplier(%s, %s, %s, %s, %s, %s, %s)", [name, email, nif, phone, address, locality, postal_code])
+        self.cursor.execute(f"Call PA_Create_Supplier(%s, %s, %s, %s, %s, %s, %s)",
+                            [name, email, nif, phone, address, locality, postal_code])
 
     def find_all(self):
         self.cursor.execute("SELECT * FROM V_Suppliers")
@@ -41,3 +42,7 @@ class SupplierRepo:
             locality=data[6],
             postal_code=data[7]
         )
+
+    def edit(self, id_supplier, name, email, nif, phone, address, locality, postal_code):
+        self.cursor.execute(f"Call PA_Update_Supplier(%s, %s, %s, %s, %s, %s, %s, %s)",
+                            [id_supplier, name, email, nif, phone, address, locality, postal_code])

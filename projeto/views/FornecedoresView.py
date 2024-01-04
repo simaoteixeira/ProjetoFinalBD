@@ -41,6 +41,7 @@ def view(request, id):
 
     context = {
         'data': data,
+        'supplierID': id,
         'navSection': 'compras',
         'navSubSection': 'fornecedores',
     }
@@ -67,6 +68,51 @@ def create(request):
             SupplierRepo(
                 connection=userGroup
             ).create(data['name'], data['email'], data['nif'], data['phone'], data['address'], data['locality'], data['postal_code'])
+
+            return redirect('/compras/fornecedores')
+        else:
+            errors = getErrorsObject(form.errors.get_context())
+
+            context['errors'] = errors
+
+    return render(request, 'fornecedores/criar.html', context)
+
+@login_required(login_url='/login')
+@permission_required(USERGROUPS.ADMIN.value, USERGROUPS.COMPRAS.value)
+def edit(request, id):
+    userGroup = request.user.groups.all()[0].name
+
+    repo = SupplierRepo(
+        connection=userGroup
+    )
+
+    data = repo.find_by_id(id)
+
+    if data is None:
+        return render(request, '404.html', status=404)
+
+    form = SuppliersForm(request.POST or None, initial={
+        'name': data.name,
+        'email': data.email,
+        'nif': data.nif,
+        'phone': data.phone,
+        'address': data.address,
+        'locality': data.locality,
+        'postal_code': data.postal_code,
+    })
+
+    context = {
+        'form': form,
+        'edit': True,
+        'navSection': 'compras',
+        'navSubSection': 'fornecedores',
+    }
+
+    if request.method == 'POST':
+        if form.is_valid():
+            data = form.cleaned_data
+
+            repo.edit(id, data['name'], data['email'], data['nif'], data['phone'], data['address'], data['locality'], data['postal_code'])
 
             return redirect('/compras/fornecedores')
         else:

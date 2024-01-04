@@ -41,6 +41,7 @@ def view(request, id):
 
     context = {
         'data': data,
+        'clientID': id,
         'navSection': 'vendas',
         'navSubSection': 'clientes',
     }
@@ -75,6 +76,51 @@ def create(request):
             return redirect('/vendas/clientes')
         else:
             print('invalid')
+            errors = getErrorsObject(form.errors.get_context())
+
+            context['errors'] = errors
+
+    return render(request, 'clientes/criar.html', context)
+
+@login_required(login_url='/login')
+@permission_required(USERGROUPS.ADMIN.value, USERGROUPS.VENDAS.value)
+def edit(request, id):
+    userGroup = request.user.groups.all()[0].name
+
+    repo = ClientRepo(
+        connection=userGroup
+    )
+    data = repo.find_by_id(id)
+
+    if data is None:
+        return render(request, '404.html', status=404)
+
+    form = ClientsForm(request.POST or None, initial={
+        'name': data.name,
+        'email': data.email,
+        'nif': data.nif,
+        'phone': data.phone,
+        'address': data.address,
+        'locality': data.locality,
+        'postal_code': data.postal_code,
+    })
+
+    context = {
+        'data': data,
+        'form': form,
+        'edit': True,
+        'navSection': 'vendas',
+        'navSubSection': 'clientes',
+    }
+
+    if request.method == 'POST':
+        if form.is_valid():
+            data = form.cleaned_data
+
+            repo.edit(id, data['name'], data['email'], data['nif'], data['phone'], data['address'], data['locality'], data['postal_code'])
+
+            return redirect('/vendas/clientes')
+        else:
             errors = getErrorsObject(form.errors.get_context())
 
             context['errors'] = errors

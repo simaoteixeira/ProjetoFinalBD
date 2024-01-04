@@ -8,6 +8,12 @@ class SuppliersTable(tables.Table):
     phone = tables.Column(verbose_name="Telefone", accessor="phone")
     address = tables.Column(verbose_name="Morada", accessor="address")
     email = tables.Column(verbose_name="Email", accessor="email")
+    edit = tables.TemplateColumn(
+        verbose_name="",
+        template_name="core/_column_pencil.html",
+        orderable=False,
+        linkify=('editarFornecedor', {'id': tables.A('id_supplier')}),
+    )
     see = tables.TemplateColumn(
         verbose_name="",
         template_name="core/_column_eye.html",

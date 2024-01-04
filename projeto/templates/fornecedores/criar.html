@@ -1,9 +1,9 @@
 {% extends 'base.html' %}
 
-{% block title %}Criar Fornecedor{% endblock %}
+{% block title %}{% if not edit %}Criar{% else %} Editar {% endif %} Fornecedor{% endblock %}
 
 {% block content %}
-    <h1 class="font-extrabold text-4xl leading-10">Criar Fornecedor</h1>
+    <h1 class="font-extrabold text-4xl leading-10">{% if not edit %}Criar{% else %} Editar {% endif %}  Fornecedor</h1>
     <form method="post" class="flex flex-col gap-4 mt-4">
         {% csrf_token %}
         <div class="flex gap-4">
@@ -42,7 +42,7 @@
         </div>
         <button type="submit" class="button !bg-green-500 text-white w-full hover:opacity-80 mt-8">
             <i class="ph-fill ph-check-circle !text-white"></i>
-            Criar Fornecedor
+            {% if not edit %}Criar{% else %} Editar {% endif %}  Fornecedor
         </button>
     </form>
 {% endblock %}

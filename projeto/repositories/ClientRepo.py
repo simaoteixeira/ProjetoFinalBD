@@ -42,3 +42,7 @@ class ClientRepo:
             locality=data[6],
             postal_code=data[7]
         )
+
+    def edit(self, id_client, name, email, nif, phone, address, locality, postal_code):
+        self.cursor.execute(f"Call PA_Update_Client(%s, %s, %s, %s, %s, %s, %s, %s)",
+                            [id_client, name, email, nif, phone, address, locality, postal_code])

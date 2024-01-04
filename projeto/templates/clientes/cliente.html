@@ -4,7 +4,13 @@
 {% block title %}Clientes{% endblock %}
 
 {% block content %}
-    <h1 class="font-extrabold text-4xl leading-10">{{ data.name }}</h1>
+    <div class="flex items-center gap-4">
+        <h1 class="font-extrabold text-4xl leading-10">{{ data.name }}</h1>
+        <a href="{% url "editarCliente" id=clientID %}" class="button text-sm">
+            <i class="ph-bold ph-pencil !text-base"></i>
+            Editar
+        </a>
+    </div>
     <div class="flex flex-col gap-4 mt-4">
         <div class="grid grid-cols-2 gap-2 [&>span]:font-bold text-lg max-w-lg">
             <span>NIF:</span>
