@@ -7,6 +7,12 @@ class WarehousesTable(tables.Table):
     name = tables.Column(verbose_name="Nome", accessor="name")
     location = tables.Column(verbose_name="Localização", accessor="location")
     total_stock = tables.Column(verbose_name="Produtos em Stock", accessor="total_stock")
+    edit = tables.TemplateColumn(
+        verbose_name="",
+        template_name="core/_column_pencil.html",
+        orderable=False,
+        linkify=('editarArmazem', {'id': tables.A('id_warehouse')}),
+    )
     see = tables.TemplateColumn(
         verbose_name="",
         template_name="core/_column_eye.html",

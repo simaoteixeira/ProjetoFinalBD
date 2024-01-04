@@ -1,10 +1,11 @@
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 
 from projeto.enums.USERGROUPS import USERGROUPS
+from projeto.forms.WarehousesForm import WarehousesForm
 from projeto.repositories.WarehousesRepo import WarehousesRepo
 from projeto.tables.WarehousesTable import WarehousesTable, WarehousesStockTable
-from projeto.utils import permission_required
+from projeto.utils import permission_required, getErrorsObject
 
 
 @login_required(login_url='/login')
@@ -50,3 +51,70 @@ def view(request, id):
 
     return render(request, 'armazens/armazem.html', context)
 
+@login_required(login_url='/login')
+@permission_required(USERGROUPS.ADMIN.value, USERGROUPS.STOCK.value)
+def create(request):
+    userGroup = request.user.groups.all()[0].name
+
+    form = WarehousesForm(request.POST or None)
+
+    context = {
+        'form': form,
+        'navSection': 'inventario',
+        'navSubSection': 'armazens',
+    }
+
+    if request.method == 'POST':
+        if form.is_valid():
+            data = form.cleaned_data
+
+            WarehousesRepo(
+                connection=userGroup
+            ).create(data['name'], data['location'])
+
+            return redirect('/inventario/armazens')
+        else:
+            errors = getErrorsObject(form.errors.get_context())
+
+            context['errors'] = errors
+
+    return render(request, 'armazens/criar.html', context)
+
+@login_required(login_url='/login')
+@permission_required(USERGROUPS.ADMIN.value, USERGROUPS.STOCK.value)
+def edit(request, id):
+    userGroup = request.user.groups.all()[0].name
+
+    repo = WarehousesRepo(
+        connection=userGroup
+    )
+    data = repo.find_by_id(id)
+
+    if data is None:
+        return render(request, '404.html', status=404)
+
+    form = WarehousesForm(request.POST or None, initial={
+        'name': data.name,
+        'location': data.location,
+    })
+
+    context = {
+        'form': form,
+        'edit': True,
+        'navSection': 'inventario',
+        'navSubSection': 'armazens',
+    }
+
+    if request.method == 'POST':
+        if form.is_valid():
+            data = form.cleaned_data
+
+            repo.update(id, data['name'], data['location'])
+
+            return redirect('/inventario/armazens')
+        else:
+            errors = getErrorsObject(form.errors.get_context())
+
+            context['errors'] = errors
+
+    return render(request, 'armazens/criar.html', context)

@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block title %}{% if not edit %}Criar{% else %} Editar {% endif %} Armazem{% endblock %}
+
+{% block content %}
+    <h1 class="font-extrabold text-4xl leading-10">{% if not edit %}Criar{% else %} Editar {% endif %} Armazem</h1>
+    <form method="post" class="flex flex-col gap-4 mt-4">
+        {% csrf_token %}
+        <div class="flex gap-4">
+            <div class="w-full">
+                <span class="mb-2">Nome</span>
+                {% component "Input" placeholder="Nome" inputName="name" id="name" value=form.name.value error=errors.name %}
+            </div>
+            <div class="w-full">
+                <span class="mb-2">Localização</span>
+                {% component "Input" placeholder="Localização" inputName="location" id="location" value=form.location.value error=errors.location %}
+            </div>
+        </div>
+        <button type="submit" class="button !bg-green-500 text-white w-full hover:opacity-80 mt-8">
+            <i class="ph-fill ph-check-circle !text-white"></i>
+            Finalizar {% if not edit %}Criação{% else %} Edição {% endif %}
+        </button>
+    </form>
+{% endblock %}
