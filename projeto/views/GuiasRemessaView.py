@@ -7,6 +7,7 @@ from projeto.forms.SalesOrdersForm import SalesOrdersForm
 from projeto.repositories.ClientOrdersRepo import ClientOrdersRepo
 from projeto.repositories.ClientRepo import ClientRepo
 from projeto.repositories.SalesOrdersRepo import SalesOrdersRepo
+from projeto.tables.PurchasingOrdersTable import PurchasingOrdersProductsTable
 from projeto.tables.SalesOrdersTable import SalesOrdersTable
 from projeto.tables.SelectTables.SelectClientOrdersTable import SelectClientOrdersTable
 from projeto.tables.SelectTables.SelectClientTable import SelectClientTable
@@ -114,3 +115,32 @@ def create(request):
                 context['errors'] = errors
 
     return render(request, 'guiasRemessa/criar.html', context)
+
+@login_required(login_url='/login')
+@permission_required(USERGROUPS.ADMIN.value, USERGROUPS.VENDAS.value)
+def view(request, id):
+    userGroup = request.user.groups.all()[0].name
+
+    repo = SalesOrdersRepo(
+        connection=userGroup
+    )
+
+    if request.method == 'POST' and request.POST.get('observations'):
+        repo.update_obs(id, request.POST.get('observations'))
+
+    data = repo.find_by_id(id)
+    components = repo.find_components(id)
+
+    componentsTable = PurchasingOrdersProductsTable(components)
+
+    context = {
+        'data': data,
+        'componentsTable': componentsTable,
+        'navSection': 'vendas',
+        'navSubSection': 'guiasRemessa',
+    }
+
+    if data is None:
+        return render(request, '404.html', status=404)
+
+    return render(request, 'guiasRemessa/guia.html', context)

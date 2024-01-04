@@ -8,13 +8,11 @@ class SalesOrdersTable(tables.Table):
     total_base = tables.Column(verbose_name="Valor Base Total", accessor="total_base")
     user = tables.Column(verbose_name="Registado por", accessor="user.username")
     created_at = tables.DateColumn(verbose_name="Data", accessor="created_at")
-    tools = tables.TemplateColumn(
+    see = tables.TemplateColumn(
         verbose_name="",
-        template_name="core/_tools_column.html",
+        template_name="core/_column_eye.html",
         orderable=False,
-        extra_context={
-            'trashButton': True,
-        }
+        linkify=('guiaRemessa', {'id': tables.A('id_sale_order')}),
     )
 
     class Meta:

@@ -7,6 +7,7 @@ from projeto.repositories.ClientOrdersRepo import ClientOrdersRepo
 from projeto.repositories.ClientRepo import ClientRepo
 from projeto.repositories.ProductsRepo import ProductsRepo
 from projeto.tables.ClientOrdersTable import ClientOrdersTable
+from projeto.tables.PurchasingOrdersTable import PurchasingOrdersProductsTable
 from projeto.tables.SelectTables.SelectClientTable import SelectClientTable
 from projeto.tables.SelectTables.SelectProductsTable import SelectProductsTable
 from projeto.utils import getErrorsObject, permission_required
@@ -96,3 +97,32 @@ def create(request):
             context['errors'] = errors
 
     return render(request, 'encomendasCliente/criar.html', context)
+
+@login_required(login_url='/login')
+@permission_required(USERGROUPS.ADMIN.value, USERGROUPS.VENDAS.value)
+def view(request, id):
+    userGroup = request.user.groups.all()[0].name
+
+    repo = ClientOrdersRepo(
+        connection=userGroup
+    )
+
+    if request.method == 'POST' and request.POST.get('observations'):
+        repo.update_obs(id, request.POST.get('observations'))
+
+    data = repo.find_by_id(id)
+    components = repo.find_components(id)
+
+    componentsTable = PurchasingOrdersProductsTable(components)
+
+    context = {
+        'data': data,
+        'componentsTable': componentsTable,
+        'navSection': 'vendas',
+        'navSubSection': 'encomendas',
+    }
+
+    if data is None:
+        return render(request, '404.html', status=404)
+
+    return render(request, 'encomendasCliente/encomenda.html', context)

@@ -1618,7 +1618,10 @@ CREATE OR REPLACE VIEW V_SalesOrders
              client_names,
              created_at,
              obs,
-             total_base
+             total_base,
+             vat_total,
+             discount_total,
+             total
                 )
 AS
 SELECT so.id_sale_order,
@@ -1628,7 +1631,10 @@ SELECT so.id_sale_order,
        ARRAY_AGG(c.name)             AS client_names,
        so.created_at,
        so.obs,
-       so.total_base
+       so.total_base,
+       so.vat_total,
+       so.discount_total,
+       so.total
 FROM sales_orders so
          INNER JOIN auth_user u ON so.id_user = u.id
          INNER JOIN client_orders co ON so.id_sale_order = co.id_sale_order
@@ -1795,7 +1801,10 @@ CREATE OR REPLACE VIEW V_ClientOrders
              client_name,
              obs,
              total_base,
-             created_at
+             created_at,
+             vat_total,
+             discount_total,
+             total
                 )
 AS
 SELECT co.id_client_order,
@@ -1803,7 +1812,10 @@ SELECT co.id_client_order,
        c.name AS client_name,
        co.obs,
        co.total_base,
-       co.created_at
+       co.created_at,
+       co.vat_total,
+       co.discount_total,
+       co.total
 FROM client_orders co
          INNER JOIN clients c USING (id_client);
 

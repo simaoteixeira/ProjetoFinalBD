@@ -22,8 +22,30 @@ class SalesOrdersRepo:
                 created_at=row[5],
                 obs=row[6],
                 total_base=row[7],
+                vat_total=row[8],
+                discount_total=row[9],
+                total=row[10],
             ) for row in data
         ]
+
+    def find_by_id(self, id):
+        self.cursor.execute('SELECT * FROM V_SalesOrders WHERE id_sale_order = %s', [id])
+
+        data = self.cursor.fetchone()
+
+        return SalesOrders(
+            id_sale_order=data[0],
+            user=AuthUser(
+                id=data[1],
+                username=data[2],
+            ),
+            created_at=data[5],
+            obs=data[6],
+            total_base=data[7],
+            vat_total=data[8],
+            discount_total=data[9],
+            total=data[10],
+        )
 
     def find_by_client(self, id):
         self.cursor.execute("SELECT * FROM V_SalesOrders WHERE %s = ANY (client_orders)", [id])
@@ -39,6 +61,34 @@ class SalesOrdersRepo:
                 created_at=row[5],
                 obs=row[6],
                 total_base=row[7],
+                vat_total=row[8],
+                discount_total=row[9],
+                total=row[10],
+            ) for row in data
+        ]
+
+    def find_components(self, id):
+        self.cursor.execute("SELECT * FROM V_SalesOrderComponents WHERE id_sale_order = %s", [id])
+        data = self.cursor.fetchall()
+
+        return [
+            SalesOrderComponents(
+                id_sales_order_component=row[0],
+                sale_order=SalesOrders(
+                    id_sale_order=row[1]
+                ),
+                product=Products(
+                    id_product=row[2],
+                    name=row[3]
+                ),
+                quantity=row[4],
+                price_base=row[5],
+                total_unit=row[6],
+                vat=row[7],
+                vat_value=row[8],
+                discount=row[9],
+                discount_value=row[10],
+                line_total=row[11],
             ) for row in data
         ]
 
