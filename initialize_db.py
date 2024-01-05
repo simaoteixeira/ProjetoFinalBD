@@ -18,8 +18,10 @@
         - stock has objects related to stock
         - producao has objects related to production
 """
+import getopt
 import os
 import sys
+from argparse import ArgumentParser
 from datetime import datetime
 from pathlib import Path
 import psycopg2
@@ -45,99 +47,120 @@ BACKUP_DIR = './backups'
 
 # CREATE BACKUP DIRECTORY
 if not os.path.exists(BACKUP_DIR):
-    os.makedirs(BACKUP_DIR)
+	os.makedirs(BACKUP_DIR)
 
 
-def main():
-    # connect to default database
-    try:
-        conn = psycopg2.connect(
-            host=DB_HOST,
-            database='postgres',
-            user=DB_USER,
-            password=DB_PASSWORD,
-            port=DB_PORT
-        )
-    except psycopg2.OperationalError as e:
-        print(f'Error connecting to database: {e}')
-        sys.exit(1)
+def main(argv):
+	# get arguments
+	parser = ArgumentParser()
+	# arguments: -d drop database if exists and create a new one
+	parser.add_argument('-f', '--first_time', help='only drop database and create a new one in the first time')
+	args = parser.parse_args()
+	first_time = args.first_time
 
-    # create cursor
-    cur = conn.cursor()
-    conn.autocommit = True
+	# if -d argument is passed, drop database if exists and create a new one
 
-    # drop all connections to database
-    cur.execute(f"SELECT pg_terminate_backend(pg_stat_activity.pid) "
-                f"FROM pg_stat_activity "
-                f"WHERE datname = '{DB_NAME}' "
-                f"AND leader_pid IS NULL;")
+	# connect to default database
+	try:
+		conn = psycopg2.connect(
+			host=DB_HOST,
+			database='postgres',
+			user=DB_USER,
+			password=DB_PASSWORD,
+			port=DB_PORT
+		)
+	except psycopg2.OperationalError as e:
+		print(f'Error connecting to database: {e}')
+		sys.exit(1)
 
-    # drop database if exists
-    cur.execute(f'DROP DATABASE IF EXISTS {DB_NAME};')
+	# create cursor
+	cur = conn.cursor()
+	conn.autocommit = True
 
-    # create database
-    cur.execute(f"CREATE DATABASE {DB_NAME} locale_provider icu icu_locale 'pt-PT-x-icu'  ENCODING = 'UTF8' template template0 ")
+	# check if database exists
+	cur.execute(f"SELECT 1 FROM pg_catalog.pg_database WHERE datname = '{DB_NAME}'")
 
-    # close connection to default database
-    cur.close()
-    conn.close()
+	result = cur.fetchone()
+	print(result)
 
-    # connect to new database
-    try:
-        conn = psycopg2.connect(
-            host=DB_HOST,
-            database=DB_NAME,
-            user=DB_USER,
-            password=DB_PASSWORD,
-            port=DB_PORT
-        )
-    except psycopg2.OperationalError as e:
-        print(f'Error connecting to database: {e}')
-        sys.exit(1)
+	# if database exists
+	if result:
+		if first_time == 'true' or first_time == 'True' or first_time == 1:
+			print('Database already exists')
+			sys.exit(0)
+		# drop all connections to database
+		cur.execute(f"SELECT pg_terminate_backend(pg_stat_activity.pid) "
+					f"FROM pg_stat_activity "
+					f"WHERE datname = '{DB_NAME}' "
+					f"AND leader_pid IS NULL;")
 
-    # execute manage.py migrate to create all django tables
-    os.system('python manage.py migrate')
+	# drop database if exists
+	cur.execute(f'DROP DATABASE IF EXISTS {DB_NAME};')
 
-    # create cursor
-    cur = conn.cursor()
-    conn.autocommit = True
+	# create database
+	cur.execute(
+		f"CREATE DATABASE {DB_NAME} locale_provider icu icu_locale 'pt-PT-x-icu'  ENCODING = 'UTF8' template template0 ")
 
-    print('Creating tables...')
+	# close connection to default database
+	cur.close()
+	conn.close()
 
-    # create tables
-    cur.execute(open('./ScriptsBD/bd_create.sql', 'r').read())
+	# connect to new database
+	try:
+		conn = psycopg2.connect(
+			host=DB_HOST,
+			database=DB_NAME,
+			user=DB_USER,
+			password=DB_PASSWORD,
+			port=DB_PORT
+		)
+	except psycopg2.OperationalError as e:
+		print(f'Error connecting to database: {e}')
+		sys.exit(1)
 
-    print('Tables created')
+	# execute manage.py migrate to create all django tables
+	os.system('python manage.py migrate')
 
-    print('Creating database objects...')
+	# create cursor
+	cur = conn.cursor()
+	conn.autocommit = True
 
-    # create database objects
-    cur.execute(open('./ScriptsBD/Procedures&Functions&Views.sql', 'r').read())
+	print('Creating tables...')
 
-    print('Database objects created')
+	# create tables
+	cur.execute(open('./ScriptsBD/bd_create.sql', 'r').read())
 
-    print('Inserting data into tables...')
+	print('Tables created')
 
-    os.system(f'python manage.py shell < create_django_users.py')
+	print('Creating database objects...')
 
-    # insert data into tables
-    cur.execute(open('./ScriptsBD/inserts.sql', 'r').read())
+	# create database objects
+	cur.execute(open('./ScriptsBD/Procedures&Functions&Views.sql', 'r').read())
 
-    print('Data inserted')
+	print('Database objects created')
 
-    print('Creating users and granting privilieges...')
+	print('Inserting data into tables...')
 
-    # create users
-    cur.execute(open('./ScriptsBD/create_users.sql', 'r').read())
+	os.system(f'python manage.py shell < create_django_users.py')
 
-    print('Users created')
+	# insert data into tables
+	cur.execute(open('./ScriptsBD/inserts.sql', 'r').read())
 
-    # close cursor
-    cur.close()
+	print('Data inserted')
 
-    # close connection to database
-    conn.close()
+	print('Creating users and granting privilieges...')
+
+	# create users
+	cur.execute(open('./ScriptsBD/create_users.sql', 'r').read())
+
+	print('Users created')
+
+	# close cursor
+	cur.close()
+
+	# close connection to database
+	conn.close()
 
 
 if __name__ == '__main__':
-    main()
+	main(sys.argv[1:])

@@ -2,16 +2,22 @@ services:
   db:
     image: postgres
     volumes:
-      - ./data/db:/var/lib/postgresql/data
+      - database:/var/lib/postgresql/data
     environment:
-      - POSTGRES_DB=bd2
+      - POSTGRES_DB=postgres
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
     ports:
-        - "5444:5432"
+      - "5444:5432"
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-U", "postgres", "-d", "postgres" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
   web:
     build: .
-    command: bash -c "python initialize_db.py && python manage.py runserver 0.0.0.0:8000"
+    command: bash -c "python initialize_db.py -f True && python manage.py runserver 0.0.0.0:8000"
     volumes:
       - .:/code
     ports:
@@ -25,4 +31,9 @@ services:
       - DB_PORT=5432
 
     depends_on:
-      - db
+      db:
+        condition: service_healthy
+
+volumes:
+  database:
+
