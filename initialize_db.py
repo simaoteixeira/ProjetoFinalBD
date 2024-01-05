@@ -66,52 +66,6 @@ def main():
     cur = conn.cursor()
     conn.autocommit = True
 
-    # check if database exists
-    cur.execute(f"SELECT 1 FROM pg_catalog.pg_database WHERE datname = '{DB_NAME}'")
-
-    # if database exists, make a backup of the database
-    if cur.fetchone():
-        # create backup file
-        backup_file = f'{BACKUP_DIR}/{DB_NAME}-{datetime.now().strftime("%Y-%m-%d_%H-%M-%S")}'
-
-        # create backup command
-        """
-            database: DB_NAME
-            host: DB_HOST
-            port: DB_PORT
-            username: DB_USER
-            password: DB_PASSWORD
-            
-            custom format: directory
-            file_name: backup_file
-            do not save: owner privileges, tablespace assignments 
-            dump data and schema of objects
-            
-                    
-            -Fc: custom format
-            -f: file name
-            -d: database name
-            -h: host
-            -p: port
-            -U: username
-            -W: password
-            -v: verbose
-            -O: no owner privileges
-            -x: do not save tablespace assignments
-            -b: dump data and schema of objects
-        """
-
-        backup_command = f'pg_dump --dbname=postgresql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME} -Fd -j 5 -f {backup_file}  -v -O -x -b'
-        print(f'Creating backup: {backup_command}')
-        # execute backup command
-        response = os.system(backup_command)
-
-        if response != 0:
-            print(f'Error creating backup: {response}')
-            sys.exit(1)
-
-        print(f'Backup created: {backup_file}')
-
     # drop all connections to database
     cur.execute(f"SELECT pg_terminate_backend(pg_stat_activity.pid) "
                 f"FROM pg_stat_activity "

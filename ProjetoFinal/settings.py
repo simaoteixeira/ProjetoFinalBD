@@ -29,7 +29,7 @@ SECRET_KEY = 'django-insecure-bx=x1m%w*ier+4y88&pbowsmf^hgv!ke6(&3huf-n%$h$#vzpu
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 # Application definition
 
@@ -116,8 +116,8 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'HOST': env('DB_HOST'),
         'NAME': env('DB_NAME'),
-        'USER': env('DB_USER'),
-        'PASSWORD': env('DB_PASSWORD'),
+        'USER': 'admin',
+        'PASSWORD': 'admin',
         'PORT': env("DB_PORT")
     },
     'compras': {
