@@ -253,12 +253,13 @@ BEGIN
 
     _pos_quantity := _previous_quantity - _quantity;
 
+
     INSERT INTO stock_movements (id_warehouse, id_product, quantity, type, reason, id_reason, prev_quantity,
                                  pos_quantity)
     VALUES (_id_warehouse, _id_product, _quantity, _type, _reason, id_reason, _previous_quantity, _pos_quantity);
 
     IF _pos_quantity < 0 THEN
-        RAISE EXCEPTION 'Não existe stock suficiente';
+        RAISE EXCEPTION 'Não existe stock suficiente ';
     ELSE
         UPDATE stock
         SET quantity = _pos_quantity
@@ -1324,9 +1325,14 @@ BEGIN
     IF (NEW.status = 'COMPLETED') THEN
         FOR _line IN SELECT * FROM production_order_components WHERE id_order_production = NEW.id_order_production
             LOOP
-                PERFORM FN_RemoveProductFromStock(_line.id_warehouse, _line.id_product, _line.quantity, 'OUT',
+                PERFORM FN_RemoveProductFromStock(0, _line.id_product, _line.quantity, 'OUT',
                                                   'production_order', NEW.id_order_production);
             END LOOP;
+
+        UPDATE products
+        SET price_cost = NEW.unit_cost
+        WHERE id_product = NEW.id_product;
+
         PERFORM FN_AddProductToStock(NEW.id_warehouse, NEW.id_product, NEW.equipment_quantity, 'IN', 'production_order',
                                      NEW.id_order_production);
     END IF;
