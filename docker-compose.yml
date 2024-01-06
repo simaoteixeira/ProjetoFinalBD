@@ -16,9 +16,16 @@ services:
       timeout: 5s
       retries: 5
 
+  mongo:
+    image: mongodb/mongodb-community-server
+    volumes:
+      - database:/var/lib/mongodb/data
+    ports:
+      - "27017:27017"
+
   web:
     build: .
-    command: bash -c "python initialize_db.py -f True && python manage.py runserver 0.0.0.0:8000"
+    command: bash -c "python initialize_db.py -f True && python initialize_mongo_db.py -f True && python manage.py runserver 0.0.0.0:8000"
     volumes:
       - .:/code
     ports:
@@ -30,6 +37,7 @@ services:
       - DB_USER=postgres
       - DB_PASSWORD=postgres
       - DB_PORT=5432
+      - MONGO_DB_CONNECTION=mongodb://mongo:27017/bd2?retryWrites=true&w=majority
 
     depends_on:
       db:
