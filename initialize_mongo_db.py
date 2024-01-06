@@ -15,7 +15,7 @@ print(DB_MONGO_CONNECTION)
 
 
 # Connect to MongoDB
-client = MongoClient("mongodb://localhost:27017/")
+client = MongoClient("mongodb://mongo:27017")
 
 print(client)
 
