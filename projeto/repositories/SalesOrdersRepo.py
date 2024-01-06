@@ -48,7 +48,7 @@ class SalesOrdersRepo:
         )
 
     def find_by_client(self, id):
-        self.cursor.execute("SELECT * FROM V_SalesOrders WHERE %s = ANY (client_orders)", [id])
+        self.cursor.execute("SELECT * FROM V_SalesOrders WHERE %s = ANY(client_ids)", [id])
         data = self.cursor.fetchall()
 
         return [
