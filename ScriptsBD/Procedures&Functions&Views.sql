@@ -815,10 +815,6 @@ BEGIN
 
     SELECT FN_GetProductAveragePriceByMaterialReceipts(NEW.id_product, NEW.quantity, NEW.price_base) INTO _new_product_price;
 
-    IF _new_product_price = 0::money THEN
-        _new_product_price := NEW.price_base;
-    END IF;
-
     RAISE NOTICE 'Novo preço médio: %', _new_product_price;
 
     UPDATE products
