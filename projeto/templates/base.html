@@ -114,8 +114,27 @@
             return false;
         });
 
-        function convert(currency){
-            return parseFloat(currency.replace(/[^\d,]/g, ''));
+        function convert(currency) {
+            // Replace non-breaking space (Unicode \u00A0) with regular space
+            currency = currency.replace(/\u00A0/g, ' ');
+
+            // Remove non-numeric characters except for dot and comma
+            const numericString = currency.replace(/[^\d.,]/g, '');
+
+            // Detect separators by checking the position of dot and comma
+            let decimalSeparator, thousandsSeparator;
+
+            if (numericString.indexOf(',') > numericString.indexOf('.')) {
+                decimalSeparator = ',';
+                thousandsSeparator = '.';
+            } else {
+                decimalSeparator = '.';
+                thousandsSeparator = ',';
+            }
+
+            // Replace the detected separators and convert to float
+            const formattedNumericString = numericString.replace(thousandsSeparator, '').replace(decimalSeparator, '.');
+            return parseFloat(formattedNumericString);
         }
     </script>
 </body>

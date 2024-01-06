@@ -91,8 +91,6 @@ def view(request, id):
 
     productProps = repo.get_props(id)
 
-    print(productProps['props'])
-
     if productProps:
         context['productProps'] = productProps['props']
 
