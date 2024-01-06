@@ -247,6 +247,10 @@ BEGIN
     WHERE s.id_warehouse = _id_warehouse
       AND s.id_product = _id_product;
 
+    IF _previous_quantity IS NULL THEN
+        _previous_quantity := 0;
+    END IF;
+
     _pos_quantity := _previous_quantity - _quantity;
 
     INSERT INTO stock_movements (id_warehouse, id_product, quantity, type, reason, id_reason, prev_quantity,
