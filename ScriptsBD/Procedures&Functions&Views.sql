@@ -770,6 +770,47 @@ END;
 $$
     LANGUAGE plpgsql;
 
+/**
+    Função que dado um id de um produto(equipamento), vai procurar todas de ordem de produção com esse produto e calcula o preço médio do produto
+*/
+
+CREATE OR REPLACE FUNCTION FN_GetEquipmentAveragePriceByProductionOrder(
+    _id_product INT,
+    _quantity INT,
+    _price_base MONEY
+)
+    RETURNS MONEY AS
+$$
+DECLARE
+    _total_quantity INT;
+    _total_price    MONEY;
+    _average_price  MONEY;
+BEGIN
+    SELECT COALESCE(count(*), 0)::int + _quantity::int
+    INTO _total_quantity
+    FROM production_orders
+    WHERE id_product = _id_product AND status = 'COMPLETED';
+
+    RAISE NOTICE 'Total quantity: %', _total_quantity;
+
+    SELECT (COALESCE(SUM(unit_cost * equipment_quantity), 0::money)::money + (_price_base * _quantity))::money
+    INTO _total_price
+    FROM production_orders
+    WHERE id_product = _id_product AND status = 'COMPLETED';
+
+    IF _total_quantity = 0 THEN
+        RETURN 0::money;
+    END IF;
+
+    RAISE NOTICE 'Total price: %', _total_price;
+
+    _average_price := _total_price::money  / _total_quantity;
+
+    RETURN _average_price::money;
+END;
+$$
+    LANGUAGE plpgsql;
+
 
 /**
     Depois de inserir/atualizar/eliminar a linha de uma receção de material, temos de atualizar os valores totais da própria linha e depois atualizar os valores totais da receção de material, e dar entrada nos movimentos de stock (stock_movements)
@@ -1320,6 +1361,7 @@ CREATE OR REPLACE FUNCTION TR_production_order_PRE_UPD() RETURNS TRIGGER AS
 $$
 DECLARE
     _line RECORD;
+    _average_price MONEY;
 BEGIN
 
     IF (NEW.status = 'COMPLETED') THEN
@@ -1329,8 +1371,12 @@ BEGIN
                                                   'production_order', NEW.id_order_production);
             END LOOP;
 
+        _average_price = FN_GetEquipmentAveragePriceByProductionOrder(NEW.id_product, NEW.equipment_quantity, NEW.unit_cost);
+
+        RAISE NOTICE 'Preço médio: %', _average_price;
+
         UPDATE products
-        SET price_cost = NEW.unit_cost
+        SET price_cost = _average_price
         WHERE id_product = NEW.id_product;
 
         PERFORM FN_AddProductToStock(NEW.id_warehouse, NEW.id_product, NEW.equipment_quantity, 'IN', 'production_order',
