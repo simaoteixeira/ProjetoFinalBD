@@ -1614,7 +1614,6 @@ EXECUTE FUNCTION TR_sales_order_components_PRE_INS();
 
 
 --Lista as ordens de venda (cabeçalho)
---Lista as ordens de venda (cabeçalho)
 DROP VIEW IF EXISTS V_SalesOrders CASCADE;
 CREATE OR REPLACE VIEW V_SalesOrders
             (
@@ -1623,13 +1622,13 @@ CREATE OR REPLACE VIEW V_SalesOrders
              user_name,
              client_orders,
              client_names,
-            client_ids,
              created_at,
              obs,
              total_base,
              vat_total,
              discount_total,
-             total
+             total,
+			client_ids
                 )
 AS
 SELECT so.id_sale_order,
@@ -1643,7 +1642,8 @@ SELECT so.id_sale_order,
        so.total_base,
        so.vat_total,
        so.discount_total,
-       so.total
+       so.total,
+	   ARRAY_AGG(c.id_client)       AS client_ids
 FROM sales_orders so
          INNER JOIN auth_user u ON so.id_user = u.id
          INNER JOIN client_orders co ON so.id_sale_order = co.id_sale_order
