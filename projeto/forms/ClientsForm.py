@@ -7,7 +7,7 @@ class ClientsForm(forms.Form):
                            error_messages={'required': 'Campo obrigatório', 'max_length': 'Nome muito longo'})
     email = forms.EmailField(required=True,
                              error_messages={'required': 'Campo obrigatório', 'invalid': 'Email inválido'})
-    phone = forms.CharField(max_length=9, required=True,
+    phone = forms.CharField(max_length=13, required=True,
                             error_messages={'required': 'Campo obrigatório', 'max_length': 'Telefone Invalido'})
     nif = forms.CharField(max_length=9, required=True,
                           error_messages={'required': 'Campo obrigatório', 'max_length': 'NIF Invalido'})

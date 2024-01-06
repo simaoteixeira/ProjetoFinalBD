@@ -34,9 +34,38 @@
             </div>
         </div>
         {% component "TextArea" label="Descrição" name="description" id="description" value=form.description.value error=description.vat %}
+        {% if not edit %}
+            <div class="flex flex-col gap-2 w-1/2">
+                <span>Propriedades adicionais (opcional)</span>
+                <div class="flex items-center gap-4" id="prop_template">
+                    {% component "Input" placeholder="Nome Propriedade" inputName="prop_1" id="prop_1" value=form.prop_1.value error=errors.prop_1 %}
+                    {% component "Input" placeholder="Valor da Propriedade" inputName="value_1" id="value_1" value=form.value_1.value error=errors.value_1 %}
+                </div>
+            </div>
+            <button type="button" id="newProp" class="button w-fit -mt-2">Adicionar nova</button>
+        {% endif %}
         <button type="submit" class="button !bg-green-500 text-white w-full hover:opacity-80 mt-8">
             <i class="ph-fill ph-check-circle !text-white"></i>
             Finalizar {% if not edit %}Criação{% else %} Edição {% endif %}
         </button>
     </form>
+
+    <script type="application/javascript">
+        $(document).ready(() => {
+            propCount = 1;
+
+            $("#newProp").click(() => {
+                let prop = $("#prop_template").clone();
+                propCount++;
+
+                prop.find("input").each((i, e) => {
+                    $(e).attr("name", $(e).attr("name").replace("1", propCount));
+                    $(e).attr("id", $(e).attr("id").replace("1", propCount));
+                    $(e).val("");
+                });
+
+                $("#prop_template").parent().append(prop);
+            })
+        })
+    </script>
 {% endblock %}

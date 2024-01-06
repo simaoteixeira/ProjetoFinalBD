@@ -42,6 +42,7 @@ def create(request):
     if request.method == 'POST':
         if form.is_valid():
             data = form.cleaned_data
+            print(data)
 
             ProductsRepo(
                 connection=userGroup
@@ -52,6 +53,7 @@ def create(request):
                 weight=data['weight'],
                 vat=data['vat'],
                 profit_margin=data['profit_margin'],
+                props=data['props'],
             )
 
             return redirect('/inventario/produtos')
@@ -86,6 +88,13 @@ def view(request, id):
         'navSection': 'inventario',
         'navSubSection': 'produtos',
     }
+
+    productProps = repo.get_props(id)
+
+    print(productProps['props'])
+
+    if productProps:
+        context['productProps'] = productProps['props']
 
     return render(request, 'produtos/produto.html', context)
 

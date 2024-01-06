@@ -1,6 +1,7 @@
 from django.db import connections
 
 from projeto.models import Products, Stock, Warehouses
+from projeto.mongoDatabase import db
 
 
 class ProductsRepo:
@@ -125,11 +126,21 @@ class ProductsRepo:
             ) for row in data
         ]
 
-    def create(self, name, type, description, weight, vat, profit_margin):
-        print(name, type, description, weight, vat, profit_margin)
+    def create(self, name, type, description, weight, vat, profit_margin, props=None):
+        print(name, type, description, weight, vat, profit_margin, props)
         self.cursor.execute("SELECT FN_Create_Product(%s,%s,%s,%s,%s,%s)",
                             [name, description, type, weight, vat, profit_margin])
         data = self.cursor.fetchall()
+
+        if data[0] and props is not None:
+            id_product = data[0][0]
+
+            db.insert_one(
+                {
+                    "id_product": id_product,
+                    "props": props
+                }
+            )
 
     def update_obs(self, id, description):
         self.cursor.execute("UPDATE products SET description = %s WHERE  = %s", [description, id])
@@ -144,3 +155,8 @@ class ProductsRepo:
         self.cursor.execute("SELECT FN_Create_Product_From_JSON(%t)", [file])
         data = self.cursor.fetchall()
         return data[0][0]
+
+    def get_props(self, id_product):
+        return db.find_one({
+            "id_product": id_product
+        })
