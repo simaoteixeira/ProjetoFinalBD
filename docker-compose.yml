@@ -1,3 +1,4 @@
+name: "projeto_final_bd2"
 services:
   db:
     image: postgres
