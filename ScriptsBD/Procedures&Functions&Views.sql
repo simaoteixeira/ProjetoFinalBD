@@ -733,7 +733,9 @@ $$;
 */
 
 CREATE OR REPLACE FUNCTION FN_GetProductAveragePriceByMaterialReceipts(
-    _id_product INT
+    _id_product INT,
+    _quantity INT,
+    _price_base MONEY
 )
     RETURNS MONEY AS
 $$
@@ -742,12 +744,12 @@ DECLARE
     _total_price    MONEY;
     _average_price  MONEY;
 BEGIN
-    SELECT COALESCE(SUM(quantity), 0)::int
+    SELECT (COALESCE(SUM(quantity), 0)::int + _quantity)::int
     INTO _total_quantity
     FROM material_receipt_components
     WHERE id_product = _id_product;
 
-    SELECT COALESCE(SUM(price_base * quantity), 0::money)::money
+    SELECT (COALESCE(SUM(price_base * quantity), 0::money)::money + (_price_base * _quantity))::money
     INTO _total_price
     FROM material_receipt_components
     WHERE id_product = _id_product;
@@ -756,7 +758,7 @@ BEGIN
         RETURN 0::money;
     END IF;
 
-    _average_price := _total_price::money / _total_quantity;
+    _average_price := _total_price::money  / _total_quantity;
 
     RETURN _average_price::money;
 END;
@@ -811,7 +813,11 @@ BEGIN
     WHERE id_material_receipt = NEW.id_material_receipt;
 
 
-    SELECT FN_GetProductAveragePriceByMaterialReceipts(NEW.id_product) INTO _new_product_price;
+    SELECT FN_GetProductAveragePriceByMaterialReceipts(NEW.id_product, NEW.quantity, NEW.price_base) INTO _new_product_price;
+
+    IF _new_product_price = 0::money THEN
+        _new_product_price := NEW.price_base;
+    END IF;
 
     RAISE NOTICE 'Novo preço médio: %', _new_product_price;
 
