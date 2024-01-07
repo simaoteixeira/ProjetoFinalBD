@@ -19,7 +19,7 @@ services:
   mongo:
     image: mongo
     volumes:
-      - database_mongo:/var/lib/mongodb/data
+      - database_mongo:/data/db
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: root
