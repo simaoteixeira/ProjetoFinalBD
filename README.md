@@ -4,6 +4,7 @@
 O docker-compose vai criar dois containers:
 - Um container para a base de dados postgres
 - Um container para a aplicação django
+- Um container para o mongoDB
 
 Ao criar o container da aplicação django é executado um [script em python](initialize_db.py) que gera a base de dados, objetos, utilizadores e dados de teste.
 São também criados utilizadores do django para acesso à aplicação ([ver seção utilizadores](#utilizadores-django-criados) ).
@@ -23,6 +24,7 @@ Para executar o projeto sem docker é necessário:
 - Instalar as dependências do projeto (ver [requirements.txt](requirements.txt))
 - Criar a base de dados postgres
 - Executar o script [initialize_db.py](initialize_db.py) para gerar a base de dados, objetos, utilizadores e dados de teste.
+- Executar o script [initialize_mongo_db.py](initialize_mongo_db.py) para gerar a base de dados mongoDB.
 - Executar o servidor django
 
 ```bash

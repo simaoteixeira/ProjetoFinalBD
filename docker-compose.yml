@@ -1,7 +1,9 @@
 name: "projeto_final_bd2"
 services:
   db:
-    image: postgres
+    build:
+        context: .
+        dockerfile: Dockerfile.db
     volumes:
       - database:/var/lib/postgresql/data
     environment:
@@ -27,7 +29,9 @@ services:
       - "27019:27017"
 
   web:
-    build: .
+    build:
+        context: .
+        dockerfile: Dockerfile.web
     command: bash -c "python initialize_db.py -f True && python initialize_mongo_db.py -f True && python manage.py runserver 0.0.0.0:8000"
     volumes:
       - .:/code

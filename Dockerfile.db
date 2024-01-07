@@ -1,0 +1,4 @@
+FROM postgres
+RUN sed -i 's/^# *\(en_US.UTF-8\|pt_PT.UTF-8\)/\1/' /etc/locale.gen && \
+        locale-gen
+ENV LANG pt_PT.utf8
