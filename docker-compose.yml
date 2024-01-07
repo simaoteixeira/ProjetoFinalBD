@@ -17,11 +17,14 @@ services:
       retries: 5
 
   mongo:
-    image: mongodb/mongodb-community-server
+    image: mongo
     volumes:
-      - database:/var/lib/mongodb/data
+      - database_mongo:/data/db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: root
     ports:
-      - "27017:27017"
+      - "27019:27017"
 
   web:
     build: .
@@ -37,7 +40,7 @@ services:
       - DB_USER=postgres
       - DB_PASSWORD=postgres
       - DB_PORT=5432
-      - MONGO_DB_CONNECTION=mongodb://mongo:27017/bd2?retryWrites=true&w=majority
+      - MONGO_DB_CONNECTION=mongodb://root:root@mongo:27017/?retryWrites=true&w=majority
 
     depends_on:
       db:
@@ -45,4 +48,5 @@ services:
 
 volumes:
   database:
+  database_mongo:
 
