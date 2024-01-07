@@ -26,7 +26,21 @@
                 @apply py-4 px-4 text-base text-gray-700 font-medium;
             }
 
-            
+            .pagination {
+                @apply flex gap-2 items-center bg-white shadow-sm rounded-lg w-fit px-4 py-2 mt-2;
+            }
+
+            .pagination li {
+                @apply rounded-lg border border-gray-300 cursor-pointer hover:!bg-gray-300 transition-colors;
+            }
+
+            .pagination a {
+                @apply px-2 py-0.5 font-medium text-gray-600;
+            }
+
+            .pagination li.active {
+                @apply bg-gray-200;
+            }
         }
     </style>
     <title>Projeto BD2 - {% block title %}{% endblock %}</title>

@@ -145,9 +145,22 @@ class ProductsRepo:
     def update_obs(self, id, description):
         self.cursor.execute("UPDATE products SET description = %s WHERE  = %s", [description, id])
 
-    def edit(self, id_product, name, description, weight, vat, profit_margin):
+    def edit(self, id_product, name, description, weight, vat, profit_margin, props=None):
         self.cursor.execute("Call PA_Update_Product(%s,%s,%s,%s,%s,%s)",
                             [id_product, name, description, weight, vat, profit_margin])
+
+        if props is not None:
+            print(props)
+            db.update_one(
+                {
+                    "id_product": id_product
+                },
+                {
+                    "$set": {
+                        "props": props
+                    }
+                }
+            )
         return True
 
     def import_products(self, file):

@@ -34,16 +34,24 @@
             </div>
         </div>
         {% component "TextArea" label="Descrição" name="description" id="description" value=form.description.value error=description.vat %}
-        {% if not edit %}
-            <div class="flex flex-col gap-2 w-1/2">
-                <span>Propriedades adicionais (opcional)</span>
+        <div class="flex flex-col gap-2 w-1/2">
+            <span>Propriedades adicionais (opcional)</span>
+            {% if not productProps %}
                 <div class="flex items-center gap-4" id="prop_template">
                     {% component "Input" placeholder="Nome Propriedade" inputName="prop_1" id="prop_1" value=form.prop_1.value error=errors.prop_1 %}
                     {% component "Input" placeholder="Valor da Propriedade" inputName="value_1" id="value_1" value=form.value_1.value error=errors.value_1 %}
                 </div>
-            </div>
-            <button type="button" id="newProp" class="button w-fit -mt-2">Adicionar nova</button>
-        {% endif %}
+            {% else %}
+                <div class="flex items-center gap-4 hidden" id="prop_template">
+                    {% component "Input" placeholder="Nome Propriedade" inputName="prop_template" id="prop_template" %}
+                    {% component "Input" placeholder="Valor da Propriedade" inputName="value_template" id="value_template" %}
+                    <button id="delete_template" type="button">
+                        <i class="ph-bold ph-x-circle text-xl text-red-500"></i>
+                    </button>
+                </div>
+            {% endif %}
+        </div>
+        <button type="button" id="newProp" class="button w-fit -mt-2">Adicionar nova</button>
         <button type="submit" class="button !bg-green-500 text-white w-full hover:opacity-80 mt-8">
             <i class="ph-fill ph-check-circle !text-white"></i>
             Finalizar {% if not edit %}Criação{% else %} Edição {% endif %}
@@ -51,20 +59,87 @@
     </form>
 
     <script type="application/javascript">
-        $(document).ready(() => {
+         $(document).ready(() => {
             propCount = 1;
+            let prop = $("#prop_template");
 
-            $("#newProp").click(() => {
-                let prop = $("#prop_template").clone();
-                propCount++;
+            {% if not edit %}
+                $("#newProp").click(() => {
+                    prop = $("#prop_template").clone();
+                    $(prop).removeClass("hidden");
+                    propCount++;
 
-                prop.find("input").each((i, e) => {
-                    $(e).attr("name", $(e).attr("name").replace("1", propCount));
-                    $(e).attr("id", $(e).attr("id").replace("1", propCount));
-                    $(e).val("");
+                    prop.find("input").each((i, e) => {
+                        $(e).attr("name", $(e).attr("name").replace("1", propCount));
+                        $(e).attr("id", $(e).attr("id").replace("1", propCount));
+                        $(e).val("");
+                    });
+
+                    $("#prop_template").parent().append(prop);
+                })
+            {% else %}
+                $("#newProp").click(() => {
+                    prop = $("#prop_template").clone();
+
+                    $(prop).removeClass("hidden");
+                    $(prop).attr("id", "");
+
+                    prop.find("input").each((i, e) => {
+                        if ($(e).attr("id") === "value_template") {
+                            console.log("{{ prop.value }}", 'dsa')
+                            $(e).val("{{ prop.value }}");
+                        } else {
+                            $(e).val("{{ prop.prop }}");
+                        }
+
+                        $(e).attr("name", $(e).attr("name").replace("template", propCount));
+                        $(e).attr("id", $(e).attr("id").replace("template", propCount));
+                    });
+
+                    prop.find("button").attr("id", "delete_" + propCount);
+
+                    $("#prop_template").parent().append(prop);
+                    propCount++;
+                })
+            {% endif %}
+
+            {% if edit %}
+                {% for prop in productProps %}
+                    prop = $("#prop_template").clone();
+
+                    $(prop).removeClass("hidden");
+                    $(prop).attr("id", "");
+
+                    prop.find("input").each((i, e) => {
+                        if ($(e).attr("id") === "value_template") {
+                            $(e).val("{{ prop.value }}");
+                        } else {
+                            $(e).val("{{ prop.prop }}");
+                        }
+
+                        $(e).attr("name", $(e).attr("name").replace("template", propCount));
+                        $(e).attr("id", $(e).attr("id").replace("template", propCount));
+                    });
+
+                    prop.find("button").attr("id", "delete_" + propCount);
+
+                    $("#prop_template").parent().append(prop);
+                    propCount++;
+                {% endfor %}
+            {% endif %}
+
+             $(document).on("click", 'button[id^="delete_"]', (e) => {
+                $(e.target).parent().parent().remove();
+
+                $("#prop_template").parent().children().each((i, e) => {
+                    $(e).find("input").each((l, e) => {
+                        $(e).attr("name", $(e).attr("name").replace(/\d+/g, i - 1));
+                        $(e).attr("id", $(e).attr("id").replace(/\d+/g, i - 1));
+                    });
+
+                    $(e).find("button").attr("id", "delete_" + (i - 1));
+                    propCount = i;
                 });
-
-                $("#prop_template").parent().append(prop);
             })
         })
     </script>

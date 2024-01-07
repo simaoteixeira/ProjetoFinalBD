@@ -126,6 +126,11 @@ def edit(request, id):
         'navSubSection': 'produtos',
     }
 
+    productProps = repo.get_props(id)
+
+    if productProps:
+        context['productProps'] = productProps['props']
+
     if request.method == 'POST':
         if form.is_valid():
             data = form.cleaned_data
@@ -137,6 +142,7 @@ def edit(request, id):
                 weight=data['weight'],
                 vat=data['vat'],
                 profit_margin=data['profit_margin'],
+                props=data['props'],
             )
 
             return redirect('/inventario/produtos')
