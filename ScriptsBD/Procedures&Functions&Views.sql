@@ -259,7 +259,7 @@ BEGIN
     VALUES (_id_warehouse, _id_product, _quantity, _type, _reason, id_reason, _previous_quantity, _pos_quantity);
 
     IF _pos_quantity < 0 THEN
-        RAISE EXCEPTION 'Não existe stock suficiente ';
+        RAISE EXCEPTION 'Não existe stock suficiente pos= %, id_product= %, id_warehouse= %', _pos_quantity, _id_product, _id_warehouse;
     ELSE
         UPDATE stock
         SET quantity = _pos_quantity
@@ -791,7 +791,7 @@ BEGIN
     FROM production_orders
     WHERE id_product = _id_product AND status = 'COMPLETED';
 
-    RAISE NOTICE 'Total quantity: %', _total_quantity;
+    /*RAISE NOTICE 'Total quantity: %', _total_quantity;*/
 
     SELECT (COALESCE(SUM(unit_cost * equipment_quantity), 0::money)::money + (_price_base * _quantity))::money
     INTO _total_price
@@ -802,7 +802,7 @@ BEGIN
         RETURN 0::money;
     END IF;
 
-    RAISE NOTICE 'Total price: %', _total_price;
+    /*RAISE NOTICE 'Total price: %', _total_price;*/
 
     _average_price := _total_price::money  / _total_quantity;
 
@@ -861,7 +861,7 @@ BEGIN
 
     SELECT FN_GetProductAveragePriceByMaterialReceipts(NEW.id_product, NEW.quantity, NEW.price_base) INTO _new_product_price;
 
-    RAISE NOTICE 'Novo preço médio: %', _new_product_price;
+    /*RAISE NOTICE 'Novo preço médio: %', _new_product_price;*/
 
     UPDATE products
     SET price_cost = _new_product_price
@@ -1295,11 +1295,11 @@ BEGIN
     --quantidade total a contar com a nova que vai entrar
     _quantity = _quantity + NEW.quantity;
 
-    RAISE NOTICE 'quantity: %',_quantity;
+    /*RAISE NOTICE 'quantity: %',_quantity;*/
 
     -- Calcular o total da linha (price_base * _quantity) quantidade total
     NEW.line_total := NEW.price_base * _quantity;
-    RAISE NOTICE 'NEW.line_total: %', NEW.line_total;
+    /*RAISE NOTICE 'NEW.line_total: %', NEW.line_total;*/
 
     -- Calcular o custo de produção por componente
     _unit_cost := (SELECT SUM(price_base * quantity)
@@ -1314,19 +1314,19 @@ BEGIN
     END IF;
 
 
-    RAISE NOTICE '_unit_cost: %', _unit_cost;
+    /*RAISE NOTICE '_unit_cost: %', _unit_cost;*/
 
     -- Atualizar o custo unitário na tabela de ordens de produção
     UPDATE production_orders
     SET unit_cost = _unit_cost
     WHERE id_order_production = NEW.id_order_production;
-    RAISE NOTICE 'Unit cost updated';
+    /*RAISE NOTICE 'Unit cost updated';*/
 
     -- Atualizar o custo total de produção na tabela de ordens de produção
     UPDATE production_orders
     SET production_cost = unit_cost * equipment_quantity
     WHERE id_order_production = NEW.id_order_production;
-    RAISE NOTICE 'Production cost updated';
+    /*RAISE NOTICE 'Production cost updated';*/
 
     -- Verificar se o componente já existe na ordem de produção
     IF EXISTS (SELECT 1
@@ -1340,7 +1340,7 @@ BEGIN
         WHERE id_order_production = NEW.id_order_production
           AND id_product = NEW.id_product
           AND id_warehouse = NEW.id_warehouse;
-        RAISE NOTICE 'Component quantity and line total updated';
+        /*RAISE NOTICE 'Component quantity and line total updated';*/
 
         RETURN NULL;
     ELSE
@@ -1631,6 +1631,7 @@ BEGIN
         total          = _total
     WHERE id_sale_order = NEW.id_sale_order;
 
+    PERFORM FN_RemoveProductFromStock(0, NEW.id_product, NEW.quantity, 'OUT', 'sales_order', NEW.id_sale_order);
 
     IF
             (SELECT COUNT(*)
@@ -1648,7 +1649,7 @@ BEGIN
         WHERE id_sale_order = NEW.id_sale_order
           AND id_product = NEW.id_product;
 
-        PERFORM FN_RemoveProductFromStock(0, NEW.id_product, NEW.quantity, 'OUT', 'sales_order', NEW.id_sale_order);
+
 
         RETURN NULL;
 

@@ -877,6 +877,7 @@ $$
                 'Ordem de Produção para a encomenda do cliente Pedro: 1 equipamento'
                 );
 
+
         PERFORM fn_create_productionorder(
                 1,
                 id_producao,
@@ -885,6 +886,7 @@ $$
                 1,
                 'Ordem de Produção para a encomenda do cliente João: 1 equipamento'
                 );
+
 
         PERFORM fn_create_productionorder(
                 1,
@@ -903,6 +905,7 @@ $$
                 1,
                 'Ordem de Produção para a encomenda do cliente Duarte: 1 equipamentos, equipamentos por diferentes nos componentes'
                 );
+
 
         /*Inserir componentes de ordem de produção*/
 
@@ -1187,6 +1190,28 @@ $$
                 5,
                 1
              );
+
+        /* Atualizar estado da produção */
+         CALL pa_update_productionorderstatus(
+            1,
+            'COMPLETED'
+         );
+
+        CALL pa_update_productionorderstatus(
+            2,
+            'COMPLETED'
+         );
+
+        CALL pa_update_productionorderstatus(
+            3,
+            'COMPLETED'
+         );
+
+        CALL pa_update_productionorderstatus(
+            4,
+            'COMPLETED'
+         );
+
         -- ==================================== FIM PRODUÇÃO ======================================
 
 -- ==================================== VENDAS ============================================
