@@ -142,6 +142,7 @@ def edit(request, id):
                 weight=data['weight'],
                 vat=data['vat'],
                 profit_margin=data['profit_margin'],
+                hasProps=productProps is not None,
                 props=data['props'],
             )
 
