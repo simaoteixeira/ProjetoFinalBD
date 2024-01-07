@@ -25,6 +25,12 @@ services:
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: root
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/ --quiet
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
     ports:
       - "27019:27017"
 
@@ -32,7 +38,7 @@ services:
     build:
         context: .
         dockerfile: Dockerfile.web
-    command: bash -c "python initialize_db.py -f True && python initialize_mongo_db.py -f True && python manage.py runserver 0.0.0.0:8000"
+    command: bash -c "python initialize_db.py -f True && python manage.py runserver 0.0.0.0:8000"
     volumes:
       - .:/code
     ports:
@@ -48,6 +54,8 @@ services:
 
     depends_on:
       db:
+        condition: service_healthy
+      mongo:
         condition: service_healthy
 
 volumes:

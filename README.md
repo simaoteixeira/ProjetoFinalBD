@@ -24,7 +24,6 @@ Para executar o projeto sem docker é necessário:
 - Instalar as dependências do projeto (ver [requirements.txt](requirements.txt))
 - Criar a base de dados postgres
 - Executar o script [initialize_db.py](initialize_db.py) para gerar a base de dados, objetos, utilizadores e dados de teste.
-- Executar o script [initialize_mongo_db.py](initialize_mongo_db.py) para gerar a base de dados mongoDB.
 - Executar o servidor django
 
 ```bash
