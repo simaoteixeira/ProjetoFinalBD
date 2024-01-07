@@ -7,15 +7,13 @@ environ.Env.read_env('./ProjetoFinal/.env')
 
 # SET CONSTANTS
 DB_NAME = env('DB_NAME')
-DB_USER = env('DB_USER')
-DB_PASSWORD = env('DB_PASSWORD')
 DB_MONGO_CONNECTION = env("MONGO_DB_CONNECTION")
 
 print(DB_MONGO_CONNECTION)
 
 
 # Connect to MongoDB
-client = MongoClient("mongodb://mongo:27017")
+client = MongoClient(DB_MONGO_CONNECTION)
 
 print(client)
 
